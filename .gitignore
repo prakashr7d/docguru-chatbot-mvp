@@ -158,3 +158,15 @@ wandb/
 
 # benchmarking
 runs/
+
+# bot
+bot/credentials.yml
+bot/models/*
+bot/models/*
+bot/events.db
+bot/events.db-shm
+bot/rasa.db
+bot/events.db-wal
+bot/results/*
+bot/data/nlu/nlg_general.yml
+bot/data/nlu/nlg_nlu.yml
