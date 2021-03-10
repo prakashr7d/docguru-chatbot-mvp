@@ -1,16 +1,21 @@
 [tool.poetry]
-name = "my_package"
+name = "dash-ecomm"
 version = "0.1.0"
-description = "some description..."
-authors = ["Ayushman Dash <ayushman@neuralspace.ai>"]
+description = "An e-comm bot for customer demos"
+authors = ["Ayushman Dash <ayushman@neuralspace.ai>", "Dishant Gandhi <dishant@neuralspace.ai>"]
 
 [[tool.poetry.source]]
 name = "neuralspace"
 url = "https://pkgs.dev.azure.com/neuralspace/_packaging/neuralspace/pypi/simple/"
 
+[[tool.poetry.source]]
+name = "rasax"
+url = "https://pypi.rasa.com/simple"
+
 [tool.poetry.dependencies]
-python = "^3.7"
-panini = "^0.5.18"
+python = ">=3.7,<3.9"
+rasa = "^2.3.4"
+rasa-x = "^0.37.1"
 
 [tool.poetry.dev-dependencies]
 isort = "^4.3.21"
