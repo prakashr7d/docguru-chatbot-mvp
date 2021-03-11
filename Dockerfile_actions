@@ -1,0 +1,8 @@
+FROM rasa/rasa:latest-full AS BASE
+
+
+WORKDIR /app
+
+ADD actions ./actions
+ADD config.yml ./config.yml
+ADD domain.yml ./domain.yml

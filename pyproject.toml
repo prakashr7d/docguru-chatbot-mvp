@@ -5,10 +5,6 @@ description = "An e-comm bot for customer demos"
 authors = ["Ayushman Dash <ayushman@neuralspace.ai>", "Dishant Gandhi <dishant@neuralspace.ai>"]
 
 [[tool.poetry.source]]
-name = "neuralspace"
-url = "https://pkgs.dev.azure.com/neuralspace/_packaging/neuralspace/pypi/simple/"
-
-[[tool.poetry.source]]
 name = "rasax"
 url = "https://pypi.rasa.com/simple"
 
