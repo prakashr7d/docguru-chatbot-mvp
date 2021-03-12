@@ -9,6 +9,7 @@ from dash_ecomm.constants import (
     USER_PROFILE_COLUMN_FIRSTNAME,
     USER_PROFILE_COLUMN_ID,
     USER_PROFILE_COLUMN_LASTNAME,
+    USER_PROFILE_COLUMN_OTP,
 )
 
 with open(DB_FILE, "r") as dbf:
@@ -21,6 +22,7 @@ class UserProfile:
     user_id: int
     first_name: Text
     last_name: Text
+    otp: int
 
 
 def is_valid_user(useremail: Text) -> bool:
@@ -43,4 +45,5 @@ def get_user_info_from_db(useremail: Text) -> UserProfile:
         email=profile_info[USER_PROFILE_COLUMN_EMAIL],
         first_name=profile_info[USER_PROFILE_COLUMN_FIRSTNAME],
         last_name=profile_info[USER_PROFILE_COLUMN_LASTNAME],
+        otp=profile_info[USER_PROFILE_COLUMN_OTP],
     )

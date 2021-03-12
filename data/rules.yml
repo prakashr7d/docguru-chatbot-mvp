@@ -21,7 +21,7 @@ rules:
 - rule: Activate email form for order status if login true
   condition:
   - slot_was_set:
-    - login: True
+    - is_logged_in: True
   steps:
   - intent: order_status
   - action: action_deactivate_loop
@@ -32,7 +32,7 @@ rules:
 - rule: Activate login form for order status if login false
   condition:
   - slot_was_set:
-    - login: False
+    - is_logged_in: False
   steps:
   - intent: order_status
   - action: action_deactivate_loop
@@ -53,7 +53,7 @@ rules:
   condition:
   - active_loop: order_status_form
   - slot_was_set:
-    - login: True
+    - is_logged_in: True
   steps:
   - action: order_status_form
   - active_loop: null
@@ -66,7 +66,7 @@ rules:
 - rule: Activate email form for cancelling order
   condition:
   - slot_was_set:
-    - login: True
+    - is_logged_in: True
   steps:
   - intent: order_cancel
   - action: action_deactivate_loop
@@ -77,7 +77,7 @@ rules:
 - rule: Activate email form for cancelling order
   condition:
   - slot_was_set:
-    - login: False
+    - is_logged_in: False
   steps:
   - intent: order_cancel
   - action: action_deactivate_loop
@@ -109,7 +109,7 @@ rules:
 - rule: Activate email form for returning item
   condition:
   - slot_was_set:
-    - login: True
+    - is_logged_in: True
   steps:
   - intent: return
   - action: action_deactivate_loop
@@ -120,7 +120,7 @@ rules:
 - rule: Activate email form for returning item
   condition:
   - slot_was_set:
-    - login: False
+    - is_logged_in: False
   steps:
   - intent: return
   - action: action_deactivate_loop
@@ -185,7 +185,7 @@ rules:
   - entities:
     - negation
   - action: utter_start_over
-  - action: utter_greet
+  - action: personal_greet
   - action: action_deactivate_loop
   - active_loop: null
 
@@ -247,5 +247,4 @@ rules:
   steps:
   - action: login_form
   - active_loop: null
-  - action: action_login
-
+  - action: personal_greet

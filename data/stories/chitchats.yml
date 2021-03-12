@@ -13,7 +13,7 @@ stories:
 - story: more chitchat
   steps:
   - intent: greet
-  - action: utter_greet
+  - action: personal_greet
   - intent: chitchat
   - action: utter_chitchat
   - intent: chitchat
@@ -21,7 +21,7 @@ stories:
 - story: greet chitchat
   steps:
   - intent: greet
-  - action: utter_greet
+  - action: personal_greet
   - intent: chitchat
   - action: utter_chitchat
 

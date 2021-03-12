@@ -14,6 +14,8 @@ python = ">=3.7,<3.9"
 rasa = "^2.3.4"
 rasa-x = "^0.37.1"
 PyYAML = "^5.4.1"
+python-socketio = "4.6.1"
+python-engineio = "3.13.2"
 
 [tool.poetry.dev-dependencies]
 isort = "^4.3.21"
