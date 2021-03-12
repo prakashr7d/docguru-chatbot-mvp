@@ -52,15 +52,21 @@ entities:
 
 
 slots:
-  user_token:
+
+  login_token:
     type: text
     influence_conversation: false
     auto_fill: False
-  email:
-    type: rasa.shared.core.slots.TextSlot
-    initial_value: null
-    auto_fill: true
-    influence_conversation: false
+  user_email:
+    type: text
+    auto_fill: null
+  user_first_name:
+    type: text
+    auto_fill: null
+  user_last_name:
+    type: text
+    auto_fill: null
+
   color:
     type: rasa.shared.core.slots.TextSlot
     initial_value: null

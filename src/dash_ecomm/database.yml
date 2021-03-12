@@ -23,6 +23,7 @@ orders:
    color: "gray"
    size: '11'
    status: 'returning'
+
 products:
 -
    name: "shoes"
@@ -64,19 +65,20 @@ products:
    name: "shoes"
    size: "10"
    color: "black"
+
 users:
--
-   id: 0
-   email: "dishant@neuralspace.ai"
-   first_name: "Dishant"
-   last_name: "Gandhi"
--
-   id: 1
-   email: "ayushman@neuralspace.ai"
-   first_name: "Ayushman"
-   last_name: "Dash"
--
-  id: 2
-  email: "pooja@neuralspace.ai"
-  first_name: "Pooja"
-  last_name: "Mishra"
+   dishant@neuralspace.ai:
+      id: 0
+      email: "dishant@neuralspace.ai"
+      first_name: "Dishant"
+      last_name: "Gandhi"
+   ayushman@neuralspace.ai:
+      id: 1
+      email: "ayushman@neuralspace.ai"
+      first_name: "Ayushman"
+      last_name: "Dash"
+   pooja@neuralspace.ai:
+      id: 2
+      email: "pooja@neuralspace.ai"
+      first_name: "Pooja"
+      last_name: "Mishra"

@@ -22,9 +22,9 @@ def valid_email(email):
         return False
 
 
-class ActionLogin(Action):
+class PersonalGreet(Action):
     def name(self) -> Text:
-        return "action_login"
+        return "personal_greet"
 
     def run(
         self,
@@ -32,16 +32,33 @@ class ActionLogin(Action):
         tracker: Tracker,
         domain: "DomainDict",  # noqa: F821
     ) -> List[Dict[Text, Any]]:
-        database = open(path_to_db, "r")
-        users = yaml.load(database, Loader=yaml.FullLoader)["users"]
-        email = tracker.get_slot("email")
-        for user in users:
-            if user["email"] == email:
-                dispatcher.utter_message(template="utter_login_success")
-                return [SlotSet("verified_email", email), SlotSet("login", True)]
-            else:
-                dispatcher.utter_message(template="utter_login_failed")
-                return [SlotSet("email", None), SlotSet("login", False)]
+        pass
+        # email = tracker.get_slot("email")
+        # for user in users:
+        #     if user["email"] == email:
+        #         dispatcher.utter_message(template="utter_login_success")
+        #         return [SlotSet("verified_email", email), SlotSet("login", True)]
+        #     else:
+        #         dispatcher.utter_message(template="utter_login_failed")
+        #         return [SlotSet("email", None), SlotSet("login", False)]
+
+    def __get_useremail_from_token(self, token) -> Text:
+        # When we have JWT then write the JWT decode logic here
+        return token
+
+    def __validate_user(self, useremail: Text):
+        # if is_valid_user(useremail):
+        #     user_profile = get_user_info_from_db(useremail)
+        # pass
+        pass
+
+    def __is_loged_in_user(self, tracker: Tracker) -> List[SlotSet]:
+        token = tracker.get_slot("login_token")
+        slot_set = []
+        if token:
+            user_email = self.__get_useremail_from_token(token)
+            self.__validate_user(user_email)
+        return slot_set
 
 
 class ValidateLoginForm(FormValidationAction):
@@ -185,7 +202,7 @@ class CancelOrder(Action):
             for order in orders["orders"]:
                 if order["email"] == order_email:
                     order["status"] = orderStatus
-            write = open("example.yml", "w")
+            write = open("../src/dash_ecomm/example.yml", "w")
             yaml.dump(orders, write)
             write.close()
             database.close()
@@ -230,7 +247,7 @@ class ReturnOrder(Action):
                 if order["order_email"] == order_email and orderStatus == "delivered":
                     order["status"] = "returning"
                     break
-            write = open("example.yml", "w")
+            write = open("../src/dash_ecomm/example.yml", "w")
             yaml.dump(orders, write)
             write.close()
             database.close()
