@@ -43,7 +43,7 @@ slots:
     type: unfeaturized
     influence_conversation: false
   verified_email:
-    type: bool
+    type: text
     influence_conversation: true
   survey_complete:
     type: bool
