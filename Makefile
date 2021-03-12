@@ -69,14 +69,13 @@ conda-env-setup:
 .PHONY: format
 format:
 	# calling make _format within poetry make it so that we only init poetry once
-	poetry run isort -rc -y src/dash_ecomm tests bot
-	poetry run black src/dash_ecomm tests bot
-
+	poetry run isort -rc -y src/dash_ecomm tests actions
+	poetry run black src/dash_ecomm tests actions
 
 # Flake8 to check code formatting
 .PHONY: lint
 lint:
-	poetry run flake8 src/dash_ecomm tests bot
+	poetry run flake8 src/dash_ecomm tests actions
 
 N_THREADS=1
 # Run tests
@@ -95,3 +94,15 @@ coverage:
 # Run tests and coverage
 .PHONY: test-coverage
 test-coverage: test coverage
+
+
+# Run tests and coverage
+.PHONY: build-action-image
+build-action-image:
+	docker build -f Dockerfile_actions -t textclouddev.azurecr.io/botlibrary/dashbot-ecomm:latest .
+
+
+# Run tests and coverage
+.PHONY: push-action-image
+push-action-image:
+	docker push textclouddev.azurecr.io/botlibrary/dashbot-ecomm:latest
