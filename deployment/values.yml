@@ -23,6 +23,13 @@ rasa:
     # tag refers to the Rasa image tag
     tag: "latest-full"
 
+    additionalChannelCredentials:
+        rest:
+        socketio:
+            user_message_evt: user_uttered
+            bot_message_evt: bot_uttered
+            session_persistence: false
+
 app:
     name: "textclouddev.azurecr.io/botlibrary/dashbot-ecomm"
     tag: "latest"
