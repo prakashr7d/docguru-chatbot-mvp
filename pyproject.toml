@@ -4,6 +4,7 @@ version = "0.1.0"
 description = "An e-comm bot for customer demos"
 authors = ["Ayushman Dash <ayushman@neuralspace.ai>", "Dishant Gandhi <dishant@neuralspace.ai>"]
 
+
 [[tool.poetry.source]]
 name = "rasax"
 url = "https://pypi.rasa.com/simple"
@@ -12,6 +13,7 @@ url = "https://pypi.rasa.com/simple"
 python = ">=3.7,<3.9"
 rasa = "^2.3.4"
 rasa-x = "^0.37.1"
+PyYAML = "^5.4.1"
 
 [tool.poetry.dev-dependencies]
 isort = "^4.3.21"
