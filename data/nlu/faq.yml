@@ -1,0 +1,194 @@
+version: "2.0"
+nlu:
+- intent: faq/textlite
+  examples: |
+    - what is [textlite](product) ?
+    - how does [textlite](product) work?
+    - what is [textlite](product) ?
+    - can you explain [textlite](product) to me
+    - could you elaborate more about [textlite](product)
+    - tell me about [textlite](product) please
+    - what is this [textlite](product) thing. could you tell me more?
+    - what's the purpose of [textlite](product)
+    - whats [textlite](product)
+    - is [TextLite](product) separate from Rasa?
+    - how does [TextLite](product) relate to TextSpace core
+    - I need to know about [TextLite](product)
+    - please tell me more about [TextLite](product)
+    - elaborate on [TextLite](product)
+    - Can you tell me about [TextLite](product)?
+    - I want information about [TextLite](product)
+    - [TextLite](product)
+    - [TextLite](product) features
+    - Tell me about [TextLite](product)
+    - can someone help me with infos about [TextLite](product)
+    - i want to learn more about [TextLite](product)
+    - tell me what is [TextLite](product)
+    - what is [TextLite](product) ?
+    - what is [textlite](product)
+    - what's [TextLite](product)
+
+- intent: faq/textspace
+  examples: |
+    - what is [textspace](product) ?
+    - how does [textspace](product) work?
+    - what is [textspace](product) ?
+    - can you explain [textspace](product) to me
+    - could you elaborate more about [textspace](product)
+    - tell me about [textspace](product) please
+    - what is this [textspace](product) thing. could you tell me more?
+    - what's the purpose of action_greet_user [textspace](product)
+    - whats [textspace](product)
+    - is [textspace](product) separate from Rasa?
+    - how does [textspace](product) relate to rasa core
+    - I need to know about [textspace](product)
+    - please tell me more about [textspace](product)
+    - elaborate on [textspace](product)
+    - Can you tell me about [textspace](product)?
+    - I want information about [textspace](product)
+    - [textspace](product)
+    - [textspace](product) features
+    - Tell me about [textspace](product)
+    - can someone help me with infos about [textspace](product)
+    - i want to learn more about [textspace](product)
+    - tell me what is [textspace](product)
+    - what is [textspace](product) ?
+    - what is [textspace](product)
+    - what's [textspace](product)
+
+- intent: faq/textcloud
+  examples: |
+    - what is [textcloud](product) ?
+    - how does [textcloud](product) work?
+    - what is [textcloud](product) ?
+    - can you explain [textcloud](product) to me
+    - could you elaborate more about [textcloud](product)
+    - tell me about [textcloud](product) please
+    - what is this [textcloud](product) thing. could you tell me more?
+    - what's the purpose of [textcloud](product)
+    - whats [textcloud](product)
+    - is [textcloud](product) separate from Rasa?
+    - how does [textcloud](product) relate to rasa core
+    - I need to know about [textcloud](product)
+    - please tell me more about [textcloud](product)
+    - elaborate on [textcloud](product)
+    - Can you tell me about [textcloud](product)?
+    - I want information about [textcloud](product)
+    - [textcloud](product)
+    - [textcloud](product) features
+    - Tell me about [textcloud](product)
+    - can someone help me with infos about [textcloud](product)
+    - i want to learn more about [textcloud](product)
+    - tell me what is [textcloud](product)
+    - what is [textcloud](product) ?
+    - what is [textcloud](product)
+    - what's [textcloud](product)
+
+
+- intent: faq/differencetextspacetextlite
+  examples: |
+    - Are [TextSpace](product) and [TextLite](product) the same thing?
+    - Can I use [TextLite](product) without using [TextSpace](product)
+    - Can i use [TextSpace](product) without [textlite](product)?
+    - Do I need all [TextSpace](product) , [TextLite](product)?
+    - How is [TextSpace](product) different from [TextLite](product) ?
+    - If I use [TextSpace](product) do I also need [TextLite](product) ?
+    - What's new in [TextLite](product) compared to [TextSpace](product) ?
+    - how does [textlite](product) stack up against [textspace](product)
+    - i am using [textspace(product), why would i need [textlite](product)?
+    - please compare [textspace](product) and [textlite](product)
+    - show me comparison between [textlite](product) and [textspace](product)
+    - tell me the difference between [textspace](product) and [textlite](product)
+    - tell me the difference between [textlite](product) and [textspace](product)
+    - what's the difference between [textspace](product) and [textlite](product)
+    - whats the diff between [textspace](product) and [textlite](product)
+    - when should i use [textspace](product) and when should i use [textlite](product)
+    - what is the difference between [textspace](product) and [textlite](product)
+    - is [textspace](product) needed for [textlite](product) ?
+    - what is the difference between textspaceand [textlite](product)
+    - difference between [textspace](product) and [textlite](product)
+    - what is the difference between [textspace](product) and [textlite](product)
+    - what is the difference between [textlite](product) and [textspace](product)
+
+
+- intent: faq/careers
+  examples: |
+    - What are current job-openings?
+    - Can you provide info on job-openings?
+    - are there any job openings?
+    - job-openings any?
+    - any jobs available?
+    - Are any job opening in NeuralSpace
+
+
+
+- intent: faq/company_location
+  examples: |
+    - Location of NeuralSpace
+    - Where is your registered office?
+    - Where is your office located?
+    - Where is NeuralSpace located?
+    - Where is NeuralSpace based?
+    - What is the location of NeuralSpace?
+    - Where is the office located?
+    -
+- intent: faq/supported_industries
+  examples: |
+    - What industries do you serve?
+    - What industries can I use TextLite for?
+    - what companies does [textlite](product) support
+    - What industries do you support?
+    - Which industries do you cater to?
+    - What are the markets that you serve?
+    - Which industries do you serve?
+    - Which sectors do you serve?
+    - Which industries do you deal with?
+
+- intent: faq/pricing
+  examples: |
+    - How much will you charge me
+    - any charges for these services
+    - are these free
+    - what are the charges
+    - any pricing for this or free
+    - will these products be free
+    - I want textlite how much is the charge
+    - how much is the pricing
+    - I want to learn more about your pricing
+    - I want to talk to someone about your pricing system
+    - what's your pricing
+    - what does your product cost
+    - how much will you charge me?
+- intent: faq/clients
+  examples: |
+    - who are the clients of the company
+    - can you tell me about your clients
+    - how many clients did you guys worked for?
+    - are there any clients for your's
+    - any clients of you guys
+
+- intent: faq/best_product
+  examples: |
+    - what is your best product?
+    - what is your best product
+    - which one is your best product
+    - from 3 products which one is best
+    - best product
+    - dash which one is best product as per you
+    - as per you which product is best
+    - tell me the best product of your
+
+- intent: faq/implement_product
+  examples: |
+    - I want to implement your product on my website
+    - Can I implement your product on my app
+    - I want implement your product on my app
+    - Can I implement your product on my website
+    - implement your product on my app
+    - I want to use your product
+    - can I use your product on my website
+    - I want to add textlite on my website
+    - I want to add textspace on my app
+    - I want to add textcloud on my website
+    - I want to add textlite on my app
+    - I want to add textcloud on my app
