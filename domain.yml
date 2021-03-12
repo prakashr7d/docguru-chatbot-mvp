@@ -92,9 +92,9 @@ slots:
     auto_fill: true
     influence_conversation: false
   verified_email:
-    type: rasa.shared.core.slots.BooleanSlot
+    type: rasa.shared.core.slots.TextSlot
     initial_value: null
-    auto_fill: true
+    auto_fill: null
     influence_conversation: true
 
   survey_complete:
