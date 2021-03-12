@@ -1,5 +1,6 @@
 # Data files for building the index and training a new models
 *.zip
+models/
 
 # Created by .ignore support plugin (hsz.mobi)
 ### Main template

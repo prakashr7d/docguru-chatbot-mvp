@@ -5,7 +5,7 @@ services:
     build:
       context: ./
       target: BASE
-      dockerfile: Dockerfile
+      dockerfile: Dockerfile_actions
   my-package-dev:
     image: my-package-dev:latest
     volumes:
@@ -15,4 +15,4 @@ services:
     build:
       target: DEV
       context: ./
-      dockerfile: Dockerfile
+      dockerfile: Dockerfile_actions
