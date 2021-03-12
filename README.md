@@ -139,5 +139,7 @@ It is recommended to use an [automated CI/CD process](https://rasa.com/docs/rasa
 ```
 
 
-textclouddev.azurecr.io/neuralspace/ns-nlu-serve:latest
+textclouddev.azurecr.io/botlibrary/dashbot-ecomm:latest
+
+helm --namespace dash-ecomm upgrade --values deployment/values.yml dash-ecomm-v0 rasa-x/rasa-x
 ```

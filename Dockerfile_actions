@@ -1,8 +1,10 @@
-FROM rasa/rasa:latest-full AS BASE
+FROM rasa/rasa-sdk:2.3.1
 
+COPY actions /app/actions
 
-WORKDIR /app
+USER root
+#RUN pip install --upgrade pip
+#RUN pip install --no-cache-dir -r /app/actions/requirements-actions.txt
 
-ADD actions ./actions
-ADD config.yml ./config.yml
-ADD domain.yml ./domain.yml
+USER 1001
+CMD ["start", "--actions", "actions"]
