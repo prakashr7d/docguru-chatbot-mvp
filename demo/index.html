@@ -429,8 +429,8 @@
 <script>!(function () {
     let propUser = window.localStorage.getItem('user')
     let propName = propUser ? propUser.split('@')[0] : '';
-    let greet_payload = propUser ? '/greet{"verified_email"= ' + '" propUser"'}' : '/greet';
-    console.log(propUser, propName)
+    let greet_payload = propUser ? `/greet{"login_token": "${propUser}"'}` : '/greet';
+    console.log(propUser, propName, greet_payload)
     let e = document.createElement("script"),
       t = document.head || document.getElementsByTagName("head")[0];
     (e.src =

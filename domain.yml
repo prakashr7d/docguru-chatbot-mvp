@@ -1,9 +1,13 @@
 version: '2.0'
+
+
 config:
   store_entities_as_slots: true
 session_config:
   session_expiration_time: 60
   carry_over_slots_to_new_session: true
+
+
 intents:
 - order_status:
     use_entities: true
@@ -35,6 +39,8 @@ intents:
     use_entities: true
 - nlu_fallback:
     use_entities: true
+
+
 entities:
 - email
 - color
@@ -43,7 +49,13 @@ entities:
 - language
 - company
 - product
+
+
 slots:
+  user_token:
+    type: text
+    influence_conversation: false
+    auto_fill: False
   email:
     type: rasa.shared.core.slots.TextSlot
     initial_value: null
@@ -84,6 +96,7 @@ slots:
     initial_value: null
     auto_fill: true
     influence_conversation: true
+
   survey_complete:
     type: rasa.shared.core.slots.BooleanSlot
     initial_value: null
@@ -94,6 +107,7 @@ slots:
     initial_value: false
     auto_fill: true
     influence_conversation: true
+
 responses:
   utter_greet:
   - buttons:
@@ -210,6 +224,7 @@ responses:
     text: Anything else you want help with?
   utter_anything_else_options:
   - text: You can try out asking me about any product, order status, return order request, cancel order request.
+
 actions:
 - action_login
 - validate_login_form_action
@@ -218,6 +233,7 @@ actions:
 - action_order_status
 - action_cancel_order
 - action_return
+
 forms:
   login_form:
     email:

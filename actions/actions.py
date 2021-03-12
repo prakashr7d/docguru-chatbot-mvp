@@ -11,7 +11,7 @@ from rasa_sdk.executor import CollectingDispatcher
 path_to_db = "actions/example.yml"
 
 
-def validEmail(email):
+def valid_email(email):
     email_regex = "^[a-z0-9]+[\._]?[a-z0-9]+[@]\w+[.]\w{2,3}$"  # noqa: W605
     compiled = re.compile(email_regex)
     if re.search(compiled, email):
@@ -56,9 +56,9 @@ class ValidateLoginForm(FormValidationAction):
         domain: "DomainDict",  # noqa: F821
     ) -> List[EventType]:
         if value is not None:
-            if validEmail(value) is True:
+            if valid_email(value) is True:
                 return {"email": value}
-            elif validEmail(value) is False:
+            elif valid_email(value) is False:
                 return {"requested_slot": "email"}
         else:
             return {"requested_slot": "email"}

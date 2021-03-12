@@ -3,7 +3,7 @@ stories:
 - story: intro
   steps:
   - intent: greet
-  - action: utter_greet
+  - action: personal_greet
 
 - story: order shoes
   steps:
