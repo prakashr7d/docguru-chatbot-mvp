@@ -31,10 +31,6 @@ stories:
   - action: utter_chitchat
   - intent: affirm
   - action: utter_anything_else
-  - or:
-    - intent: deny
-    - intent: goodbye
-  - action: utter_goodbye
 
 - story: chitchat, anything else affirm
   steps:

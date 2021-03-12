@@ -73,6 +73,15 @@ nlu:
     - i want to buy shoes
     - no, don't want to do a return, want to purchase new shoes
     - since they're in stock, how about I place an order
+- intent: login
+  examples: |
+    - I want to login
+    - can you make me login
+    - login
+    - how to login
+    - can I login here?
+    - make me login in
+    - can you login me
 - intent: affirm
   examples: |
     - yes
@@ -201,27 +210,6 @@ nlu:
     - see you around
     - bye bye
     - see you later
-- intent: out_of_scope
-  examples: |
-    - mmm I can't see what you're saying
-    - I am looking forward to my best friend's wedding. Do you have any tuxedo's?
-    - hmmmm
-    - Can I?
-    - Well, okay then
-    - what is the square root of 5
-    - I want to know the weather
-    - what is the meaning of life.
-    - Fridge Isn't Running
-    - my tv isn't working
-    - I want a pizza
-    - my washing machine isn't working
-    - what year is it
-    - order a pizza
-    - I want to order a pizza
-    - what is the weather today
-    - what is the weather
-    - why is the sky blue
-    - blah blah blah
 
 - intent: chitchat/ask_howbuilt
   examples: |
@@ -841,3 +829,25 @@ nlu:
     - where do you live
     - where do you live?
     - where's your home town?
+
+- intent: out_of_scope
+  examples: |
+    - mmm I can't see what you're saying
+    - I am looking forward to my best friend's wedding. Do you have any tuxedo's?
+    - hmmmm
+    - Can I?
+    - Well, okay then
+    - what is the square root of 5
+    - I want to know the weather
+    - what is the meaning of life.
+    - Fridge Isn't Running
+    - my tv isn't working
+    - I want a pizza
+    - my washing machine isn't working
+    - what year is it
+    - order a pizza
+    - I want to order a pizza
+    - what is the weather today
+    - what is the weather
+    - why is the sky blue
+    - blah blah blah

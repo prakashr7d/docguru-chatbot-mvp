@@ -1,52 +1,98 @@
+version: '2.0'
+config:
+  store_entities_as_slots: true
 session_config:
   session_expiration_time: 60
   carry_over_slots_to_new_session: true
 intents:
-- order_status
-- order_cancel
-- return
-- product_stock
-- product_updates
-- affirm
-- deny
-- inform
-- order_shoes
-- greet
-- chitchat
-- faq
-- out_of_scope
-- nlu_fallback
+- order_status:
+    use_entities: true
+- order_cancel:
+    use_entities: true
+- return:
+    use_entities: true
+- product_stock:
+    use_entities: true
+- product_updates:
+    use_entities: true
+- login:
+    use_entities: true
+- affirm:
+    use_entities: true
+- deny:
+    use_entities: true
+- inform:
+    use_entities: true
+- order_shoes:
+    use_entities: true
+- greet:
+    use_entities: true
+- chitchat:
+    use_entities: true
+- faq:
+    use_entities: true
+- out_of_scope:
+    use_entities: true
+- nlu_fallback:
+    use_entities: true
 entities:
 - email
 - color
 - number
 - negation
+- language
+- company
+- product
 slots:
-  color:
-    type: text
-    influence_conversation: false
   email:
-    type: text
+    type: rasa.shared.core.slots.TextSlot
+    initial_value: null
+    auto_fill: true
+    influence_conversation: false
+  color:
+    type: rasa.shared.core.slots.TextSlot
+    initial_value: null
+    auto_fill: true
     influence_conversation: false
   size:
-    type: text
-    influence_conversation: false
+    type: rasa.shared.core.slots.TextSlot
+    initial_value: null
     auto_fill: false
+    influence_conversation: false
   rating:
-    type: text
-    influence_conversation: false
+    type: rasa.shared.core.slots.TextSlot
+    initial_value: null
     auto_fill: false
+    influence_conversation: false
+  name:
+    type: rasa.shared.core.slots.TextSlot
+    initial_value: null
+    auto_fill: true
+    influence_conversation: true
   open_feedback:
-    type: text
+    type: rasa.shared.core.slots.TextSlot
+    initial_value: null
+    auto_fill: true
     influence_conversation: false
   requested_slot:
-    type: unfeaturized
+    type: rasa.shared.core.slots.UnfeaturizedSlot
+    initial_value: null
+    auto_fill: true
     influence_conversation: false
   verified_email:
-    type: bool
+    type: rasa.shared.core.slots.BooleanSlot
+    initial_value: null
+    auto_fill: true
     influence_conversation: true
   survey_complete:
-    type: bool
+    type: rasa.shared.core.slots.BooleanSlot
+    initial_value: null
+    auto_fill: true
+    influence_conversation: true
+  login:
+    type: rasa.shared.core.slots.BooleanSlot
+    initial_value: false
+    auto_fill: true
     influence_conversation: true
 responses:
   utter_greet:
@@ -59,32 +105,25 @@ responses:
       title: Check inventory
     - payload: Subscribe to product updates
       title: Subscribe to product updates
-    text: Hi there! I'm a demo bot from Rasa to help you with ordering shoes. How
-      can I help you?
+    text: Hi there! I'm a demo bot from Rasa to help you with ordering shoes. How can I help you?
   utter_default:
   - text: I don't think I understand. Can you try providing more detail?
   - text: um, what did you just say to me?
   - text: beep, boop, don't understand
   utter_ask_order_status_form_email:
-  - text: I can help you find the status of your order. What's your email address
-      so I can find the order?
+  - text: I can help you find the status of your order. What's your email address so I can find the order?
   utter_order_status:
-  - text: Based on the latest order from {email}, it looks like your order is currently {status}.
+  - text: Based on the latest order from {verified_email}, it looks like your order is currently {status}.
   utter_ask_cancel_form_email:
-  - text: Sorry to hear you want to cancel! To help find your order, can you please
-      provide your email address?
+  - text: Sorry to hear you want to cancel! To help find your order, can you please provide your email address?
   utter_order_cancel_finish:
-  - text: Ok, I've cancelled the order for {email}. If you'd like to reorder, please visit your
-      recent orders in your account history.
+  - text: Ok, I've cancelled the order for {verified_email}. If you'd like to reorder, please visit your recent orders in your account history.
   utter_ask_return_form_email:
-  - text: Let's start that return. To help find your order, can you please provide
-      your email address?
+  - text: Let's start that return. To help find your order, can you please provide your email address?
   utter_return_finish:
-  - text: Ok, I've kicked off your return. You should be receiving a return label
-      in your inbox. Please send it in the next 14 days!
+  - text: Ok, I've kicked off your return. You should be receiving a return label in your inbox. Please send it in the next 14 days!
   utter_ask_product_updates_form_email:
-  - text: I can keep you up to date with our weekly email about product updates! If
-      you'd like to be added to the list, please add your email address.
+  - text: I can keep you up to date with our weekly email about product updates! If you'd like to be added to the list, please add your email address.
   utter_product_updates_finish:
   - text: Alright, you're subscribed!
   utter_product_stock_start:
@@ -96,13 +135,11 @@ responses:
   utter_product_stock_finish:
   - text: Looks like we have size {size} {color} shoes in stock!
   utter_confirm_email:
-  - text: I already have your email on file. Would you like me to look up your order
-      under {email}?
+  - text: I already have your email on file. Would you like me to look up your order under {verified_email}?
   utter_faq/alternate_info:
   - text: Currenty we can only provide order information based on email.
   utter_faq/sizing_clarification:
-  - text: Right now we only offer American sizes. We'll try to change this in the
-      future!
+  - text: Right now we only offer American sizes. We'll try to change this in the future!
   utter_faq/payment_methods:
   - text: We accept all major credit cards, Apple Pay, Google Pay, and PayPal.
   utter_faq/promotions:
@@ -115,8 +152,7 @@ responses:
   - text: yep I'm here.
   - text: unfortunately, I'm still listening.
   utter_chitchat/capabilities:
-  - text: I can help you start a return, subscribe to our emails, and even see if
-      we carry your desired shoes.
+  - text: I can help you start a return, subscribe to our emails, and even see if we carry your desired shoes.
   utter_chitchat/mood_great:
   - text: Superb!
   - text: right on
@@ -147,7 +183,7 @@ responses:
   - text: Thank you for the feedback!
   utter_start_over:
   - text: Ok, let's start over.
-  utter_open_feedback: #this is to test the response was collected
+  utter_open_feedback:
   - text: Here's your lovely feedback - {open_feedback}
   utter_no_order:
   - text: Hmm, seems like we don't have an order associated with that email
@@ -156,46 +192,71 @@ responses:
   utter_no_stock:
   - text: Sorry, seems like we don't have those shoes.
   utter_order_shoes:
-  - text: Sorry, I can't actually help you order the shoes. Please visit our 
-      site to buy some nice shoes! I can help you check inventory, see the 
-      status of an order or even make a change to that order.
+  - text: Sorry, I can't actually help you order the shoes. Please visit our site to buy some nice shoes! I can help you check inventory, see the status of an order or even make a change to that order.
+  utter_ask_login_form_email:
+  - text: To login into your account, can you please provide your email address?
+  utter_login_success:
+  - text: Login Successful, you can continue shopping.
+  utter_login_failed:
+  - text: Login Failed, please retry login.
+  utter_ask_login:
+  - text: Please login to access all features
+  utter_anything_else:
+  - buttons:
+    - payload: Yes
+      title: Yes
+    - payload: No
+      title: No
+    text: Anything else you want help with?
+  utter_anything_else_options:
+  - text: You can try out asking me about any product, order status, return order request, cancel order request.
 actions:
+- action_login
+- validate_login_form_action
 - action_product_search
 - action_survey_submit
 - action_order_status
 - action_cancel_order
 - action_return
 forms:
-  order_status_form:
+  login_form:
     email:
     - entity: email
       type: from_entity
     - intent:
       - inform
       type: from_text
-  cancel_form:
-    email:
+  order_status_form:
+    verified_email:
     - entity: email
       type: from_entity
+    - intent:
+      - inform
+      type: from_text
+  cancel_form:
+    verified_email:
+    - entity: verified_email
+      type: from_entity
   return_form:
-    email:
+    verified_email:
     - entity: email
       not_intent: product_updates
       type: from_entity
   product_updates_form:
-    email:
+    verified_email:
     - entity: email
       type: from_entity
   product_stock_form:
-    size:
-    - entity: number
-      type: from_entity
     color:
     - entity: color
       type: from_entity
+    size:
+    - entity: number
+      type: from_entity
   survey_form:
+    open_feedback:
+    - type: from_text
     rating:
     - entity: number
       type: from_entity
-    open_feedback:
-    - type: from_text
+e2e_actions: []

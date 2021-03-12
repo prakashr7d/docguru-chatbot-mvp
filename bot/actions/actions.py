@@ -1,12 +1,67 @@
+import logging
+import re
 from typing import Any, Dict, List, Text
 
 import yaml
-from rasa_sdk import Action, Tracker
-from rasa_sdk.events import SlotSet
+from rasa_sdk import Action, FormValidationAction, Tracker
+from rasa_sdk.events import EventType, SlotSet
 from rasa_sdk.executor import CollectingDispatcher
 
 # change this to the location of your SQLite file
-path_to_db = "actions/example1.yml"
+path_to_db = "actions/example.yml"
+
+
+def validEmail(email):
+    email_regex = "^[a-z0-9]+[\._]?[a-z0-9]+[@]\w+[.]\w{2,3}$"  # noqa: W605
+    compiled = re.compile(email_regex)
+    if re.search(compiled, email):
+        logging.info("true " + email)
+        return True
+    else:
+        logging.info("false " + email)
+        return False
+
+
+class ActionLogin(Action):
+    def name(self) -> Text:
+        return "action_login"
+
+    def run(
+        self,
+        dispatcher,
+        tracker: Tracker,
+        domain: "DomainDict",  # noqa: F821
+    ) -> List[Dict[Text, Any]]:
+        database = open(path_to_db, "r")
+        users = yaml.load(database, Loader=yaml.FullLoader)["users"]
+        email = tracker.get_slot("email")
+        for user in users:
+            if user["email"] == email:
+                dispatcher.utter_message(template="utter_login_success")
+                return [SlotSet("verified_email", email), SlotSet("login", True)]
+            else:
+                dispatcher.utter_message(template="utter_login_failed")
+                return [SlotSet("email", None), SlotSet("login", False)]
+
+
+class ValidateLoginForm(FormValidationAction):
+    def name(self) -> Text:
+        return "validate_login_form_action"
+
+    def validate_email(
+        self,
+        value: Text,
+        dispatcher: "CollectingDispatcher",
+        tracker: "Tracker",
+        domain: "DomainDict",  # noqa: F821
+    ) -> List[EventType]:
+        if value is not None:
+            if validEmail(value) is True:
+                return {"email": value}
+            elif validEmail(value) is False:
+                return {"requested_slot": "email"}
+        else:
+            return {"requested_slot": "email"}
 
 
 class ActionProductSearch(Action):
@@ -21,7 +76,7 @@ class ActionProductSearch(Action):
     ) -> List[Dict[Text, Any]]:
         inStock = 0
         # connect to DB
-        database = open(r"actions/example1.yml")
+        database = open(r"actions/example.yml")
         products = yaml.load(database, Loader=yaml.FullLoader)["products"]
 
         # get slots
@@ -75,11 +130,11 @@ class OrderStatus(Action):
     ) -> List[Dict[Text, Any]]:
         orderStatus = ""
         # connect to DB
-        database = open(r"actions/example1.yml")
+        database = open(r"actions/example.yml")
         orders = yaml.load(database, Loader=yaml.FullLoader)
 
         # get email slot
-        order_email = (tracker.get_slot("email"),)
+        order_email = (tracker.get_slot("verified_email"),)
 
         # retrieve row based on email
         for order in orders["orders"]:
@@ -112,11 +167,11 @@ class CancelOrder(Action):
         orderStatus = ""
 
         # connect to DB
-        database = open("actions/example1.yml", "r")
+        database = open("actions/example.yml", "r")
         orders = yaml.load(database, Loader=yaml.FullLoader)
 
         # get email slot
-        order_email = (tracker.get_slot("email"),)
+        order_email = (tracker.get_slot("verified_email"),)
 
         # retrieve row based on email
         for order in orders["orders"]:
@@ -126,12 +181,11 @@ class CancelOrder(Action):
 
         if orderStatus != "":
             # change status of entry
-            status = [("cancelled"), (tracker.get_slot("email"))]
-            orderStatus = status[0]
+            orderStatus = "cancelled"
             for order in orders["orders"]:
                 if order["email"] == order_email:
                     order["status"] = orderStatus
-            write = open("example1.yml", "w")
+            write = open("example.yml", "w")
             yaml.dump(orders, write)
             write.close()
             database.close()
@@ -160,11 +214,11 @@ class ReturnOrder(Action):
         orderStatus = ""
 
         # connect to DB
-        database = open(r"actions/example1.yml")
+        database = open(r"actions/example.yml")
         orders = yaml.load(database, Loader=yaml.FullLoader)
 
         # get email slot
-        order_email = (tracker.get_slot("email"),)
+        order_email = (tracker.get_slot("verified_email"),)
 
         # retrieve row based on email
         for order in orders["orders"]:
@@ -176,7 +230,7 @@ class ReturnOrder(Action):
                 if order["order_email"] == order_email and orderStatus == "delivered":
                     order["status"] = "returning"
                     break
-            write = open("example1.yml", "w")
+            write = open("example.yml", "w")
             yaml.dump(orders, write)
             write.close()
             database.close()

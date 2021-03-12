@@ -160,7 +160,7 @@ wandb/
 runs/
 
 # bot
-bot/credentials.yml
+*credentials.yml
 bot/models/*
 bot/models/*
 bot/events.db
