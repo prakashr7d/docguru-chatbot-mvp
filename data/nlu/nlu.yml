@@ -14,6 +14,8 @@ nlu:
     - I want to check the status of my order
     - actually can I check the status of my order
     - order status for example@rasa.com
+    - /order_status
+    - I want to track my orders
 - intent: order_cancel
   examples: |
     - i'd like to cancel my order
@@ -68,6 +70,8 @@ nlu:
     - asdf@asdf.com
     - [Grey](color)
     - test@test.com
+    - ayushman@neuralspace.ai
+    - 5678
 - intent: order_shoes
   examples: |
     - i want to buy shoes
@@ -210,7 +214,6 @@ nlu:
     - see you around
     - bye bye
     - see you later
-
 - intent: chitchat/ask_howbuilt
   examples: |
     - By what means were you made?
@@ -829,7 +832,6 @@ nlu:
     - where do you live
     - where do you live?
     - where's your home town?
-
 - intent: out_of_scope
   examples: |
     - mmm I can't see what you're saying
@@ -851,3 +853,4 @@ nlu:
     - what is the weather
     - why is the sky blue
     - blah blah blah
+    - kdafckasdvkc

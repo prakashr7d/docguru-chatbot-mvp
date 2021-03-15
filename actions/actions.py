@@ -5,6 +5,12 @@ import yaml
 from dash_ecomm.constants import (
     CANCEL_ORDER,
     IS_LOGGED_IN,
+    ORDER_COLUMN_COLOUR,
+    ORDER_COLUMN_EMAIL,
+    ORDER_COLUMN_ID,
+    ORDER_COLUMN_IMAGE_URL,
+    ORDER_COLUMN_PRODUCT_NAME,
+    ORDER_COLUMN_STATUS,
     RETURN_ORDER,
     USER_EMAIL,
     USER_FIRST_NAME,
@@ -115,7 +121,8 @@ class LoginFormAction(Action):
         user_profile = PersonalGreet.validate_user(user_email)
         slot_set = []
         if user_profile:
-            dispatcher.utter_message(template="utter_login_success")
+            if not tracker.get_slot(IS_LOGGED_IN):
+                dispatcher.utter_message(template="utter_login_success")
             slot_set += [
                 SlotSet(key=USER_EMAIL, value=user_profile.email),
                 SlotSet(key=USER_FIRST_NAME, value=user_profile.first_name),
@@ -144,9 +151,10 @@ class ValidateLoginForm(FormValidationAction):
                 logger.debug(f"{value} is a valid user")
                 return {USER_EMAIL: value}
             else:
-                dispatcher.utter_message(template="utter_user_email_not_valid")
+                dispatcher.utter_message(template="utter_user_email_not_registered")
                 return {USER_EMAIL: None}
         else:
+            dispatcher.utter_message(template="utter_user_email_not_valid")
             return {USER_EMAIL: None}
 
     def validate_user_otp(
@@ -161,9 +169,9 @@ class ValidateLoginForm(FormValidationAction):
             if is_valid_otp(value, email):
                 return {USER_OTP: value}
             else:
-                return {USER_EMAIL: None}
+                return {USER_OTP: None}
         else:
-            return {USER_EMAIL: None}
+            return {USER_OTP: None}
 
 
 class ActionProductSearch(Action):
@@ -232,18 +240,18 @@ class OrderStatus(Action):
         for order in orders:
             carousel["payload"]["elements"].append(
                 {
-                    "title": order["name"],
-                    "subtitle": order["color"],
-                    "image_url": order["image_url"],
+                    "title": order[ORDER_COLUMN_PRODUCT_NAME],
+                    "subtitle": order[ORDER_COLUMN_COLOUR],
+                    "image_url": order[ORDER_COLUMN_IMAGE_URL],
                     "buttons": [
                         {
                             "title": CANCEL_ORDER,
-                            "payload": f'/order_cancel{{"order_id": "{order["id"]}"}}',
+                            "payload": f'/order_cancel{{"order_id": "{order[ORDER_COLUMN_ID]}"}}',
                             "type": "postback",
                         },
                         {
                             "title": RETURN_ORDER,
-                            "payload": f'/return{{"order_id": "{order["id"]}"}}',
+                            "payload": f'/return{{"order_id": "{order[ORDER_COLUMN_ID]}"}}',
                             "type": "postback",
                         },
                     ],
@@ -263,7 +271,10 @@ class OrderStatus(Action):
         # retrieve row based on email
         current_orders = []
         for order in get_all_orders():
-            if order["email"] == order_email and order["status"] == "shipped":
+            if (
+                order[ORDER_COLUMN_EMAIL] == order_email
+                and order[ORDER_COLUMN_STATUS] == "shipped"
+            ):
                 current_orders.append(order)
 
         if not current_orders:
@@ -294,12 +305,12 @@ class CancelOrder(Action):
         orders = yaml.load(database, Loader=yaml.FullLoader)
 
         # get email slot
-        order_email = (tracker.get_slot("verified_email"),)
+        order_email = (tracker.get_slot("user_email"),)
 
         # retrieve row based on email
-        for order in orders["orders"]:
-            if order["order_email"] == order_email:
-                orderStatus = order["status"]
+        for order in get_all_orders():
+            if order[ORDER_COLUMN_EMAIL] == order_email:
+                orderStatus = order[ORDER_COLUMN_STATUS]
                 break
 
         if orderStatus != "":
