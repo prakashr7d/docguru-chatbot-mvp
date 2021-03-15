@@ -29,16 +29,6 @@ rules:
   - action: order_status_form
   - active_loop: order_status_form
 
-- rule: Activate login form for order status if login false
-  condition:
-  - slot_was_set:
-    - is_logged_in: False
-  steps:
-  - intent: order_status
-  - action: action_deactivate_loop
-  - active_loop: null
-  - action: utter_ask_login
-
 - rule: Submit order status form, survey complete
   condition:
   - active_loop: order_status_form
@@ -234,6 +224,9 @@ rules:
 # login form
 
 - rule: Activate login form
+  condition:
+  - slot_was_set:
+    - is_logged_in: False
   steps:
   - intent: login
   - action: action_deactivate_loop
@@ -247,4 +240,5 @@ rules:
   steps:
   - action: login_form
   - active_loop: null
+  - action: login_form_action
   - action: personal_greet

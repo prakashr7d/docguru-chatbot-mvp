@@ -1,13 +1,36 @@
 orders:
 -
-   order_date: "2006-01-05"
+   id: 0
+   order_date: "2021-03-12"
+   order_number: 123456
+   order_email: "pooja@neuralspace.ai"
+   name: 'shoes'
+   color: 'blue'
+   size: '9'
+   status: "canceled"
+   image_url: "some/image/url"
+-
+   id: 1
+   order_date: "2021-03-11"
    order_number: 123456
    order_email: "pooja@neuralspace.ai"
    name: 'shoes'
    color: 'blue'
    size: '9'
    status: "shipped"
+   image_url: "some/image/url"
 -
+   id: 2
+   order_date: "2021-03-11"
+   order_number: 123456
+   order_email: "pooja@neuralspace.ai"
+   name: 'shoes'
+   color: 'blue'
+   size: '9'
+   status: "delivered"
+   image_url: "some/image/url"
+-
+   id: 3
    order_date: "2021-01-05"
    order_number: 123457
    order_email: "ayushman@neuralspace.ai"
@@ -15,7 +38,9 @@ orders:
    color: 'black'
    size: "10"
    status: "order pending"
+   image_url: "some/image/url"
 -
+   id: 4
    order_date: "2021-01-05"
    order_number: 123458
    order_email: "dishant@neuralspace.ai"
@@ -23,6 +48,7 @@ orders:
    color: "gray"
    size: '11'
    status: 'returning'
+   image_url: "some/image/url"
 
 products:
 -

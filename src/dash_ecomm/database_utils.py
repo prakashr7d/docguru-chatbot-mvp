@@ -1,10 +1,11 @@
 from dataclasses import dataclass
-from typing import Text
+from typing import Any, Dict, List, Text
 
 import yaml
 from dash_ecomm.constants import (
     DB_FILE,
     DB_USER_COLUMN,
+    DB_USER_ORDERS,
     USER_PROFILE_COLUMN_EMAIL,
     USER_PROFILE_COLUMN_FIRSTNAME,
     USER_PROFILE_COLUMN_ID,
@@ -25,12 +26,38 @@ class UserProfile:
     otp: int
 
 
+@dataclass
+class Order:
+    order_date: str
+    order_number: int
+    order_email: Text
+    name: Text
+    color: Text
+    size: Text
+    status: Text
+    image_url: Text
+
+
+def get_all_orders() -> List[Dict[Text, Any]]:
+    global DATABASE
+    return DATABASE.get(DB_USER_ORDERS)
+
+
 def is_valid_user(useremail: Text) -> bool:
     global DATABASE
     is_valid_user = False
     if useremail in DATABASE[DB_USER_COLUMN]:
         is_valid_user = True
     return is_valid_user
+
+
+def is_valid_otp(otp: Text, useremail: Text) -> bool:
+    global DATABASE
+    is_valid_otp = False
+    if useremail and useremail in DATABASE[DB_USER_COLUMN]:
+        if int(otp) == DATABASE[DB_USER_COLUMN][useremail][USER_PROFILE_COLUMN_OTP]:
+            is_valid_otp = True
+    return is_valid_otp
 
 
 def get_user_info_from_db(useremail: Text) -> UserProfile:

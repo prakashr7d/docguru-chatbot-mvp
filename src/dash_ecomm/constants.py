@@ -1,22 +1,25 @@
 import os
+from pathlib import Path
 
-BOT_LANGUAGE = "en"
+this_path = Path(os.path.realpath(__file__))
 
-
-def get_language():
-    global BOT_LANGUAGE
-    if "BOT_LANGUAGE" in os.environ:
-        BOT_LANGUAGE = os.environ.get("DASH_LANGUAGE")
-
-
-DB_FILE = "database.yml"
+DB_FILE = str(this_path.parent / "database.yml")
 DB_USER_COLUMN = "users"
+DB_USER_ORDERS = "orders"
 
 USER_PROFILE_COLUMN_ID = "id"
 USER_PROFILE_COLUMN_EMAIL = "user_email"
 USER_PROFILE_COLUMN_FIRSTNAME = "first_name"
 USER_PROFILE_COLUMN_LASTNAME = "last_name"
 USER_PROFILE_COLUMN_OTP = "otp"
+
+
+ORDER_COLUMN_ID = "id"
+ORDER_COLUMN_EMAIL = "order_email"
+ORDER_COLUMN_ORDER_NUMBER = "first_name"
+ORDER_COLUMN_DATE = "order_date"
+ORDER_COLUMN_COLOUR = "blue"
+ORDER_COLUMN_SIZE = "blue"
 
 
 # Slot Names
@@ -28,20 +31,6 @@ IS_LOGGED_IN = "is_logged_in"
 USER_OTP = "user_otp"
 
 
-MIN_NUM_EVENTS_FOR_MID_SESSION = 2
-
-
-# Custom utters keys
-PERSONALIZED_GREET_NEW_SESSION = "PERSONALIZED_GREET_NEW_SESSION"
-MID_SESSION_GREET_POST_LOGIN = "MID_SESSION_GREET_POST_LOGIN"
-
-# Custom Utters
-CUSTOM_UTTERS = {
-    "en": {
-        PERSONALIZED_GREET_NEW_SESSION: "Hi {first_name}, seems like you have logged in. "
-        "Good you see you again. Now I can give you a personalized experience. "
-        "How can I help you?",
-        MID_SESSION_GREET_POST_LOGIN: "Hi {first_name}, great that you logged in. "
-        "Now I can give you a personalized experience.",
-    }
-}
+# Button Titles
+CANCEL_ORDER = "Cancel Order"
+RETURN_ORDER = "Return Order"
