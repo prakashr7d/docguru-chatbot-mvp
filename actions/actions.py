@@ -1,40 +1,27 @@
 import logging
-import re
 from typing import Any, Dict, List, Text, Tuple
 
 import yaml
 from dash_ecomm.constants import (
-    CUSTOM_UTTERS,
+    CANCEL_ORDER,
     IS_LOGGED_IN,
-    MID_SESSION_GREET_POST_LOGIN,
-    MIN_NUM_EVENTS_FOR_MID_SESSION,
-    PERSONALIZED_GREET_NEW_SESSION,
+    RETURN_ORDER,
     USER_EMAIL,
     USER_FIRST_NAME,
     USER_LAST_NAME,
     USER_OTP,
-    get_language,
 )
-from dash_ecomm.database_utils import get_user_info_from_db, is_valid_user
+from dash_ecomm.database_utils import (
+    get_all_orders,
+    get_user_info_from_db,
+    is_valid_otp,
+    is_valid_user,
+)
 from rasa_sdk import Action, FormValidationAction, Tracker
 from rasa_sdk.events import EventType, SlotSet
 from rasa_sdk.executor import CollectingDispatcher
 
 logger = logging.getLogger(__name__)
-
-# change this to the location of your SQLite file
-path_to_db = "actions/example.yml"
-
-
-def valid_email(email):
-    email_regex = "^[a-z0-9]+[\._]?[a-z0-9]+[@]\w+[.]\w{2,3}$"  # noqa: W605
-    compiled = re.compile(email_regex)
-    if re.search(compiled, email):
-        logging.info("true " + email)
-        return True
-    else:
-        logging.info("false " + email)
-        return False
 
 
 class PersonalGreet(Action):
@@ -47,59 +34,23 @@ class PersonalGreet(Action):
         tracker: Tracker,
         domain: "DomainDict",  # noqa: F821
     ) -> List[Dict[Text, Any]]:
-        is_logged_in, user_profile_slot_sets, utter = self.__is_loged_in_user(tracker)
+        is_logged_in, user_profile_slot_sets, utter = self.__is_logged_in_user(tracker)
         dispatcher.utter_message(**utter)
         return user_profile_slot_sets
 
-    def __get_useremail_from_token(self, token) -> Text:
+    @staticmethod
+    def __get_useremail_from_token(token) -> Text:
         # When we have JWT then write the JWT decode logic here
         return token
 
-    def __validate_user(self, useremail: Text):
+    @staticmethod
+    def validate_user(useremail: Text):
         user_profile = None
         if is_valid_user(useremail):
             user_profile = get_user_info_from_db(useremail)
         return user_profile
 
-    def __get_message_template_by_language(
-        self, personalized_message_type: Text
-    ) -> Text:
-        language = get_language()
-        return CUSTOM_UTTERS[language][personalized_message_type]
-
-    def __get_greet_message_for_existing_session(
-        self, tracker: Tracker, first_name: Text
-    ) -> Tuple[bool, Text]:
-        session_exists = False
-        mid_session_greet = self.__get_message_template_by_language(
-            MID_SESSION_GREET_POST_LOGIN
-        )
-        if len(tracker.events) > MIN_NUM_EVENTS_FOR_MID_SESSION:
-            session_exists = True
-            mid_session_greet.format(first_name=first_name)
-        return session_exists, mid_session_greet
-
-    def __get_personalized_greet_message(
-        self, tracker: Tracker, user_first_name: Text = None
-    ) -> Text:
-        first_name = (
-            user_first_name if user_first_name else tracker.get_slot(USER_FIRST_NAME)
-        )
-
-        utter = self.__get_message_template_by_language(
-            PERSONALIZED_GREET_NEW_SESSION
-        ).format(first_name=first_name)
-        (
-            session_exists,
-            mid_session_greet,
-        ) = self.__get_greet_message_for_existing_session(tracker, first_name)
-
-        if session_exists:
-            utter = mid_session_greet
-
-        return utter
-
-    def __is_loged_in_user(
+    def __is_logged_in_user(
         self, tracker: Tracker
     ) -> Tuple[bool, List[SlotSet], Dict[Text, Text]]:
         is_logged_in = tracker.get_slot("is_logged_in")
@@ -109,7 +60,7 @@ class PersonalGreet(Action):
             token = tracker.get_slot("login_token")
             if token:
                 user_email = self.__get_useremail_from_token(token)
-                user_profile = self.__validate_user(user_email)
+                user_profile = self.validate_user(user_email)
                 if user_profile:
                     slot_set += [
                         SlotSet(key=USER_EMAIL, value=user_profile.email),
@@ -119,9 +70,8 @@ class PersonalGreet(Action):
                         SlotSet(key=USER_OTP, value=user_profile.otp),
                     ]
                     utter = {
-                        "text": self.__get_personalized_greet_message(
-                            tracker, user_profile.first_name
-                        )
+                        "template": "utter_personalized_greet_new_session",
+                        "first_name": user_profile.first_name,
                     }
                 else:
                     logging.info(
@@ -130,19 +80,48 @@ class PersonalGreet(Action):
                     )
             else:
                 logging.info("User has not logged in")
-
         else:
             logging.info("User has logged in")
-            utter = {"text": self.__get_personalized_greet_message(tracker)}
+            utter = {
+                "template": "utter_personalized_greet_new_session",
+                "first_name": tracker.get_slot(USER_FIRST_NAME),
+            }
 
         return is_logged_in, slot_set, utter
 
 
+class LoginFormAction(Action):
+    def name(self) -> Text:
+        return "login_form_action"
+
+    def run(
+        self,
+        dispatcher,
+        tracker: Tracker,
+        domain: "DomainDict",  # noqa: F821
+    ) -> List[Dict[Text, Any]]:
+        user_email = tracker.get_slot(USER_EMAIL)
+        user_profile = PersonalGreet.validate_user(user_email)
+        slot_set = []
+        if user_profile:
+            dispatcher.utter_message(template="utter_login_success")
+            slot_set += [
+                SlotSet(key=USER_EMAIL, value=user_profile.email),
+                SlotSet(key=USER_FIRST_NAME, value=user_profile.first_name),
+                SlotSet(key=USER_LAST_NAME, value=user_profile.last_name),
+                SlotSet(key=IS_LOGGED_IN, value=True),
+                SlotSet(key=USER_OTP, value=user_profile.otp),
+            ]
+        else:
+            dispatcher.utter_message(template="utter_login_failed")
+        return slot_set
+
+
 class ValidateLoginForm(FormValidationAction):
     def name(self) -> Text:
-        return "validate_login_form_action"
+        return "validate_login_form"
 
-    def validate_email(
+    def validate_user_email(
         self,
         value: Text,
         dispatcher: "CollectingDispatcher",
@@ -150,12 +129,30 @@ class ValidateLoginForm(FormValidationAction):
         domain: "DomainDict",  # noqa: F821
     ) -> List[EventType]:
         if value is not None:
-            if valid_email(value) is True:
-                return {"email": value}
-            elif valid_email(value) is False:
-                return {"requested_slot": "email"}
+            if is_valid_user(value):
+                logger.debug(f"{value} is a valid user")
+                return {USER_EMAIL: value}
+            else:
+                dispatcher.utter_message(template="utter_user_email_not_valid")
+                return {USER_EMAIL: None}
         else:
-            return {"requested_slot": "email"}
+            return {USER_EMAIL: None}
+
+    def validate_user_otp(
+        self,
+        value: Text,
+        dispatcher: "CollectingDispatcher",
+        tracker: "Tracker",
+        domain: "DomainDict",  # noqa: F821
+    ) -> List[EventType]:
+        if value is not None:
+            email = tracker.get_slot(USER_EMAIL)
+            if is_valid_otp(value, email):
+                return {USER_OTP: value}
+            else:
+                return {USER_EMAIL: None}
+        else:
+            return {USER_EMAIL: None}
 
 
 class ActionProductSearch(Action):
@@ -216,36 +213,57 @@ class OrderStatus(Action):
     def name(self) -> Text:
         return "action_order_status"
 
+    def __create_order_carousel(self, orders: List[Dict[Text, Any]]) -> Dict[Text, Any]:
+        carousel = {
+            "type": "template",
+            "payload": {"template_type": "generic", "elements": []},
+        }
+        for order in orders:
+            carousel["payload"]["elements"].append(
+                {
+                    "title": order["name"],
+                    "subtitle": order["color"],
+                    "image_url": order["image_url"],
+                    "buttons": [
+                        {
+                            "title": CANCEL_ORDER,
+                            "payload": f'/order_cancel{{"order_id": "{order["id"]}"}}',
+                            "type": "postback",
+                        },
+                        {
+                            "title": RETURN_ORDER,
+                            "payload": f'/return{{"order_id": "{order["id"]}"}}',
+                            "type": "postback",
+                        },
+                    ],
+                }
+            )
+        return carousel
+
     def run(
         self,
         dispatcher: CollectingDispatcher,
         tracker: Tracker,
         domain: Dict[Text, Any],
-    ) -> List[Dict[Text, Any]]:
-        orderStatus = ""
-        # connect to DB
-        database = open(r"actions/example.yml")
-        orders = yaml.load(database, Loader=yaml.FullLoader)
-
+    ) -> List[SlotSet]:
         # get email slot
-        order_email = (tracker.get_slot("verified_email"),)
+        order_email = tracker.get_slot("user_email")
 
         # retrieve row based on email
-        for order in orders["orders"]:
-            if order["email"] == order_email:
-                orderStatus = order["status"]
-                break
+        current_orders = []
+        for order in get_all_orders():
+            if order["email"] == order_email and order["status"] == "shipped":
+                current_orders.append(order)
 
-        if orderStatus != "":
-            # respond with order status
-            dispatcher.utter_message(template="utter_order_status", status=orderStatus)
-            database.close()
-            return []
+        if not current_orders:
+            dispatcher.utter_message(template="utter_no_open_orders")
+
         else:
-            # db didn't have an entry with this email
-            dispatcher.utter_message(template="utter_no_order")
-            database.close()
-            return []
+            dispatcher.utter_message(template="utter_open_current_orders")
+            dispatcher.utter_message(
+                attachment=self.__create_order_carousel(current_orders)
+            )
+        return []
 
 
 class CancelOrder(Action):
