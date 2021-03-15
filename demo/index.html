@@ -429,8 +429,7 @@
 <script>!(function () {
     let propUser = window.localStorage.getItem('user')
     let propName = propUser ? propUser.split('@')[0] : '';
-    let greet_payload = propUser ? `/greet{"login_token": "${propUser}"'}` : '/greet';
-    console.log(propUser, propName, greet_payload)
+    console.log(propUser, propName)
     let e = document.createElement("script"),
       t = document.head || document.getElementsByTagName("head")[0];
     (e.src =
@@ -439,9 +438,9 @@
       (e.onload = () => {
         window.WebChat.default(
           {
-            customData: { user_token: "pooja@neuralspace.ai" },
+            customData: { user_token: propUser },
             socketUrl: "http://localhost:5005",
-            initPayload: greet_payload
+            initPayload: "/greet"
           },
           null
         );
