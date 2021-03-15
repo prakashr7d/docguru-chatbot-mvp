@@ -50,7 +50,6 @@ entities:
 - company
 - product
 
-
 slots:
 
   login_token:
@@ -65,6 +64,9 @@ slots:
     auto_fill: null
   user_last_name:
     type: text
+    auto_fill: null
+  user_otp:
+    type: float
     auto_fill: null
   is_logged_in:
     type: bool
@@ -101,12 +103,6 @@ slots:
     initial_value: null
     auto_fill: true
     influence_conversation: false
-  verified_email:
-    type: rasa.shared.core.slots.TextSlot
-    initial_value: null
-    auto_fill: null
-    influence_conversation: true
-
   survey_complete:
     type: rasa.shared.core.slots.BooleanSlot
     initial_value: null
@@ -249,23 +245,23 @@ forms:
       - inform
       type: from_text
   order_status_form:
-    verified_email:
+    user_email:
     - entity: email
       type: from_entity
     - intent:
       - inform
       type: from_text
   cancel_form:
-    verified_email:
-    - entity: verified_email
+    user_email:
+    - entity: email
       type: from_entity
   return_form:
-    verified_email:
+    user_email:
     - entity: email
       not_intent: product_updates
       type: from_entity
   product_updates_form:
-    verified_email:
+    user_email:
     - entity: email
       type: from_entity
   product_stock_form:
