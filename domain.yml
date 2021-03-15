@@ -65,9 +65,6 @@ slots:
   user_last_name:
     type: text
     auto_fill: null
-  user_otp:
-    type: float
-    auto_fill: null
   is_logged_in:
     type: bool
     initial_value: false
