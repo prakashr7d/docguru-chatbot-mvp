@@ -54,7 +54,7 @@ def is_valid_user(useremail: Text) -> bool:
 def is_valid_otp(otp: Text, useremail: Text) -> bool:
     global DATABASE
     is_valid_otp = False
-    if useremail and useremail in DATABASE[DB_USER_COLUMN]:
+    if useremail in DATABASE[DB_USER_COLUMN]:
         if int(otp) == DATABASE[DB_USER_COLUMN][useremail][USER_PROFILE_COLUMN_OTP]:
             is_valid_otp = True
     return is_valid_otp
@@ -63,10 +63,10 @@ def is_valid_otp(otp: Text, useremail: Text) -> bool:
 def get_user_info_from_db(useremail: Text) -> UserProfile:
     global DATABASE
 
-    if useremail not in DATABASE:
+    if useremail not in DATABASE[DB_USER_COLUMN]:
         raise ValueError(f"Useremail {useremail} not found in database")
 
-    profile_info = DATABASE.get(useremail)
+    profile_info = DATABASE[DB_USER_COLUMN][useremail]
     return UserProfile(
         user_id=profile_info[USER_PROFILE_COLUMN_ID],
         email=profile_info[USER_PROFILE_COLUMN_EMAIL],

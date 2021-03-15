@@ -16,10 +16,13 @@ USER_PROFILE_COLUMN_OTP = "otp"
 
 ORDER_COLUMN_ID = "id"
 ORDER_COLUMN_EMAIL = "order_email"
-ORDER_COLUMN_ORDER_NUMBER = "first_name"
+ORDER_COLUMN_ORDER_NUMBER = "order_number"
+ORDER_COLUMN_PRODUCT_NAME = "product_name"
 ORDER_COLUMN_DATE = "order_date"
-ORDER_COLUMN_COLOUR = "blue"
-ORDER_COLUMN_SIZE = "blue"
+ORDER_COLUMN_COLOUR = "color"
+ORDER_COLUMN_SIZE = "size"
+ORDER_COLUMN_STATUS = "status"
+ORDER_COLUMN_IMAGE_URL = "image_url"
 
 
 # Slot Names
