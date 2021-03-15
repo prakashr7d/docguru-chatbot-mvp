@@ -50,6 +50,17 @@ class PersonalGreet(Action):
             user_profile = get_user_info_from_db(useremail)
         return user_profile
 
+    def __get_user_token_from_metadata(self, tracker: Tracker) -> Text:
+        user_token = None
+        events = tracker.current_state()["events"]
+        user_events = []
+        for e in events:
+            if e["event"] == "user":
+                user_events.append(e)
+        if tracker.events:
+            user_token = user_events[-1]["metadata"].get("user_token", None)
+        return user_token
+
     def __is_logged_in_user(
         self, tracker: Tracker
     ) -> Tuple[bool, List[SlotSet], Dict[Text, Text]]:
@@ -57,7 +68,7 @@ class PersonalGreet(Action):
         slot_set = []
         utter = {"template": "utter_generic_greet"}
         if not is_logged_in:
-            token = tracker.get_slot("login_token")
+            token = self.__get_user_token_from_metadata(tracker)
             if token:
                 user_email = self.__get_useremail_from_token(token)
                 user_profile = self.validate_user(user_email)

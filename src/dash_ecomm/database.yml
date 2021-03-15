@@ -93,19 +93,19 @@ products:
    color: "black"
 
 users:
-   dishant@neuralspace.ai:
+   "dishant@neuralspace.ai":
       id: 0
       email: "dishant@neuralspace.ai"
       first_name: "Dishant"
       last_name: "Gandhi"
       otp: 1234
-   ayushman@neuralspace.ai:
+   "ayushman@neuralspace.ai":
       id: 1
       email: "ayushman@neuralspace.ai"
       first_name: "Ayushman"
       last_name: "Dash"
       otp: 5678
-   pooja@neuralspace.ai:
+   "pooja@neuralspace.ai":
       id: 2
       email: "pooja@neuralspace.ai"
       first_name: "Pooja"

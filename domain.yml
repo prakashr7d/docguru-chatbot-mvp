@@ -53,10 +53,10 @@ entities:
 
 slots:
 
-  login_token:
-    type: text
-    influence_conversation: false
-    auto_fill: False
+#  login_token:
+#    type: text
+#    influence_conversation: false
+#    auto_fill: null
   user_email:
     type: text
     auto_fill: null

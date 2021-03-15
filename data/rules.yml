@@ -172,8 +172,8 @@ rules:
   - active_loop: product_updates_form
   steps:
   - intent: product_updates
-  - entities:
-    - negation
+#  - entities:
+#    - negation
   - action: utter_start_over
   - action: personal_greet
   - action: action_deactivate_loop

@@ -1297,7 +1297,7 @@ test = ["pytest", "pytest-pycodestyle", "pytest-cov", "coveralls"]
 
 [[package]]
 name = "rasa"
-version = "2.3.4"
+version = "2.3.0"
 description = "Open source machine learning framework to automate text- and voice-based conversations: NLU, dialogue management, connect to Slack, Facebook, and more - Create chatbots and voice assistants"
 category = "main"
 optional = false
@@ -2114,7 +2114,7 @@ testing = ["pytest (>=4.6)", "pytest-checkdocs (>=1.2.3)", "pytest-flake8", "pyt
 [metadata]
 lock-version = "1.1"
 python-versions = ">=3.7,<3.9"
-content-hash = "7a98b44f7feab95375bf429647be3f55d3382a1d3b3faf48809e4218555c0a3c"
+content-hash = "da8fa1c77d552684bd5fd5bfad54a8b0eedd5df6849ca2dce2a5f3ff67f67d68"
 
 [metadata.files]
 absl-py = [
@@ -3047,8 +3047,8 @@ questionary = [
     {file = "questionary-1.5.2.tar.gz", hash = "sha256:f6e41e36b6c86fe0c3ff12a30c6c6a4e80129efba5ad0a115d71fd5df119c726"},
 ]
 rasa = [
-    {file = "rasa-2.3.4-py3-none-any.whl", hash = "sha256:8c999606d332fa0741cc822dbbf56fc07563661f289d4753cde8ab6716cab8ca"},
-    {file = "rasa-2.3.4.tar.gz", hash = "sha256:38c06d69477d7de43f1698c00d26919ad211a215ec147b84de8034ba12ed6c2e"},
+    {file = "rasa-2.3.0-py3-none-any.whl", hash = "sha256:c8dbc816fdb614b18589d6608aa64edc88c5344038ab94e7e71380d48fac927b"},
+    {file = "rasa-2.3.0.tar.gz", hash = "sha256:0ef3052976d6b259dbed571ee5bf3a47fb3df33bd4d399c0e86e173f7f65c2b0"},
 ]
 rasa-sdk = [
     {file = "rasa-sdk-2.4.0.tar.gz", hash = "sha256:9a124ad5bf044065cf90bf85c237e84f96eee427b060ff7e7bf76d41c187bc30"},
