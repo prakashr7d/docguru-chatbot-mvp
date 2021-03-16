@@ -429,6 +429,7 @@
 <script>!(function () {
     let propUser = window.localStorage.getItem('user')
     let propName = propUser ? propUser.split('@')[0] : '';
+<!--    let greet_payload = propUser ? `/greet{"login_token":"${propUser}"}` : '/greet';-->
     console.log(propUser, propName)
     let e = document.createElement("script"),
       t = document.head || document.getElementsByTagName("head")[0];
@@ -440,7 +441,7 @@
           {
             customData: { user_token: propUser },
             socketUrl: "http://localhost:5005",
-            initPayload: "/greet"
+            initPayload: '/greet'
           },
           null
         );
@@ -491,6 +492,7 @@
     })
     $('#logoutAction').click(function(e){
         window.localStorage.removeItem('user')
+        window.localStorage.clear()
         window.location.reload()
     })
 </script>

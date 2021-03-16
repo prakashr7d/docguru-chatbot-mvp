@@ -35,6 +35,8 @@ intents:
     use_entities: true
 - nlu_fallback:
     use_entities: true
+- REMINDERS_unblock_login:
+    use_entities: []
 entities:
 - email
 - color
@@ -104,6 +106,35 @@ slots:
     initial_value: null
     auto_fill: true
     influence_conversation: true
+  previous_form:
+    type: rasa.shared.core.slots.TextSlot
+    initial_value: null
+    auto_fill: true
+    influence_conversation: false
+  next_form:
+    type: rasa.shared.core.slots.TextSlot
+    initial_value: null
+    auto_fill: true
+    influence_conversation: false
+  email_tries:
+    type: rasa.shared.core.slots.FloatSlot
+    initial_value: 0
+    auto_fill: true
+    influence_conversation: false
+    max_value: 1.0
+    min_value: 0.0
+  login_blocked:
+    type: rasa.shared.core.slots.BooleanSlot
+    initial_value: false
+    auto_fill: false
+    influence_conversation: false
+  otp_tries:
+    type: rasa.shared.core.slots.FloatSlot
+    initial_value: 0
+    auto_fill: true
+    influence_conversation: false
+    max_value: 1.0
+    min_value: 0.0
 responses:
   utter_generic_greet:
   - buttons:
@@ -222,7 +253,6 @@ responses:
   - text: Can you please share your email id with me so that I can validate your account?
   utter_user_email_not_valid:
   - text: Sorry, I could not find an account assotiated with this email. Have you signed up on our website?
-  - text: Sorry, I think this is not a valid email id.
   utter_ask_user_otp:
   - text: I have sent an otp to your email id. Can you please share that with me?
   utter_login_success:
@@ -240,9 +270,20 @@ responses:
     text: Anything else you want help with?
   utter_anything_else_options:
   - text: You can try out asking me about any product, order status, return order request, cancel order request.
+  utter_login_blocked:
+  - text: Sorry, you have reached the maximum number of login tries.
+  utter_login_blocked_duration:
+  - text: You can try logging in after 15 minutes.
+  utter_login_via_website:
+  - text: Btw, You can always try logging in via the website
+  utter_user_email_not_registered:
+  - text: Seems like you are not our registered user, you can sign up on our website.
+  utter_incorrect_otp:
+  - text: Sorry, it seems like the OTP you gave me is incorrect.
 actions:
 - personal_greet
 - validate_login_form
+- action_login_unblock
 - action_product_search
 - action_survey_submit
 - action_order_status

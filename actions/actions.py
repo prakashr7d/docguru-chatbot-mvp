@@ -2,16 +2,26 @@ import logging
 from typing import Any, Dict, List, Text, Tuple
 
 import yaml
+from dash_ecomm import generic_utils
 from dash_ecomm.constants import (
-    CANCEL_ORDER,
+    EMAIL_TRIES,
     IS_LOGGED_IN,
+    LOGIN_BLOCKED,
+    MAX_EMAIL_TRIES,
+    MAX_OTP_TRIES,
     ORDER_COLUMN_COLOUR,
     ORDER_COLUMN_EMAIL,
-    ORDER_COLUMN_ID,
     ORDER_COLUMN_IMAGE_URL,
     ORDER_COLUMN_PRODUCT_NAME,
+    ORDER_COLUMN_SIZE,
     ORDER_COLUMN_STATUS,
-    RETURN_ORDER,
+    ORDER_PENDING,
+    OTP_TRIES,
+    PRODUCT_DETAILS,
+    REQUESTED_SLOT,
+    RETURNING,
+    SHIPPED,
+    TRACK_ORDER,
     USER_EMAIL,
     USER_FIRST_NAME,
     USER_LAST_NAME,
@@ -20,14 +30,22 @@ from dash_ecomm.constants import (
 from dash_ecomm.database_utils import (
     get_all_orders,
     get_user_info_from_db,
-    is_valid_otp,
     is_valid_user,
 )
-from rasa_sdk import Action, FormValidationAction, Tracker
+from rasa_sdk import Action, FormValidationAction, Tracker, events
 from rasa_sdk.events import EventType, SlotSet
 from rasa_sdk.executor import CollectingDispatcher
 
 logger = logging.getLogger(__name__)
+
+
+"""
+TODO 1: Check what to do when logout from website and not from bot
+TODO 2: Add logout feature in bot
+TODO 3: Check for Reminder Schedule and how it will work
+TODO 4: Make Rules for login blocked with every login required forms
+TODO 4: On login via website unblock user if blocked already
+"""
 
 
 class PersonalGreet(Action):
@@ -117,22 +135,44 @@ class LoginFormAction(Action):
         tracker: Tracker,
         domain: "DomainDict",  # noqa: F821
     ) -> List[Dict[Text, Any]]:
-        user_email = tracker.get_slot(USER_EMAIL)
-        user_profile = PersonalGreet.validate_user(user_email)
-        slot_set = []
-        if user_profile:
-            if not tracker.get_slot(IS_LOGGED_IN):
-                dispatcher.utter_message(template="utter_login_success")
-            slot_set += [
-                SlotSet(key=USER_EMAIL, value=user_profile.email),
-                SlotSet(key=USER_FIRST_NAME, value=user_profile.first_name),
-                SlotSet(key=USER_LAST_NAME, value=user_profile.last_name),
-                SlotSet(key=IS_LOGGED_IN, value=True),
-                SlotSet(key=USER_OTP, value=user_profile.otp),
-            ]
+        """
+        check if login blocked then
+            utter login blocked
+            utter you can try logining through chatbot after k minutes
+            utter you can always login through website anytime
+            :return set reminder unblock login after k minutes, slotset email_tries, otp_tries to 0,
+        check else
+          usual login prompt
+        """
+        login_blocked = tracker.get_slot(LOGIN_BLOCKED)
+        if login_blocked:
+            dispatcher.utter_message(template="utter_login_blocked")
+            dispatcher.utter_message(template="utter_login_blocked_duration")
+            dispatcher.utter_message(template="utter_login_via_website")
+            timestamp = generic_utils.get_unblock_timestamp()
+            login_event = events.ReminderScheduled(
+                intent_name="REMINDER_unblock_login",
+                trigger_date_time=timestamp,
+                name="login_unblock",
+            )
+            return [SlotSet(EMAIL_TRIES, 0), SlotSet(OTP_TRIES, 0), login_event]
         else:
-            dispatcher.utter_message(template="utter_login_failed")
-        return slot_set
+            user_email = tracker.get_slot(USER_EMAIL)
+            user_profile = PersonalGreet.validate_user(user_email)
+            slot_set = []
+            if user_profile:
+                if not tracker.get_slot(IS_LOGGED_IN):
+                    dispatcher.utter_message(template="utter_login_success")
+                slot_set += [
+                    SlotSet(key=USER_EMAIL, value=user_profile.email),
+                    SlotSet(key=USER_FIRST_NAME, value=user_profile.first_name),
+                    SlotSet(key=USER_LAST_NAME, value=user_profile.last_name),
+                    SlotSet(key=IS_LOGGED_IN, value=True),
+                    SlotSet(key=USER_OTP, value=user_profile.otp),
+                ]
+            else:
+                dispatcher.utter_message(template="utter_login_failed")
+            return slot_set
 
 
 class ValidateLoginForm(FormValidationAction):
@@ -146,16 +186,21 @@ class ValidateLoginForm(FormValidationAction):
         tracker: "Tracker",
         domain: "DomainDict",  # noqa: F821
     ) -> List[EventType]:
-        if value is not None:
-            if is_valid_user(value):
-                logger.debug(f"{value} is a valid user")
-                return {USER_EMAIL: value}
-            else:
-                dispatcher.utter_message(template="utter_user_email_not_registered")
-                return {USER_EMAIL: None}
+        email_tries = tracker.get_slot(EMAIL_TRIES)
+        returned_slots = {}
+        if value is not None and is_valid_user(value):
+            logger.debug(f"{value} is a valid user")
+            returned_slots = {USER_EMAIL: value}
         else:
-            dispatcher.utter_message(template="utter_user_email_not_valid")
-            return {USER_EMAIL: None}
+            if email_tries >= MAX_EMAIL_TRIES:
+                logger.debug("inside max email tries")
+                returned_slots = {REQUESTED_SLOT: None, LOGIN_BLOCKED: True}
+            else:
+                email_tries += 1
+                utter = self.__utter_email_validation_message(value)
+                dispatcher.utter_message(template=utter)
+                returned_slots = {USER_EMAIL: None, EMAIL_TRIES: email_tries}
+        return returned_slots
 
     def validate_user_otp(
         self,
@@ -164,14 +209,43 @@ class ValidateLoginForm(FormValidationAction):
         tracker: "Tracker",
         domain: "DomainDict",  # noqa: F821
     ) -> List[EventType]:
-        if value is not None:
-            email = tracker.get_slot(USER_EMAIL)
-            if is_valid_otp(value, email):
-                return {USER_OTP: value}
-            else:
-                return {USER_OTP: None}
+        otp_tries = tracker.get_slot(OTP_TRIES)
+        if value is not None and is_valid_user(value):
+            logger.debug(f"{value} is a valid user")
+            returned_slots = {USER_OTP: value}
         else:
-            return {USER_OTP: None}
+            if otp_tries >= MAX_OTP_TRIES:
+                logger.debug("inside max email tries")
+                returned_slots = {REQUESTED_SLOT: None, LOGIN_BLOCKED: True}
+            else:
+                otp_tries += 1
+                dispatcher.utter_message(template="utter_incorrect_otp")
+                returned_slots = {USER_OTP: None, OTP_TRIES: otp_tries}
+        return returned_slots
+
+    def __utter_email_validation_message(
+        self,
+        email: Text,
+    ) -> Text:
+        if is_valid_user(email) is False:
+            utter = "utter_user_email_not_registered"
+        else:
+            utter = "utter_user_email_not_valid"
+        return utter
+
+
+class ActionLoginUnblock(Action):
+    def name(self) -> Text:
+        return "action_login_unblock"
+
+    def run(
+        self,
+        dispatcher,
+        tracker: Tracker,
+        domain: "DomainDict",  # noqa: F821
+    ) -> List[Dict[Text, Any]]:
+        unblock_login = events.ReminderCancelled(name="login_unblock")
+        return [SlotSet(LOGIN_BLOCKED, False), unblock_login]
 
 
 class ActionProductSearch(Action):
@@ -238,20 +312,26 @@ class OrderStatus(Action):
             "payload": {"template_type": "generic", "elements": []},
         }
         for order in orders:
+            button_title = ""
+            if ORDER_PENDING == order[ORDER_COLUMN_STATUS]:
+                button_title = PRODUCT_DETAILS
+            elif order[ORDER_COLUMN_STATUS] in [SHIPPED, RETURNING]:
+                button_title = TRACK_ORDER
             carousel["payload"]["elements"].append(
                 {
                     "title": order[ORDER_COLUMN_PRODUCT_NAME],
-                    "subtitle": order[ORDER_COLUMN_COLOUR],
+                    "subtitle": f"Size: {order[ORDER_COLUMN_SIZE]}\n"
+                    f"Color: {order[ORDER_COLUMN_COLOUR]}\nStatus: {order[ORDER_COLUMN_STATUS]}",
                     "image_url": order[ORDER_COLUMN_IMAGE_URL],
                     "buttons": [
                         {
-                            "title": CANCEL_ORDER,
-                            "payload": f'/order_cancel{{"order_id": "{order[ORDER_COLUMN_ID]}"}}',
+                            "title": button_title,
+                            "payload": "",
                             "type": "postback",
                         },
                         {
-                            "title": RETURN_ORDER,
-                            "payload": f'/return{{"order_id": "{order[ORDER_COLUMN_ID]}"}}',
+                            "title": PRODUCT_DETAILS,
+                            "payload": "",
                             "type": "postback",
                         },
                     ],
@@ -271,10 +351,9 @@ class OrderStatus(Action):
         # retrieve row based on email
         current_orders = []
         for order in get_all_orders():
-            if (
-                order[ORDER_COLUMN_EMAIL] == order_email
-                and order[ORDER_COLUMN_STATUS] == "shipped"
-            ):
+            if order[ORDER_COLUMN_EMAIL] == order_email and order[
+                ORDER_COLUMN_STATUS
+            ] in [SHIPPED, RETURNING, ORDER_PENDING]:
                 current_orders.append(order)
 
         if not current_orders:

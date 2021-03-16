@@ -24,14 +24,12 @@ stories:
   - action: personal_greet
   - intent: chitchat
   - action: utter_chitchat
-
 - story: chitchat, anything else deny
   steps:
   - intent: chitchat
   - action: utter_chitchat
   - intent: affirm
   - action: utter_anything_else
-
 - story: chitchat, anything else affirm
   steps:
   - intent: chitchat
@@ -42,3 +40,116 @@ stories:
     - intent: affirm
     - intent: greet
   - action: utter_anything_else_options
+- story: order status + login switch back to order status - happy path
+  steps:
+  - intent: greet
+  - action: personal_greet
+  - intent: order_status
+  - action: utter_not_logged_in_prompt
+  - action: login_form
+  - active_loop: login_form
+  - slot_was_set:
+    - requested_slot: user_email
+  - intent: inform
+    entities:
+    - email: dishant@neuralspace.ai
+  - action: login_form
+  - slot_was_set:
+    - user_email: dishant@neuralspace.ai
+  - slot_was_set:
+    - requested_slot: user_otp
+  - intent: inform
+    entities:
+    - number: 1234
+  - action: login_form
+  - slot_was_set:
+    - user_otp: '1234'
+  - slot_was_set:
+    - requested_slot: null
+  - active_loop: null
+  - action: login_form_action
+  - slot_was_set:
+    - user_email: dishant@neuralspace.ai
+  - slot_was_set:
+    - user_first_name: Dishant
+  - slot_was_set:
+    - user_last_name: Gandhi
+  - slot_was_set:
+    - is_logged_in: true
+  - slot_was_set:
+    - user_otp: 1234
+  - action: action_order_status
+- story: order status + failed login - unhappy path
+  steps:
+  - intent: greet
+  - action: personal_greet
+  - intent: order_status
+  - action: utter_not_logged_in_prompt
+  - action: login_form
+  - active_loop: login_form
+  - slot_was_set:
+    - requested_slot: user_email
+  - intent: inform
+    entities:
+    - email: mail@mail.com
+  - action: login_form
+  - slot_was_set:
+    - user_email: null
+  - slot_was_set:
+    - email_tries: 1
+  - slot_was_set:
+    - requested_slot: user_email
+  - intent: inform
+    entities:
+    - email: mail@mail.com
+  - action: login_form
+  - slot_was_set:
+    - user_email: mail@mail.com
+  - slot_was_set:
+    - requested_slot: null
+  - slot_was_set:
+    - login_blocked: true
+  - slot_was_set:
+    - requested_slot: null
+  - active_loop: null
+  - action: login_form_action
+  - slot_was_set:
+    - email_tries: 0
+  - slot_was_set:
+    - otp_tries: 0
+- story: order status login failed - unhappy path
+  steps:
+  - intent: order_status
+  - action: utter_not_logged_in_prompt
+  - action: login_form
+  - active_loop: login_form
+  - slot_was_set:
+    - requested_slot: user_email
+  - intent: inform
+    entities:
+    - email: mail@mail.com
+  - action: login_form
+  - slot_was_set:
+    - user_email: null
+  - slot_was_set:
+    - email_tries: 1
+  - slot_was_set:
+    - requested_slot: user_email
+  - intent: inform
+    entities:
+    - email: mail@mail.com
+  - action: login_form
+  - slot_was_set:
+    - user_email: mail@mail.com
+  - slot_was_set:
+    - requested_slot: null
+  - slot_was_set:
+    - login_blocked: true
+  - slot_was_set:
+    - requested_slot: null
+  - active_loop: null
+  - action: login_form_action
+  - slot_was_set:
+    - email_tries: 0
+  - slot_was_set:
+    - otp_tries: 0

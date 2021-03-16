@@ -57,8 +57,7 @@ stories:
   - action: action_deactivate_loop
   - active_loop: null
 
-
-- story: Order status happy path
+- story: Order status happy path with login
   steps:
     - intent: order_status
     - slot_was_set:
@@ -68,7 +67,16 @@ stories:
     - active_loop: login_form
     - active_loop: null
     - action: login_form_action
-    - action: personal_greet
     - slot_was_set:
       - is_logged_in: True
     - action: action_order_status
+
+- story: Order status happy path
+  steps:
+   - intent: order_status
+   - slot_was_set:
+     - is_logged_in: True
+   - action: action_deactivate_loop
+   - active_loop: null
+   - action: order_status_form
+   - active_loop: order_status_form

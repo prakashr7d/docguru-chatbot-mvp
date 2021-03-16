@@ -212,15 +212,15 @@ class SocketIOInput(InputChannel):
                 sender_id = sid
 
             user_token = None
-            if "customData" in data and "user_token" in data["customData"]:
-                user_token = data["customData"]["user_token"]
+            if "customData" in data:
+                user_token = data["customData"]
 
             message = UserMessage(
                 data["message"],
                 output_channel,
                 sender_id,
                 input_channel=self.name(),
-                metadata={"user_token": user_token},
+                metadata=data["customData"],
             )
             await on_new_message(message)
 

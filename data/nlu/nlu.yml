@@ -72,6 +72,12 @@ nlu:
     - test@test.com
     - ayushman@neuralspace.ai
     - 5678
+    - dishant@neuralspace.ai
+    - 87817
+    - 1234
+    - shaia@mail.com
+    - g@mail.com
+    - mail@mail.com
 - intent: order_shoes
   examples: |
     - i want to buy shoes
@@ -86,6 +92,12 @@ nlu:
     - can I login here?
     - make me login in
     - can you login me
+- intent: REMINDERS_unblock_login
+  examples: |
+    - Ha'DIbaH
+    - Hutlh
+    - chosovlaHbe'
+    - runchoH
 - intent: affirm
   examples: |
     - yes
