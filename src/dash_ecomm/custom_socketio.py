@@ -211,8 +211,10 @@ class SocketIOInput(InputChannel):
             else:
                 sender_id = sid
 
+            print(sender_id)
             user_token = None
             if "customData" in data:
+                sender_id = data["customData"].get("session_id", sender_id)
                 user_token = data["customData"]
 
             message = UserMessage(

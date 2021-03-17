@@ -11,62 +11,6 @@ stories:
       what kind of payment you take?
   - action: utter_faq
 
-- story: order status switch to return
-  steps:
-  - intent: order_status
-    user: |-
-      can you help me get the status of my order?
-  - action: action_deactivate_loop
-  - action: order_status_form
-  - active_loop: order_status_form
-  - intent: inform
-    user: |-
-      my email is [dishant@neuralspace.ai](email)
-  - intent: return
-    user: |-
-      actually I want to start a return
-  - action: action_deactivate_loop
-  - active_loop: null
-  - action: return_form
-  - active_loop: return_form
-  - intent: inform
-    user: |-
-      [pooja@neuralspace.ai](email) my mail id
-
-- story: order status happy path + survey
-  steps:
-  - intent: order_status
-    user: |-
-      can you help me get the status of my order?
-  - action: action_deactivate_loop
-  - action: order_status_form
-  - active_loop: order_status_form
-  - intent: inform
-    user: |-
-      it's [example@rasa.com](email)
-  - slot_was_set:
-    - email: example@rasa.com
-  - action: order_status_form
-  - active_loop: null
-  - action: action_order_status
-  - action: survey_form
-  - active_loop: survey_form
-  - intent: inform
-    user: |-
-      [5](number)
-  - slot_was_set:
-    - rating: 5
-  - action: survey_form
-  - active_loop: survey_form
-  - intent: chitchat
-    user: |-
-      it was great
-  - slot_was_set:
-    - open_feedback: "it was great"
-  - action: survey_form
-  - active_loop: null
-  - action: action_survey_submit
-
 - story: cancel order happy path
   steps:
   - intent: order_cancel
@@ -102,8 +46,6 @@ stories:
   - action: return_form
   - active_loop: null
   - action: action_return
-  - action: survey_form
-  - active_loop: survey_form
 
 - story: product updates happy path
   steps:
@@ -121,8 +63,6 @@ stories:
   - action: product_updates_form
   - active_loop: null
   - action: utter_product_updates_finish
-  - action: survey_form
-  - active_loop: survey_form
 
 - story: product search happy path
   steps:
@@ -149,8 +89,6 @@ stories:
   - action: product_stock_form
   - active_loop: null
   - action: action_product_searchasa
-  - action: survey_form
-  - active_loop: survey_form
 
 - story: cancel out of order status
   steps:
@@ -234,18 +172,226 @@ stories:
     - requested_slot: null
   - active_loop: null
   - action: action_order_status
-  - action: survey_form
-  - active_loop: survey_form
-  - slot_was_set:
-    - rating: 5678
-  - slot_was_set:
-    - requested_slot: open_feedback
-  - intent: deny
+
+- story: order status + login
+  steps:
+  - intent: greet
     user: |-
-      no
-  - action: survey_form
+      hi
+  - action: personal_greet
   - slot_was_set:
-    - open_feedback: no
+    - user_email: null
+  - slot_was_set:
+    - user_first_name: null
+  - slot_was_set:
+    - user_last_name: null
+  - slot_was_set:
+    - is_logged_in: false
+  - slot_was_set:
+    - user_otp: null
+  - intent: order_status
+    user: |-
+      order status
+  - action: utter_not_logged_in_prompt
+  - action: login_form
+  - active_loop: login_form
+  - slot_was_set:
+    - requested_slot: user_email
+  - intent: inform
+    user: |-
+      [dishant@gmail.com](email)
+  - action: login_form
+  - slot_was_set:
+    - user_email: null
+  - slot_was_set:
+    - email_tries: 1
+  - slot_was_set:
+    - requested_slot: user_email
+  - intent: inform
+    user: |-
+      [mail@mail.com](email)
+  - action: login_form
+  - slot_was_set:
+    - user_email: mail@mail.com
+  - slot_was_set:
+    - requested_slot: null
+  - slot_was_set:
+    - login_blocked: true
   - slot_was_set:
     - requested_slot: null
   - active_loop: null
+  - action: action_login_form
+  - slot_was_set:
+    - email_tries: 0
+  - slot_was_set:
+    - otp_tries: 0
+  - action: action_order_status
+
+- story: greet + login
+  steps:
+  - intent: greet
+    user: |-
+      hi
+  - action: personal_greet
+  - slot_was_set:
+    - user_email: null
+  - slot_was_set:
+    - user_first_name: null
+  - slot_was_set:
+    - user_last_name: null
+  - slot_was_set:
+    - is_logged_in: false
+  - slot_was_set:
+    - user_otp: null
+  - intent: login
+    user: |-
+      login
+  - action: action_deactivate_loop
+  - active_loop: null
+  - slot_was_set:
+    - requested_slot: null
+  - action: login_form
+  - active_loop: login_form
+  - slot_was_set:
+    - requested_slot: user_email
+  - intent: inform
+    user: |-
+      [dishant@neuralspace.ai](email)
+  - action: login_form
+  - slot_was_set:
+    - user_email: dishant@neuralspace.ai
+  - slot_was_set:
+    - requested_slot: user_otp
+  - intent: inform
+    user: |-
+      [1234]{"entity": "number", "value": 1234}
+  - action: login_form
+  - slot_was_set:
+    - user_otp: 1234
+  - slot_was_set:
+    - requested_slot: null
+  - active_loop: null
+  - action: action_login_form
+  - slot_was_set:
+    - user_email: dishant@neuralspace.ai
+  - slot_was_set:
+    - user_first_name: Dishant
+  - slot_was_set:
+    - user_last_name: Gandhi
+  - slot_was_set:
+    - is_logged_in: true
+  - slot_was_set:
+    - user_otp: 1234
+
+- story: greet + login + order status
+  steps:
+  - intent: greet
+    user: |-
+      hi
+  - action: personal_greet
+  - slot_was_set:
+    - user_email: null
+  - slot_was_set:
+    - user_first_name: null
+  - slot_was_set:
+    - user_last_name: null
+  - slot_was_set:
+    - is_logged_in: false
+  - slot_was_set:
+    - user_otp: null
+  - intent: login
+    user: |-
+      login
+  - action: action_deactivate_loop
+  - active_loop: null
+  - slot_was_set:
+    - requested_slot: null
+  - action: login_form
+  - active_loop: login_form
+  - slot_was_set:
+    - requested_slot: user_email
+  - intent: inform
+    user: |-
+      [dishant@neuralspace.ai](email)
+  - action: login_form
+  - slot_was_set:
+    - user_email: dishant@neuralspace.ai
+  - slot_was_set:
+    - requested_slot: user_otp
+  - intent: inform
+    user: |-
+      [1234]{"entity": "number", "value": 1234}
+  - action: login_form
+  - slot_was_set:
+    - user_otp: 1234
+  - slot_was_set:
+    - requested_slot: null
+  - active_loop: null
+  - action: action_login_form
+  - slot_was_set:
+    - user_email: dishant@neuralspace.ai
+  - slot_was_set:
+    - user_first_name: Dishant
+  - slot_was_set:
+    - user_last_name: Gandhi
+  - slot_was_set:
+    - is_logged_in: true
+  - slot_was_set:
+    - user_otp: 1234
+  - intent: order_status
+    user: |-
+      order status
+  - action: action_deactivate_loop
+  - active_loop: null
+  - slot_was_set:
+    - requested_slot: null
+  - action: order_status_form
+  - active_loop: order_status_form
+  - slot_was_set:
+    - user_email: dishant@neuralspace.ai
+  - slot_was_set:
+    - requested_slot: null
+  - active_loop: null
+  - action: action_order_status
+
+- story: login test
+  steps:
+  - intent: login
+    user: |-
+      login
+  - action: action_deactivate_loop
+  - active_loop: null
+  - slot_was_set:
+    - requested_slot: null
+  - action: login_form
+  - active_loop: login_form
+  - slot_was_set:
+    - requested_slot: user_email
+  - intent: inform
+    user: |-
+      [dishant@neuralspace.ai](email)
+  - action: login_form
+  - slot_was_set:
+    - user_email: dishant@neuralspace.ai
+  - slot_was_set:
+    - requested_slot: user_otp
+  - intent: inform
+    user: |-
+      [1234]{"entity": "number", "value": 1234}
+  - action: login_form
+  - slot_was_set:
+    - user_otp: 1234
+  - slot_was_set:
+    - requested_slot: null
+  - active_loop: null
+  - action: action_login_form
+  - slot_was_set:
+    - user_email: dishant@neuralspace.ai
+  - slot_was_set:
+    - user_first_name: Dishant
+  - slot_was_set:
+    - user_last_name: Gandhi
+  - slot_was_set:
+    - is_logged_in: true
+  - slot_was_set:
+    - user_otp: 1234

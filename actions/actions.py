@@ -30,10 +30,11 @@ from dash_ecomm.constants import (
 from dash_ecomm.database_utils import (
     get_all_orders,
     get_user_info_from_db,
+    is_valid_otp,
     is_valid_user,
 )
 from rasa_sdk import Action, FormValidationAction, Tracker, events
-from rasa_sdk.events import EventType, SlotSet
+from rasa_sdk.events import AllSlotsReset, EventType, SlotSet
 from rasa_sdk.executor import CollectingDispatcher
 
 logger = logging.getLogger(__name__)
@@ -60,6 +61,7 @@ class PersonalGreet(Action):
     ) -> List[Dict[Text, Any]]:
         is_logged_in, user_profile_slot_sets, utter = self.__is_logged_in_user(tracker)
         dispatcher.utter_message(**utter)
+        print(tracker.sender_id)
         return user_profile_slot_sets
 
     @staticmethod
@@ -109,11 +111,13 @@ class PersonalGreet(Action):
                         "first_name": user_profile.first_name,
                     }
                 else:
+                    slot_set += self.__empty_user_slots()
                     logging.info(
                         "User has logged in to the website but "
                         "email is not present in our database"
                     )
             else:
+                slot_set += self.__empty_user_slots()
                 logging.info("User has not logged in")
         else:
             logging.info("User has logged in")
@@ -124,10 +128,20 @@ class PersonalGreet(Action):
 
         return is_logged_in, slot_set, utter
 
+    def __empty_user_slots(self):
+        slot_set = [
+            SlotSet(key=USER_EMAIL, value=None),
+            SlotSet(key=USER_FIRST_NAME, value=None),
+            SlotSet(key=USER_LAST_NAME, value=None),
+            SlotSet(key=IS_LOGGED_IN, value=False),
+            SlotSet(key=USER_OTP, value=None),
+        ]
+        return slot_set
+
 
 class LoginFormAction(Action):
     def name(self) -> Text:
-        return "login_form_action"
+        return "action_login_form"
 
     def run(
         self,
@@ -151,7 +165,7 @@ class LoginFormAction(Action):
             dispatcher.utter_message(template="utter_login_via_website")
             timestamp = generic_utils.get_unblock_timestamp()
             login_event = events.ReminderScheduled(
-                intent_name="REMINDER_unblock_login",
+                intent_name="EXTERNAL_unblock_login",
                 trigger_date_time=timestamp,
                 name="login_unblock",
             )
@@ -209,8 +223,9 @@ class ValidateLoginForm(FormValidationAction):
         tracker: "Tracker",
         domain: "DomainDict",  # noqa: F821
     ) -> List[EventType]:
+        email = tracker.get_slot(USER_EMAIL)
         otp_tries = tracker.get_slot(OTP_TRIES)
-        if value is not None and is_valid_user(value):
+        if value is not None and is_valid_otp(value, email):
             logger.debug(f"{value} is a valid user")
             returned_slots = {USER_OTP: value}
         else:
@@ -236,7 +251,7 @@ class ValidateLoginForm(FormValidationAction):
 
 class ActionLoginUnblock(Action):
     def name(self) -> Text:
-        return "action_login_unblock"
+        return "action_unblock_login"
 
     def run(
         self,
@@ -244,8 +259,22 @@ class ActionLoginUnblock(Action):
         tracker: Tracker,
         domain: "DomainDict",  # noqa: F821
     ) -> List[Dict[Text, Any]]:
-        unblock_login = events.ReminderCancelled(name="login_unblock")
-        return [SlotSet(LOGIN_BLOCKED, False), unblock_login]
+        dispatcher.utter_message(template="utter_login_unblocked")
+        return [SlotSet(LOGIN_BLOCKED, False)]
+
+
+class ActionLogout(Action):
+    def name(self) -> Text:
+        return "action_logout"
+
+    def run(
+        self,
+        dispatcher,
+        tracker: Tracker,
+        domain: "DomainDict",  # noqa: F821
+    ) -> List[Dict[Text, Any]]:
+        dispatcher.utter_message(template="utter_logout")
+        return [AllSlotsReset()]
 
 
 class ActionProductSearch(Action):

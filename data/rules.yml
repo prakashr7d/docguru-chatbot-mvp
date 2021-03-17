@@ -63,24 +63,20 @@ rules:
   - action: action_deactivate_loop
   - active_loop: null
   - action: utter_ask_login
-- rule: Submit cancel form, survey complete
-  condition:
-  - active_loop: cancel_form
-  - slot_was_set:
-    - survey_complete: true
-  steps:
-  - action: cancel_form
-  - active_loop: null
-  - action: action_cancel_order
-- rule: Submit cancel form, needs survey
+- rule: Submit cancel form
   condition:
   - active_loop: cancel_form
   steps:
   - action: cancel_form
   - active_loop: null
   - action: action_cancel_order
-  - action: survey_form
-  - active_loop: survey_form
+- rule: Submit cancel form
+  condition:
+  - active_loop: cancel_form
+  steps:
+  - action: cancel_form
+  - active_loop: null
+  - action: action_cancel_order
 - rule: Activate email form for returning item
   condition:
   - slot_was_set:
@@ -100,24 +96,20 @@ rules:
   - action: action_deactivate_loop
   - active_loop: null
   - action: utter_ask_login
-- rule: Submit return form, survey complete
-  condition:
-  - active_loop: return_form
-  - slot_was_set:
-    - survey_complete: true
-  steps:
-  - action: return_form
-  - active_loop: null
-  - action: action_return
-- rule: Submit return form, needs survey
+- rule: Submit return form
   condition:
   - active_loop: return_form
   steps:
   - action: return_form
   - active_loop: null
   - action: action_return
-  - action: survey_form
-  - active_loop: survey_form
+- rule: Submit return form
+  condition:
+  - active_loop: return_form
+  steps:
+  - action: return_form
+  - active_loop: null
+  - action: action_return
 - rule: Activate email form for product updates
   steps:
   - intent: product_updates
@@ -125,24 +117,20 @@ rules:
   - active_loop: null
   - action: product_updates_form
   - active_loop: product_updates_form
-- rule: Submit updates form, survey complete
-  condition:
-  - active_loop: product_updates_form
-  - slot_was_set:
-    - survey_complete: true
-  steps:
-  - action: product_updates_form
-  - active_loop: null
-  - action: utter_product_updates_finish
-- rule: Submit updates form, needs survey
+- rule: Submit updates form
   condition:
   - active_loop: product_updates_form
   steps:
   - action: product_updates_form
   - active_loop: null
   - action: utter_product_updates_finish
-  - action: survey_form
-  - active_loop: survey_form
+- rule: Submit updates form
+  condition:
+  - active_loop: product_updates_form
+  steps:
+  - action: product_updates_form
+  - active_loop: null
+  - action: utter_product_updates_finish
 - rule: user uses negation to cancel out of product updates
   condition:
   - active_loop: product_updates_form
@@ -160,35 +148,26 @@ rules:
   - action: utter_product_stock_start
   - action: product_stock_form
   - active_loop: product_stock_form
-- rule: Submit product stock form, survey complete
-  condition:
-  - active_loop: product_stock_form
-  - slot_was_set:
-    - survey_complete: true
-  steps:
-  - action: product_stock_form
-  - active_loop: null
-  - action: action_product_search
-- rule: Submit product stock form, needs survey
+- rule: Submit product stock form
   condition:
   - active_loop: product_stock_form
   steps:
   - action: product_stock_form
   - active_loop: null
   - action: action_product_search
-  - action: survey_form
-  - active_loop: survey_form
-- rule: Submit survey
+- rule: Submit product stock form
   condition:
-  - active_loop: survey_form
+  - active_loop: product_stock_form
   steps:
-  - action: survey_form
+  - action: product_stock_form
   - active_loop: null
-  - action: action_survey_submit
+  - action: action_product_search
 - rule: Activate login form
   condition:
   - slot_was_set:
     - is_logged_in: false
+  - slot_was_set:
+    - login_blocked: false
   steps:
   - intent: login
   - action: action_deactivate_loop
@@ -201,18 +180,23 @@ rules:
   steps:
   - action: login_form
   - active_loop: null
-  - action: login_form_action
+  - action: action_login_form
+- rule: login unblocked event
+  steps:
+  - intent: EXTERNAL_unblock_login
+  - action: action_unblock_login
+- rule: logout user
+  steps:
+  - intent: EXTERNAL_logout
+  - action: action_logout
 - rule: login blocked
   condition:
   - slot_was_set:
     - login_blocked: true
   steps:
-  - intent: login
+  - or:
+    - intent: login
+    - intent: order_status
+    - intent: return
+    - intent: order_cancel
   - action: action_login_form
-- rule: order status + login block rule
-  condition:
-  - slot_was_set:
-    - login_blocked: true
-  steps:
-  - intent: order_status
-  - action: login_form_action

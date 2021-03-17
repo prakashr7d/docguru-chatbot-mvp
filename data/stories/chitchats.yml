@@ -48,42 +48,17 @@ stories:
   - action: utter_not_logged_in_prompt
   - action: login_form
   - active_loop: login_form
-  - slot_was_set:
-    - requested_slot: user_email
-  - intent: inform
-    entities:
-    - email: dishant@neuralspace.ai
-  - action: login_form
-  - slot_was_set:
-    - user_email: dishant@neuralspace.ai
-  - slot_was_set:
-    - requested_slot: user_otp
-  - intent: inform
-    entities:
-    - number: 1234
-  - action: login_form
-  - slot_was_set:
-    - user_otp: '1234'
-  - slot_was_set:
-    - requested_slot: null
-  - active_loop: null
-  - action: login_form_action
-  - slot_was_set:
-    - user_email: dishant@neuralspace.ai
-  - slot_was_set:
-    - user_first_name: Dishant
-  - slot_was_set:
-    - user_last_name: Gandhi
+  - action: action_login_form
   - slot_was_set:
     - is_logged_in: true
-  - slot_was_set:
-    - user_otp: 1234
   - action: action_order_status
 - story: order status + failed login - unhappy path
   steps:
   - intent: greet
   - action: personal_greet
   - intent: order_status
+  - slot_was_set:
+    - login_blocked: false
   - action: utter_not_logged_in_prompt
   - action: login_form
   - active_loop: login_form
@@ -112,7 +87,7 @@ stories:
   - slot_was_set:
     - requested_slot: null
   - active_loop: null
-  - action: login_form_action
+  - action: action_login_form
   - slot_was_set:
     - email_tries: 0
   - slot_was_set:
@@ -121,6 +96,8 @@ stories:
   steps:
   - intent: order_status
   - action: utter_not_logged_in_prompt
+  - slot_was_set:
+    - login_blocked: false
   - action: login_form
   - active_loop: login_form
   - slot_was_set:
@@ -148,7 +125,7 @@ stories:
   - slot_was_set:
     - requested_slot: null
   - active_loop: null
-  - action: login_form_action
+  - action: action_login_form
   - slot_was_set:
     - email_tries: 0
   - slot_was_set:

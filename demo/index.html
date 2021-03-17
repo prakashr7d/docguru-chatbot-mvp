@@ -428,9 +428,9 @@
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
 <script>!(function () {
     let propUser = window.localStorage.getItem('user')
+    custom_data = {user_token: propUser}
     let propName = propUser ? propUser.split('@')[0] : '';
-<!--    let greet_payload = propUser ? `/greet{"login_token":"${propUser}"}` : '/greet';-->
-    console.log(propUser, propName)
+    console.log(propUser, propName,custom_data)
     let e = document.createElement("script"),
       t = document.head || document.getElementsByTagName("head")[0];
     (e.src =
@@ -439,7 +439,7 @@
       (e.onload = () => {
         window.WebChat.default(
           {
-            customData: { user_token: propUser },
+            customData: custom_data,
             socketUrl: "http://localhost:5005",
             initPayload: '/greet'
           },
@@ -483,10 +483,14 @@
                         <path class="checkmark__check" fill="none" d="M14.1 27.2l7.1 7.2 16.7-16.8"/>
                     </svg>
                 </div>
-                <div style="text-align:center;">Login successfull</div>
+                <div style="text-align:center;">Login successful</div>
             </div>`)
         setTimeout(function(){
             $('#loginModal').modal('toggle')
+            user_id = window.localStorage.getItem('user')
+            console.log(user_id)
+            window.localStorage.clear()
+            window.localStorage.setItem('user', user_id)
             window.location.reload()
         },2000)
     })

@@ -35,8 +35,12 @@ intents:
     use_entities: true
 - nlu_fallback:
     use_entities: true
-- REMINDERS_unblock_login:
+- logout:
     use_entities: []
+- EXTERNAL_logout:
+    use_entities: true
+- EXTERNAL_unblock_login:
+    use_entities: true
 entities:
 - email
 - color
@@ -127,7 +131,7 @@ slots:
     type: rasa.shared.core.slots.BooleanSlot
     initial_value: false
     auto_fill: false
-    influence_conversation: false
+    influence_conversation: true
   otp_tries:
     type: rasa.shared.core.slots.FloatSlot
     initial_value: 0
@@ -252,7 +256,7 @@ responses:
   utter_ask_user_email:
   - text: Can you please share your email id with me so that I can validate your account?
   utter_user_email_not_valid:
-  - text: Sorry, I could not find an account assotiated with this email. Have you signed up on our website?
+  - text: Sorry, I could not find an account associated with this email. Have you signed up on our website?
   utter_ask_user_otp:
   - text: I have sent an otp to your email id. Can you please share that with me?
   utter_login_success:
@@ -274,8 +278,12 @@ responses:
   - text: Sorry, you have reached the maximum number of login tries.
   utter_login_blocked_duration:
   - text: You can try logging in after 15 minutes.
+  utter_login_unblocked:
+  - text: Hey there, you have been unblocked. You can try logging in now.
+  utter_logout:
+  - text: I have logged you out successfully.
   utter_login_via_website:
-  - text: Btw, You can always try logging in via the website
+  - text: Btw, You can always try logging in via the website.
   utter_user_email_not_registered:
   - text: Seems like you are not our registered user, you can sign up on our website.
   utter_incorrect_otp:
@@ -283,21 +291,22 @@ responses:
 actions:
 - personal_greet
 - validate_login_form
-- action_login_unblock
+- action_unblock_login
+- action_logout
+- action_login_form
 - action_product_search
 - action_survey_submit
 - action_order_status
 - action_cancel_order
 - action_return
-- login_form_action
-- utter_user_email_not_valid
 forms:
   login_form:
     user_email:
     - entity: email
       type: from_entity
     user_otp:
-    - type: from_text
+    - entity: number
+      type: from_entity
   order_status_form:
     user_email:
     - entity: email

@@ -4,14 +4,10 @@ stories:
   steps:
   - intent: greet
   - action: personal_greet
-
 - story: order shoes
   steps:
   - intent: order_shoes
   - action: utter_order_shoes
-
-# cancel stories
-
 - story: User stops product_stock
   steps:
   - active_loop: product_stock_form
@@ -20,7 +16,6 @@ stories:
   - action: personal_greet
   - action: action_deactivate_loop
   - active_loop: null
-
 - story: User stops order_status
   steps:
   - active_loop: order_status_form
@@ -29,7 +24,6 @@ stories:
   - action: personal_greet
   - action: action_deactivate_loop
   - active_loop: null
-
 - story: User stops cancel_form
   steps:
   - active_loop: cancel_form
@@ -38,7 +32,6 @@ stories:
   - action: personal_greet
   - action: action_deactivate_loop
   - active_loop: null
-
 - story: User stops return_form
   steps:
   - active_loop: return_form
@@ -47,7 +40,6 @@ stories:
   - action: personal_greet
   - action: action_deactivate_loop
   - active_loop: null
-
 - story: User stops product_updates_form
   steps:
   - active_loop: product_updates_form
@@ -56,27 +48,35 @@ stories:
   - action: personal_greet
   - action: action_deactivate_loop
   - active_loop: null
-
 - story: Order status happy path with login
   steps:
-    - intent: order_status
-    - slot_was_set:
-      - is_logged_in: False
-    - action: utter_not_logged_in_prompt
-    - action: login_form
-    - active_loop: login_form
-    - active_loop: null
-    - action: login_form_action
-    - slot_was_set:
-      - is_logged_in: True
-    - action: action_order_status
-
+  - intent: order_status
+  - slot_was_set:
+    - is_logged_in: false
+  - slot_was_set:
+    - login_blocked: false
+  - action: utter_not_logged_in_prompt
+  - action: login_form
+  - active_loop: login_form
+  - active_loop: null
+  - action: action_login_form
+  - slot_was_set:
+    - is_logged_in: true
+  - action: action_order_status
 - story: Order status happy path
   steps:
-   - intent: order_status
-   - slot_was_set:
-     - is_logged_in: True
-   - action: action_deactivate_loop
-   - active_loop: null
-   - action: order_status_form
-   - active_loop: order_status_form
+  - intent: order_status
+  - slot_was_set:
+    - is_logged_in: true
+  - action: action_deactivate_loop
+  - active_loop: null
+  - action: order_status_form
+  - active_loop: order_status_form
+- story: order status + login block rule
+  steps:
+  - intent: order_status
+  - slot_was_set:
+    - login_blocked: true
+  - action: action_login_form
+
+

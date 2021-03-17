@@ -92,12 +92,6 @@ nlu:
     - can I login here?
     - make me login in
     - can you login me
-- intent: REMINDERS_unblock_login
-  examples: |
-    - Ha'DIbaH
-    - Hutlh
-    - chosovlaHbe'
-    - runchoH
 - intent: affirm
   examples: |
     - yes
