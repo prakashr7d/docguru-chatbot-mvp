@@ -1,19 +1,17 @@
 import logging
 from typing import Any, Dict, List, Text, Tuple
 
-import yaml
 from dash_ecomm import generic_utils
 from dash_ecomm.constants import (
+    CANCEL_ORDER,
     EMAIL_TRIES,
     IS_LOGGED_IN,
     LOGIN_BLOCKED,
     MAX_EMAIL_TRIES,
     MAX_OTP_TRIES,
-    ORDER_COLUMN_COLOUR,
     ORDER_COLUMN_EMAIL,
     ORDER_COLUMN_IMAGE_URL,
     ORDER_COLUMN_PRODUCT_NAME,
-    ORDER_COLUMN_SIZE,
     ORDER_COLUMN_STATUS,
     ORDER_PENDING,
     OTP_TRIES,
@@ -40,15 +38,6 @@ from rasa_sdk.executor import CollectingDispatcher
 logger = logging.getLogger(__name__)
 
 
-"""
-TODO 1: Check what to do when logout from website and not from bot
-TODO 2: Add logout feature in bot
-TODO 3: Check for Reminder Schedule and how it will work
-TODO 4: Make Rules for login blocked with every login required forms
-TODO 4: On login via website unblock user if blocked already
-"""
-
-
 class PersonalGreet(Action):
     def name(self) -> Text:
         return "personal_greet"
@@ -61,7 +50,6 @@ class PersonalGreet(Action):
     ) -> List[Dict[Text, Any]]:
         is_logged_in, user_profile_slot_sets, utter = self.__is_logged_in_user(tracker)
         dispatcher.utter_message(**utter)
-        print(tracker.sender_id)
         return user_profile_slot_sets
 
     @staticmethod
@@ -143,6 +131,23 @@ class LoginFormAction(Action):
     def name(self) -> Text:
         return "action_login_form"
 
+    def __set_unblock_reminder(self, tracker: Tracker):
+        set_reminder = True if tracker.get_slot(EMAIL_TRIES) > 0 else False
+
+        reminder_events = []
+        if set_reminder:
+            logger.debug("*" * 100)
+            logger.debug(set_reminder)
+            timestamp = generic_utils.get_unblock_timestamp()
+            login_event = events.ReminderScheduled(
+                intent_name="EXTERNAL_unblock_login",
+                trigger_date_time=timestamp,
+                name="login_unblock",
+                kill_on_user_message=False,
+            )
+            reminder_events.append(login_event)
+        return reminder_events
+
     def run(
         self,
         dispatcher,
@@ -159,24 +164,20 @@ class LoginFormAction(Action):
           usual login prompt
         """
         login_blocked = tracker.get_slot(LOGIN_BLOCKED)
+        slot_set = []
         if login_blocked:
             dispatcher.utter_message(template="utter_login_blocked")
             dispatcher.utter_message(template="utter_login_blocked_duration")
             dispatcher.utter_message(template="utter_login_via_website")
-            timestamp = generic_utils.get_unblock_timestamp()
-            login_event = events.ReminderScheduled(
-                intent_name="EXTERNAL_unblock_login",
-                trigger_date_time=timestamp,
-                name="login_unblock",
-            )
-            return [SlotSet(EMAIL_TRIES, 0), SlotSet(OTP_TRIES, 0), login_event]
+
+            reminder_events = self.__set_unblock_reminder(tracker)
+            slot_set += [SlotSet(EMAIL_TRIES, 0), SlotSet(OTP_TRIES, 0)]
+            slot_set += reminder_events
         else:
             user_email = tracker.get_slot(USER_EMAIL)
             user_profile = PersonalGreet.validate_user(user_email)
-            slot_set = []
-            if user_profile:
-                if not tracker.get_slot(IS_LOGGED_IN):
-                    dispatcher.utter_message(template="utter_login_success")
+            if user_profile and not tracker.get_slot(IS_LOGGED_IN):
+                dispatcher.utter_message(template="utter_login_success")
                 slot_set += [
                     SlotSet(key=USER_EMAIL, value=user_profile.email),
                     SlotSet(key=USER_FIRST_NAME, value=user_profile.first_name),
@@ -184,14 +185,32 @@ class LoginFormAction(Action):
                     SlotSet(key=IS_LOGGED_IN, value=True),
                     SlotSet(key=USER_OTP, value=user_profile.otp),
                 ]
+            elif user_profile and tracker.get_slot(IS_LOGGED_IN):
+                pass
             else:
                 dispatcher.utter_message(template="utter_login_failed")
-            return slot_set
+        logger.debug(slot_set)
+        return slot_set
 
 
 class ValidateLoginForm(FormValidationAction):
     def name(self) -> Text:
         return "validate_login_form"
+
+    def __utter_message_and_slots(
+        self, email: Text, slots: Dict[Text, Text]
+    ) -> Tuple[Text, Dict]:
+        slots = slots if slots else {}
+        slots[USER_EMAIL] = None
+        if email is None:
+            utter = "utter_email_not_valid_prompt"
+        elif not is_valid_user(email):
+            utter = "utter_user_email_not_registered"
+            slots[REQUESTED_SLOT] = None
+            # slots.pop(USER_EMAIL)
+        else:
+            utter = "utter_user_email_not_valid"
+        return utter, slots
 
     def validate_user_email(
         self,
@@ -203,17 +222,21 @@ class ValidateLoginForm(FormValidationAction):
         email_tries = tracker.get_slot(EMAIL_TRIES)
         returned_slots = {}
         if value is not None and is_valid_user(value):
-            logger.debug(f"{value} is a valid user")
             returned_slots = {USER_EMAIL: value}
+        elif email_tries >= MAX_EMAIL_TRIES:
+            returned_slots = {
+                REQUESTED_SLOT: None,
+                LOGIN_BLOCKED: True,
+                USER_EMAIL: None,
+            }
         else:
-            if email_tries >= MAX_EMAIL_TRIES:
-                logger.debug("inside max email tries")
-                returned_slots = {REQUESTED_SLOT: None, LOGIN_BLOCKED: True}
-            else:
-                email_tries += 1
-                utter = self.__utter_email_validation_message(value)
-                dispatcher.utter_message(template=utter)
-                returned_slots = {USER_EMAIL: None, EMAIL_TRIES: email_tries}
+            email_tries += 1
+            utter, returned_slots = self.__utter_message_and_slots(
+                value, returned_slots
+            )
+            logger.debug(returned_slots)
+            dispatcher.utter_message(template=utter)
+            returned_slots[EMAIL_TRIES] = email_tries
         return returned_slots
 
     def validate_user_otp(
@@ -230,23 +253,16 @@ class ValidateLoginForm(FormValidationAction):
             returned_slots = {USER_OTP: value}
         else:
             if otp_tries >= MAX_OTP_TRIES:
-                logger.debug("inside max email tries")
-                returned_slots = {REQUESTED_SLOT: None, LOGIN_BLOCKED: True}
+                returned_slots = {
+                    REQUESTED_SLOT: None,
+                    LOGIN_BLOCKED: True,
+                    USER_OTP: None,
+                }
             else:
                 otp_tries += 1
                 dispatcher.utter_message(template="utter_incorrect_otp")
                 returned_slots = {USER_OTP: None, OTP_TRIES: otp_tries}
         return returned_slots
-
-    def __utter_email_validation_message(
-        self,
-        email: Text,
-    ) -> Text:
-        if is_valid_user(email) is False:
-            utter = "utter_user_email_not_registered"
-        else:
-            utter = "utter_user_email_not_valid"
-        return utter
 
 
 class ActionLoginUnblock(Action):
@@ -260,6 +276,7 @@ class ActionLoginUnblock(Action):
         domain: "DomainDict",  # noqa: F821
     ) -> List[Dict[Text, Any]]:
         dispatcher.utter_message(template="utter_login_unblocked")
+        events.ReminderCancelled(name="login_unblock")
         return [SlotSet(LOGIN_BLOCKED, False)]
 
 
@@ -277,63 +294,17 @@ class ActionLogout(Action):
         return [AllSlotsReset()]
 
 
-class ActionProductSearch(Action):
-    def name(self) -> Text:
-        return "action_product_search"
-
-    def run(
-        self,
-        dispatcher: CollectingDispatcher,
-        tracker: Tracker,
-        domain: Dict[Text, Any],
-    ) -> List[Dict[Text, Any]]:
-        inStock = 0
-        # connect to DB
-        database = open(r"actions/example.yml")
-        products = yaml.load(database, Loader=yaml.FullLoader)["products"]
-
-        # get slots
-        color = tracker.get_slot("color")
-        size = tracker.get_slot("size")
-
-        # check for in stock products
-        for product in products:
-            if color == product["color"] and size == product["size"]:
-                inStock += 1
-
-        if inStock > 0:
-            # provide in stock message
-            dispatcher.utter_message(template="utter_in_stock")
-            database.close()
-            slots_to_reset = ["size", "color"]
-            return [SlotSet(slot, None) for slot in slots_to_reset]
-        else:
-            # provide out of stock
-            dispatcher.utter_message(template="utter_no_stock")
-            database.close()
-            slots_to_reset = ["size", "color"]
-            return [SlotSet(slot, None) for slot in slots_to_reset]
-
-
-class SurveySubmit(Action):
-    def name(self) -> Text:
-        return "action_survey_submit"
-
-    async def run(
-        self,
-        dispatcher: CollectingDispatcher,
-        tracker: Tracker,
-        domain: Dict[Text, Any],
-    ) -> List[Dict[Text, Any]]:
-
-        dispatcher.utter_message(template="utter_open_feedback")
-        dispatcher.utter_message(template="utter_survey_end")
-        return [SlotSet("survey_complete", True)]
-
-
 class OrderStatus(Action):
     def name(self) -> Text:
         return "action_order_status"
+
+    def __add_track_item_button(
+        self, order: Dict[Text, Any], carousel: Dict[Text, Any]
+    ) -> Dict[Text, Any]:
+        if order[ORDER_COLUMN_STATUS] in [SHIPPED, RETURNING]:
+            carousel["buttons"].append(
+                {"title": TRACK_ORDER, "payload": "", "type": "postback"}
+            )
 
     def __create_order_carousel(self, orders: List[Dict[Text, Any]]) -> Dict[Text, Any]:
         carousel = {
@@ -341,31 +312,25 @@ class OrderStatus(Action):
             "payload": {"template_type": "generic", "elements": []},
         }
         for order in orders:
-            button_title = ""
-            if ORDER_PENDING == order[ORDER_COLUMN_STATUS]:
-                button_title = PRODUCT_DETAILS
-            elif order[ORDER_COLUMN_STATUS] in [SHIPPED, RETURNING]:
-                button_title = TRACK_ORDER
-            carousel["payload"]["elements"].append(
-                {
-                    "title": order[ORDER_COLUMN_PRODUCT_NAME],
-                    "subtitle": f"Size: {order[ORDER_COLUMN_SIZE]}\n"
-                    f"Color: {order[ORDER_COLUMN_COLOUR]}\nStatus: {order[ORDER_COLUMN_STATUS]}",
-                    "image_url": order[ORDER_COLUMN_IMAGE_URL],
-                    "buttons": [
-                        {
-                            "title": button_title,
-                            "payload": "",
-                            "type": "postback",
-                        },
-                        {
-                            "title": PRODUCT_DETAILS,
-                            "payload": "",
-                            "type": "postback",
-                        },
-                    ],
-                }
-            )
+            carousel_element = {
+                "title": order[ORDER_COLUMN_PRODUCT_NAME],
+                "subtitle": f"Status: {order[ORDER_COLUMN_STATUS]}",
+                "image_url": order[ORDER_COLUMN_IMAGE_URL],
+                "buttons": [
+                    {
+                        "title": PRODUCT_DETAILS,
+                        "payload": "",
+                        "type": "postback",
+                    },
+                    {
+                        "title": CANCEL_ORDER,
+                        "payload": "",
+                        "type": "postback",
+                    },
+                ],
+            }
+            self.__add_track_item_button(order, carousel_element)
+            carousel["payload"]["elements"].append(carousel_element)
         return carousel
 
     def run(
@@ -374,8 +339,7 @@ class OrderStatus(Action):
         tracker: Tracker,
         domain: Dict[Text, Any],
     ) -> List[SlotSet]:
-        # get email slot
-        order_email = tracker.get_slot("user_email")
+        order_email = tracker.get_slot(USER_EMAIL)
 
         # retrieve row based on email
         current_orders = []
@@ -394,94 +358,3 @@ class OrderStatus(Action):
                 attachment=self.__create_order_carousel(current_orders)
             )
         return []
-
-
-class CancelOrder(Action):
-    def name(self) -> Text:
-        return "action_cancel_order"
-
-    def run(
-        self,
-        dispatcher: CollectingDispatcher,
-        tracker: Tracker,
-        domain: Dict[Text, Any],
-    ) -> List[Dict[Text, Any]]:
-        orderStatus = ""
-
-        # connect to DB
-        database = open("actions/example.yml", "r")
-        orders = yaml.load(database, Loader=yaml.FullLoader)
-
-        # get email slot
-        order_email = (tracker.get_slot("user_email"),)
-
-        # retrieve row based on email
-        for order in get_all_orders():
-            if order[ORDER_COLUMN_EMAIL] == order_email:
-                orderStatus = order[ORDER_COLUMN_STATUS]
-                break
-
-        if orderStatus != "":
-            # change status of entry
-            orderStatus = "cancelled"
-            for order in orders["orders"]:
-                if order["email"] == order_email:
-                    order["status"] = orderStatus
-            write = open("../src/dash_ecomm/example.yml", "w")
-            yaml.dump(orders, write)
-            write.close()
-            database.close()
-            # confirm cancellation
-            dispatcher.utter_message(template="utter_order_cancel_finish")
-            return []
-        else:
-            # db didn't have an entry with this email
-            dispatcher.utter_message(template="utter_no_order")
-            database.close()
-            return []
-
-
-class ReturnOrder(Action):
-    def name(self) -> Text:
-        return "action_return"
-
-    def run(
-        self,
-        dispatcher: CollectingDispatcher,
-        tracker: Tracker,
-        domain: Dict[Text, Any],
-    ) -> List[Dict[Text, Any]]:
-
-        # connect to DB
-        orderStatus = ""
-
-        # connect to DB
-        database = open(r"actions/example.yml")
-        orders = yaml.load(database, Loader=yaml.FullLoader)
-
-        # get email slot
-        order_email = (tracker.get_slot("verified_email"),)
-
-        # retrieve row based on email
-        for order in orders["orders"]:
-            if order["order_email"] == order_email:
-                orderStatus = order["status"]
-                break
-        if orderStatus != "":
-            for order in orders["orders"]:
-                if order["order_email"] == order_email and orderStatus == "delivered":
-                    order["status"] = "returning"
-                    break
-            write = open("../src/dash_ecomm/example.yml", "w")
-            yaml.dump(orders, write)
-            write.close()
-            database.close()
-
-            # confirm return
-            dispatcher.utter_message(template="utter_return_finish")
-            return []
-        else:
-            # db didn't have an entry with this email
-            dispatcher.utter_message(template="utter_no_order")
-            database.close()
-            return []

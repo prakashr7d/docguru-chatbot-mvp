@@ -55,7 +55,7 @@ def is_valid_otp(otp: Text, useremail: Text) -> bool:
     global DATABASE
     valid_otp = False
     if useremail in DATABASE[DB_USER_COLUMN]:
-        if int(otp) == DATABASE[DB_USER_COLUMN][useremail][USER_PROFILE_COLUMN_OTP]:
+        if str(otp) == DATABASE[DB_USER_COLUMN][useremail][USER_PROFILE_COLUMN_OTP]:
             valid_otp = True
     return valid_otp
 

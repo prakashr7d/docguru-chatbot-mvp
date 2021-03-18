@@ -39,6 +39,16 @@ orders:
    status: "returning"
    image_url: "https://image.shutterstock.com/image-photo/pair-pink-sport-shoes-on-260nw-228691018.jpg"
 -
+   id: 2
+   order_date: "2021-03-11"
+   order_number: 123456
+   order_email: "pooja@neuralspace.ai"
+   product_name: 'Shoes'
+   color: 'Pink'
+   size: '9'
+   status: "pending"
+   image_url: "https://images.pexels.com/photos/19090/pexels-photo.jpg?auto=compress&cs=tinysrgb&dpr=1&w=500"
+-
    id: 3
    order_date: "2021-01-05"
    order_number: 123457
@@ -107,16 +117,16 @@ users:
       user_email: "dishant@neuralspace.ai"
       first_name: "Dishant"
       last_name: "Gandhi"
-      otp: 1234
+      otp: "1234"
    "ayushman@neuralspace.ai":
       id: 1
       user_email: "ayushman@neuralspace.ai"
       first_name: "Ayushman"
       last_name: "Dash"
-      otp: 5678
+      otp: "5678"
    "pooja@neuralspace.ai":
       id: 2
       user_email: "pooja@neuralspace.ai"
       first_name: "Pooja"
       last_name: "Mishra"
-      otp: 9876
+      otp: "9876"

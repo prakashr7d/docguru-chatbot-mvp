@@ -211,18 +211,12 @@ class SocketIOInput(InputChannel):
             else:
                 sender_id = sid
 
-            print(sender_id)
-            user_token = None
-            if "customData" in data:
-                sender_id = data["customData"].get("session_id", sender_id)
-                user_token = data["customData"]
-
             message = UserMessage(
                 data["message"],
                 output_channel,
                 sender_id,
                 input_channel=self.name(),
-                metadata=data["customData"],
+                metadata=data.get("customData", {}),
             )
             await on_new_message(message)
 
