@@ -13,7 +13,7 @@ stories:
 - story: more chitchat
   steps:
   - intent: greet
-  - action: utter_greet
+  - action: personal_greet
   - intent: chitchat
   - action: utter_chitchat
   - intent: chitchat
@@ -21,21 +21,15 @@ stories:
 - story: greet chitchat
   steps:
   - intent: greet
-  - action: utter_greet
+  - action: personal_greet
   - intent: chitchat
   - action: utter_chitchat
-
 - story: chitchat, anything else deny
   steps:
   - intent: chitchat
   - action: utter_chitchat
   - intent: affirm
   - action: utter_anything_else
-  - or:
-    - intent: deny
-    - intent: goodbye
-  - action: utter_goodbye
-
 - story: chitchat, anything else affirm
   steps:
   - intent: chitchat

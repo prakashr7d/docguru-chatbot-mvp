@@ -1,201 +1,276 @@
+version: '2.0'
+config:
+  store_entities_as_slots: true
 session_config:
   session_expiration_time: 60
   carry_over_slots_to_new_session: true
 intents:
-- order_status
-- order_cancel
-- return
-- product_stock
-- product_updates
-- affirm
-- deny
-- inform
-- order_shoes
-- greet
-- chitchat
-- faq
-- out_of_scope
-- nlu_fallback
+- order_status:
+    use_entities: true
+- order_cancel:
+    use_entities: true
+- return:
+    use_entities: true
+- product_stock:
+    use_entities: true
+- product_updates:
+    use_entities: true
+- login:
+    use_entities: true
+- affirm:
+    use_entities: true
+- deny:
+    use_entities: true
+- inform:
+    use_entities: true
+- order_shoes:
+    use_entities: true
+- greet:
+    use_entities: true
+- chitchat:
+    use_entities: true
+- faq:
+    use_entities: true
+- out_of_scope:
+    use_entities: true
+- nlu_fallback:
+    use_entities: true
+- logout:
+    use_entities: []
+- EXTERNAL_logout:
+    use_entities: true
+- EXTERNAL_unblock_login:
+    use_entities: true
 entities:
 - email
 - color
 - number
 - negation
+- language
+- company
+- product
 slots:
-  color:
-    type: text
+  user_email:
+    type: rasa.shared.core.slots.TextSlot
+    initial_value: null
+    auto_fill: true
     influence_conversation: false
-  email:
-    type: text
+  user_first_name:
+    type: rasa.shared.core.slots.TextSlot
+    initial_value: null
+    auto_fill: true
+    influence_conversation: false
+  user_last_name:
+    type: rasa.shared.core.slots.TextSlot
+    initial_value: null
+    auto_fill: true
+    influence_conversation: true
+  is_logged_in:
+    type: rasa.shared.core.slots.BooleanSlot
+    initial_value: false
+    auto_fill: true
+    influence_conversation: true
+  user_otp:
+    type: rasa.shared.core.slots.TextSlot
+    initial_value: null
+    auto_fill: true
+    influence_conversation: false
+  color:
+    type: rasa.shared.core.slots.TextSlot
+    initial_value: null
+    auto_fill: true
     influence_conversation: false
   size:
-    type: text
-    influence_conversation: false
+    type: rasa.shared.core.slots.TextSlot
+    initial_value: null
     auto_fill: false
+    influence_conversation: false
   rating:
-    type: text
-    influence_conversation: false
+    type: rasa.shared.core.slots.TextSlot
+    initial_value: null
     auto_fill: false
+    influence_conversation: false
+  name:
+    type: rasa.shared.core.slots.TextSlot
+    initial_value: null
+    auto_fill: true
+    influence_conversation: false
   open_feedback:
-    type: text
+    type: rasa.shared.core.slots.TextSlot
+    initial_value: null
+    auto_fill: true
     influence_conversation: false
   requested_slot:
-    type: unfeaturized
+    type: rasa.shared.core.slots.UnfeaturizedSlot
+    initial_value: null
+    auto_fill: true
     influence_conversation: false
-  verified_email:
-    type: bool
-    influence_conversation: true
   survey_complete:
-    type: bool
+    type: rasa.shared.core.slots.BooleanSlot
+    initial_value: null
+    auto_fill: true
+    influence_conversation: false
+  previous_form:
+    type: rasa.shared.core.slots.TextSlot
+    initial_value: null
+    auto_fill: true
+    influence_conversation: false
+  next_form:
+    type: rasa.shared.core.slots.TextSlot
+    initial_value: null
+    auto_fill: true
+    influence_conversation: false
+  email_tries:
+    type: rasa.shared.core.slots.FloatSlot
+    initial_value: 0
+    auto_fill: true
+    influence_conversation: false
+    max_value: 1.0
+    min_value: 0.0
+  login_blocked:
+    type: rasa.shared.core.slots.BooleanSlot
+    initial_value: false
+    auto_fill: false
     influence_conversation: true
+  otp_tries:
+    type: rasa.shared.core.slots.FloatSlot
+    initial_value: 0
+    auto_fill: true
+    influence_conversation: false
+    max_value: 1.0
+    min_value: 0.0
 responses:
-  utter_greet:
+  utter_generic_greet:
   - buttons:
-    - payload: Check status of my order
-      title: Check status of my order
-    - payload: Start a return
-      title: Start a return
-    - payload: Check inventory
-      title: Check inventory
-    - payload: Subscribe to product updates
-      title: Subscribe to product updates
-    text: Hi there! I'm a demo bot from Rasa to help you with ordering shoes. How
-      can I help you?
+    - payload: /order_status
+      title: Check order status
+    - payload: /return_order
+      title: Return an order
+    - payload: product_enquiry
+      title: product_enquiry
+    - payload: /buy_items_in_cart
+      title: Buy items in cart
+    - payload: /mood_based_search
+      title: 🆕 Mood based search 🔥
+    - payload: /photo_search
+      title: 🆕 Search via photos 🔥
+    - payload: /discount_and_offers
+      title: Looking for discounts and offers
+    - payload: /service_request_enquiry
+      title: Enquire about a service request
+    text: Hi there! I'm Dash, a virtual sales assistant. How can I help you? These are a few things I can do for you.
   utter_default:
-  - text: I don't think I understand. Can you try providing more detail?
-  - text: um, what did you just say to me?
-  - text: beep, boop, don't understand
-  utter_ask_order_status_form_email:
-  - text: I can help you find the status of your order. What's your email address
-      so I can find the order?
-  utter_order_status:
-  - text: Based on the latest order from {email}, it looks like your order is currently {status}.
-  utter_ask_cancel_form_email:
-  - text: Sorry to hear you want to cancel! To help find your order, can you please
-      provide your email address?
-  utter_order_cancel_finish:
-  - text: Ok, I've cancelled the order for {email}. If you'd like to reorder, please visit your
-      recent orders in your account history.
-  utter_ask_return_form_email:
-  - text: Let's start that return. To help find your order, can you please provide
-      your email address?
-  utter_return_finish:
-  - text: Ok, I've kicked off your return. You should be receiving a return label
-      in your inbox. Please send it in the next 14 days!
-  utter_ask_product_updates_form_email:
-  - text: I can keep you up to date with our weekly email about product updates! If
-      you'd like to be added to the list, please add your email address.
-  utter_product_updates_finish:
-  - text: Alright, you're subscribed!
-  utter_product_stock_start:
-  - text: I can help you find some shoes!
-  utter_ask_product_stock_form_size:
-  - text: What size shoe would you like?
-  utter_ask_product_stock_form_color:
-  - text: What color are you looking for?
-  utter_product_stock_finish:
-  - text: Looks like we have size {size} {color} shoes in stock!
-  utter_confirm_email:
-  - text: I already have your email on file. Would you like me to look up your order
-      under {email}?
-  utter_faq/alternate_info:
-  - text: Currenty we can only provide order information based on email.
-  utter_faq/sizing_clarification:
-  - text: Right now we only offer American sizes. We'll try to change this in the
-      future!
-  utter_faq/payment_methods:
-  - text: We accept all major credit cards, Apple Pay, Google Pay, and PayPal.
-  utter_faq/promotions:
-  - text: Currently, we're running a buy one get one half off promotion!
-  utter_chitchat/thanks:
-  - text: No problem!
-  - text: I have no choice but to help you.
-  - text: I try my best
-  utter_chitchat/confirm_presence:
-  - text: yep I'm here.
-  - text: unfortunately, I'm still listening.
-  utter_chitchat/capabilities:
-  - text: I can help you start a return, subscribe to our emails, and even see if
-      we carry your desired shoes.
-  utter_chitchat/mood_great:
-  - text: Superb!
-  - text: right on
-  utter_chitchat/mood_unhappy:
-  - text: sorry to hear that :(
-  - text: ok can you be nice to me
-  utter_chitchat/bot_challenge:
-  - text: I'm a bot, built using Rasa! Beep boop
+  - text: I don't think I understand. Can you be a bit more clear or paraphrase?
+  utter_open_current_orders:
+  - text: These orders are currently being shipped to you.
+  utter_no_open_orders:
+  - text: Looks like you don't have any active orders
+  utter_chitchat/not_registered_user:
+  - text: No worries. You can create an account on our website.
   utter_chitchat/goodbye:
   - text: bye bye
   - text: c u l8er allig8er
-  utter_ask_survey_form_rating:
-  - buttons:
-    - payload: '1'
-      title: '1'
-    - payload: '2'
-      title: '2'
-    - payload: '3'
-      title: '3'
-    - payload: '4'
-      title: '4'
-    - payload: '5'
-      title: '5'
-    text: On a scale of 1-5, how would you rate your conversation today?
-  utter_ask_survey_form_open_feedback:
-  - text: Is there any other feedback you can provide?
-  utter_survey_end:
-  - text: Thank you for the feedback!
-  utter_start_over:
-  - text: Ok, let's start over.
-  utter_open_feedback: #this is to test the response was collected
-  - text: Here's your lovely feedback - {open_feedback}
   utter_no_order:
   - text: Hmm, seems like we don't have an order associated with that email
-  utter_in_stock:
-  - text: You're in luck! We have those in stock.
-  utter_no_stock:
-  - text: Sorry, seems like we don't have those shoes.
-  utter_order_shoes:
-  - text: Sorry, I can't actually help you order the shoes. Please visit our 
-      site to buy some nice shoes! I can help you check inventory, see the 
-      status of an order or even make a change to that order.
+  utter_personalized_greet_new_session:
+  - buttons:
+    - payload: /order_status
+      title: Check order status
+    - payload: /return_order
+      title: Return an order
+    - payload: product_enquiry
+      title: product_enquiry
+    - payload: /buy_items_in_cart
+      title: Buy items in cart
+    - payload: /mood_based_search
+      title: 🆕 Mood based search 🔥
+    - payload: /photo_search
+      title: 🆕 Search via photos 🔥
+    - payload: /discount_and_offers
+      title: Looking for discounts and offers
+    - payload: /service_request_enquiry
+      title: Enquire about a service request
+    text: Hi {first_name}, great that you logged in. Now I can give you a personalized experience. These are a few things I can do for you.
+  utter_not_logged_in_prompt:
+  - text: Seems like you have not logged in.
+  utter_email_not_valid_prompt:
+  - text: Seems like this is not a valid email id
+  utter_ask_user_email:
+  - text: Can you please share your email id with me so that I can validate your account?
+  utter_user_email_not_valid:
+  - text: Sorry, I could not find an account associated with this email. Have you signed up on our website?
+  utter_ask_user_otp:
+  - text: I have sent an otp to your email id. Can you please share that with me?
+  utter_login_success:
+  - text: Great! I have successfully validated your account.
+  utter_login_failed:
+  - buttons:
+    - payload: /affirm
+      title: yes
+    - payload: /deny
+      title: no
+    text: Sorry, I could not validate your account. Have you signed up on our website?
+  utter_not_signed_up_response:
+  - text: You can signup on our website any time. Once you are a registered user, I will be able to give you a personalized experience.
+  utter_signed_up_user_failed_login_response:
+  - text: Please make sure you are following the login steps properly. That means sharing the right email id and the right OTP with me. You can always login through the website and I will know you that you have.
+  utter_anything_else:
+  - buttons:
+    - payload: Yes
+      title: Yes
+    - payload: No
+      title: No
+    text: Anything else you want help with?
+  utter_anything_else_options:
+  - buttons:
+    - payload: /order_status
+      title: Check order status
+    - payload: /return_order
+      title: Return an order
+    - payload: product_enquiry
+      title: product_enquiry
+    - payload: /buy_items_in_cart
+      title: Buy items in cart
+    - payload: /mood_based_search
+      title: 🆕 Mood based search 🔥
+    - payload: /photo_search
+      title: 🆕 Search via photos 🔥
+    - payload: /discount_and_offers
+      title: Looking for discounts and offers
+    - payload: /service_request_enquiry
+      title: Enquire about a service request
+    text: You can ask me about any product, order status, return order request, cancel order request.
+  utter_i_am_here_for_you:
+  - text: No worries, I am here for you if you need anything
+  utter_login_blocked:
+  - text: You have reached the maximum number of login tries.
+  utter_login_blocked_duration:
+  - text: You can try logging in after 2 minutes.
+  utter_login_unblocked:
+  - text: Hey there, you have been unblocked. You can try logging in now.
+  utter_logout:
+  - text: I have logged you out successfully.
+  utter_login_via_website:
+  - text: Btw, You can always try logging in via the website.
+  utter_user_email_not_registered:
+  - text: Seems like you are not our registered user.
+  utter_incorrect_otp:
+  - text: Sorry, it seems like the OTP you gave me is incorrect.
+  utter_order_status_for_blocked_user:
+  - text: Sorry, I cannot show you your orders as login has been blocked temporairily
 actions:
-- action_product_search
-- action_survey_submit
+- personal_greet
+- validate_login_form
+- action_unblock_login
+- action_logout
+- action_login_form
 - action_order_status
-- action_cancel_order
-- action_return
 forms:
-  order_status_form:
-    email:
+  login_form:
+    user_email:
     - entity: email
       type: from_entity
-    - intent:
-      - inform
-      type: from_text
-  cancel_form:
-    email:
-    - entity: email
-      type: from_entity
-  return_form:
-    email:
-    - entity: email
-      not_intent: product_updates
-      type: from_entity
-  product_updates_form:
-    email:
-    - entity: email
-      type: from_entity
-  product_stock_form:
-    size:
+    user_otp:
     - entity: number
       type: from_entity
-    color:
-    - entity: color
-      type: from_entity
-  survey_form:
-    rating:
-    - entity: number
-      type: from_entity
-    open_feedback:
-    - type: from_text
+e2e_actions: []
