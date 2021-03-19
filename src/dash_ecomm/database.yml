@@ -7,7 +7,7 @@ orders:
   color: 'blue'
   size: '9'
   status: "shipped"
-  image_url: "some/image/url"
+  image_url: "https://images.unsplash.com/photo-1542291026-7eec264c27ff?ixid=MXwxMjA3fDB8MHxzZWFyY2h8Mnx8c2hvZXN8ZW58MHx8MHw%3D&ixlib=rb-1.2.1&w=1000&q=80"
 -
    id: 0
    order_date: "2021-03-12"
@@ -57,7 +57,7 @@ orders:
    color: 'black'
    size: "10"
    status: "order pending"
-   image_url: "some/image/url"
+   image_url: "https://images.unsplash.com/photo-1542291026-7eec264c27ff?ixid=MXwxMjA3fDB8MHxzZWFyY2h8Mnx8c2hvZXN8ZW58MHx8MHw%3D&ixlib=rb-1.2.1&w=1000&q=80"
 -
    id: 4
    order_date: "2021-01-05"
@@ -67,7 +67,7 @@ orders:
    color: "gray"
    size: '11'
    status: 'returning'
-   image_url: "some/image/url"
+   image_url: "https://i0.wp.com/post.healthline.com/wp-content/uploads/2020/01/268453-Best_Running_Shoes_for_Flat_Feet-1296x728-header-1296x728.jpg?w=1155&h=1528"
 
 products:
 -
