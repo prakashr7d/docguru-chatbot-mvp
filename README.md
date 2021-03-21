@@ -1,7 +1,14 @@
 # Dash E-Comm Bot
 
-This is a bot for our e-comm demo
+#### This is a bot for our e-comm demo
+#### A bot that will take care of all of your shopping needs in one go.
 
+## Features:
+- [x] Login n Logout
+- [x] Order status
+- [ ] Product Return/Replace
+- [ ] Product Inquiry
+- [ ] Personalize shopping and so on....
 
 # Prerequisites
 - Python 3.7
@@ -9,6 +16,48 @@ This is a bot for our e-comm demo
     Once you have installed it, activate the base environment and then run the following instructions.
 - [Docker](https://docs.docker.com/engine/install/)
 - [Docker Compose](https://docs.docker.com/compose/)
+
+# How to run the bot with docker
+
+To get started, check `Dockerfile` for packages and modules
+
+Then, to setup image run:
+```commandline
+sudo docker build -t "dash-ecomm:latest"
+```
+Then, start `docker-compose.yml` to start all servers:
+```commandline
+sudo docker-compose up -d
+```
+
+Every url in `config.yml`, `credentials.yml` and `enpoints.yml` are connected to docker images.
+
+# How to run the bot without docker
+
+Use `rasa train` to train a model.
+
+Then, to run, first set up your action server in one terminal window:
+```bash
+poetry run rasa run actions
+```
+
+In another window, run the duckling server (for entity extraction):
+```bash
+docker run -p 8000:8000 rasa/duckling
+```
+
+Then talk to your bot by running:
+```
+poetry run rasa shell --debug
+```
+
+Note that `--debug` mode will produce a lot of output meant to help you understand how the bot is working
+under the hood. To simply talk to the bot, you can remove this flag.
+
+# `PYTHONPATH` setup
+
+- Pycharm: Mark `./src` as content root
+- Others: Set this environment variable `export PYTHONPATH=./src`
 
 # Dev Setup
 Use the following command 
@@ -35,40 +84,14 @@ Use the following command
   make lint
   ```
 
-# `PYTHONPATH` setup
-
-- Pycharm: Mark `./src` as content root
-- Others: Set this environment variable `export PYTHONPATH=./src`
-
-
-## Run the bot
-
-Use `rasa train` to train a model.
-
-Then, to run, first set up your action server in one terminal window:
-```bash
-poetry run rasa run actions
-```
-
-In another window, run the duckling server (for entity extraction):
-```bash
-docker run -p 8000:8000 rasa/duckling
-```
-
-Then talk to your bot by running:
-```
-poetry run rasa shell --debug
-```
-
-Note that `--debug` mode will produce a lot of output meant to help you understand how the bot is working
-under the hood. To simply talk to the bot, you can remove this flag.
-
 
 ## Overview of the files
 
-`data/core.md` - contains stories
+`data/stories` - contains stories
 
-`data/nlu.md` - contains NLU training data
+`data/nlu` - contains NLU training data
+
+`data/rules.yml` - contains rules
 
 `actions.py` - contains custom action/api code
 
@@ -79,40 +102,6 @@ under the hood. To simply talk to the bot, you can remove this flag.
 `tests/test_stories.yml` - end-to-end test stories
 
 
-## Things you can ask the bot
-
-1. Check the status of an order
-2. Return an item
-3. Cancel an item
-4. Search a product inventory for shoes
-5. Subscribe to product updates
-
-The bot can handle switching forms and cancelling a form, but not resuming a form after switching yet.
-
-The main flows have the bot retrieving or changing information in a SQLite database (the file `example.db`). You can use `initialize.db` to change the data that exists in this file.
-
-For the purposes of illustration, the bot has orders for the following email addresses:
-
-- `example@rasa.com`
-- `me@rasa.com`
-- `me@gmail.com`
-
-And these are the shoes that should show as in stock (size, color):
-
-```
-inventory = [(7, 'blue'),
-             (8, 'blue'),
-             (9, 'blue'),
-             (10, 'blue'),
-             (11, 'blue'),
-             (12, 'blue'),
-             (7, 'black'),
-             (8, 'black'),
-             (9, 'black'),
-             (10, 'black')
-            ]
-```
-
 ## Testing the bot
 
 You can test the bot on test conversations by running  `rasa test`.
@@ -120,26 +109,19 @@ This will run [end-to-end testing](https://rasa.com/docs/rasa/user-guide/testing
 
 Note that if duckling isn't running when you do this, you'll see some failures.
 
-## Rasa X Deployment
+## Development workflow
+##### Development workflow with just 9 simple steps
 
-To [deploy this bot](https://rasa.com/docs/rasa/user-guide/how-to-deploy/), it is highly recommended to make use of the
-[one line deploy script](https://rasa.com/docs/rasa-x/installation-and-setup/one-line-deploy-script/) for Rasa X. As part of the deployment, you'll need to set up [git integration](https://rasa.com/docs/rasa-x/installation-and-setup/integrated-version-control/#connect-your-rasa-x-server-to-a-git-repository) to pull in your data and
-configurations, and build or pull an action server image.
-
-
-## Action Server Image
-
-You will need to have docker installed in order to build the action server image. If you haven't made any changes to the action code, you can also use
-the [public image on Dockerhub](https://hub.docker.com/repository/docker/cdesmar/retail-demo) instead of building it yourself.
-
-It is recommended to use an [automated CI/CD process](https://rasa.com/docs/rasa/user-guide/setting-up-ci-cd) to keep your action server up to date in a production environment.
-
-
-
-```
-
-
-textclouddev.azurecr.io/botlibrary/dashbot-ecomm:latest
-
-helm --namespace dash-ecomm upgrade --values deployment/values.yml dash-ecomm-v0 rasa-x/rasa-x
-```
+1. Start development with initializing rasa bot
+2. While, developing bot first start with creating intents.
+3. Now, start `Rasa X` and start interactive training
+4. Add `utters` as needed directly to `domain.yml` instead of using `Rasa X` for adding them
+5. Add `stories` directly into 'stories' or into their respective files
+6. Add `intents` directly into `nlu.yml` or into their respective files
+7. Add `rules` directly into `rules.yml` or into their respective files
+6. Why to do this? <hr>
+    1. Rasa x makes formating different and its not clean at all
+    2. This will make flow bad and when added too many use cases it will look mess <hr>
+7. Add `actions` as needed while doing interactive training
+8. Make sure to follow clean code methodology
+9. Commit code every day even if you did very less addition

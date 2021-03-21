@@ -2,6 +2,15 @@
 *.zip
 models/
 
+# results
+results/
+
+# db
+events.db
+events.db-shm
+events.db-wal
+rasa.db
+
 # Created by .ignore support plugin (hsz.mobi)
 ### Main template
 .idea
@@ -100,6 +109,5 @@ Temporary Items
 **/local.yml
 
 # Data files
-data/
 wandb/
 runs/
