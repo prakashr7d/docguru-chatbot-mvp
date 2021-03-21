@@ -1,18 +1,42 @@
 version: '3.4'
 services:
-  my-package:
-    image: my-package:latest
-    build:
-      context: ./
-      target: BASE
-      dockerfile: Dockerfile_actions
-  my-package-dev:
-    image: my-package-dev:latest
+  rasa-x:
+    image: dash-ecomm:latest
+    restart: always
+    working_dir: /app
     volumes:
-      - ./config:/config
-      - ./data/panini-experiment:/root/panini-experiment
-      - ./data/panini_home:/root/.panini
-    build:
-      target: DEV
-      context: ./
-      dockerfile: Dockerfile_actions
+      - ./models:/app/models
+      - ./data:/app/data
+      - ./actions:/app/actions
+      - ./src:/app/src
+      - ./demo:/app/demo
+      command: ["poetry","run","rasa","x","--no-prompt"]
+    ports:
+      - '5005:5005'
+      - '5002:5002'
+    networks:
+      - all
+  rasa-actions:
+    image: dash-ecomm:latest
+    restart: always
+    working_dir: /app
+    command: ["poetry","run","rasa","run","actions"]
+    networks:
+      - all
+  callback-reminder:
+    image: dash-ecomm:latest
+    restart: always
+    working_dir: /app/src/dash_ecomm
+    command: ["poetry","run","python","callback_server.py"]
+    networks:
+      - all
+  duckling:
+    image: rasa/duckling:latest
+    networks:
+      - all
+
+networks:
+  all:
+    driver: bridge
+    driver_opts:
+      com.docker.network.enable_ipv6: "true"
