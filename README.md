@@ -116,7 +116,7 @@ Note that if duckling isn't running when you do this, you'll see some failures.
 2. While, developing bot first start with creating intents.
 3. Now, start `Rasa X` and start interactive training
 4. Add `utters` as needed directly to `domain.yml` instead of using `Rasa X` for adding them
-5. Adding `stories` directly into 'stories' or into their respective files
+5. Add `stories` directly into 'stories' or into their respective files
 6. Add `intents` directly into `nlu.yml' or into their respective files
 7. Add `rules` directly into `rules.yml` or into their respective files
 6. Why to do this? <hr>
