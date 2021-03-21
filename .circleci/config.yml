@@ -67,8 +67,19 @@ jobs:
           command: echo "export PATH=$PATH:/home/circleci/.local/bin" >> $BASH_ENV
 
       - run:
+          name: Training
+          command: make train
+
+      - run:
+          name: NLU Cross Validation
+          command: PYTHONPATH=./src poetry run rasa test nlu
+
+      - run:
           name: Testing
-          command: make test
+          command: PYTHONPATH=./src poetry run rasa test core
+
+      - store_artifacts:
+          path: ./results
 
 
 ############

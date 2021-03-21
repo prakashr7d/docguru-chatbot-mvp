@@ -77,11 +77,19 @@ format:
 lint:
 	poetry run flake8 src/dash_ecomm tests actions
 
+.PHONY: train
+train:
+	PYTHONPATH='./src/' poetry run rasa train
+
 N_THREADS=1
 # Run tests
-.PHONY: test
-test:
-	PYTHONPATH='./src/' poetry run pytest tests/ -s -n ${N_THREADS} -vv
+.PHONY: test-nlu
+test-nlu:
+	PYTHONPATH='./src/' poetry run rasa test nlu --nlu data/nlu --cross-validation
+
+.PHONY: test-core
+test-core:
+	PYTHONPATH='./src/' poetry run rasa test core --stories test/test_stories.yml --fail-on-prediction-errors
 
 # Run coverage
 .PHONY: coverage
