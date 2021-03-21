@@ -1,7 +1,7 @@
 # Dash E-Comm Bot
 
-#### This is a bot for our e-comm demo
-#### A bot that will take care of all of your shopping needs in one go.
+This is a bot for our e-comm demo
+A bot that will take care of all of your shopping needs in one go.
 
 ## Features:
 - [x] Login n Logout
@@ -125,3 +125,4 @@ Note that if duckling isn't running when you do this, you'll see some failures.
 7. Add `actions` as needed while doing interactive training
 8. Make sure to follow clean code methodology
 9. Commit code every day even if you did very less addition
+
