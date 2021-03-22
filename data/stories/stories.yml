@@ -3,57 +3,139 @@ stories:
 - story: intro
   steps:
   - intent: greet
-  - action: utter_greet
+  - action: personal_greet
 
-- story: order shoes
+- story: order status already logged in happy path + anything else affirm
   steps:
-  - intent: order_shoes
-  - action: utter_order_shoes
-
-# cancel stories
-
-- story: User stops product_stock
-  steps:
-  - active_loop: product_stock_form
-  - intent: deny
-  - action: utter_start_over
-  - action: utter_greet
-  - action: action_deactivate_loop
+  - intent: order_status
+  - slot_was_set:
+    - is_logged_in: true
   - active_loop: null
+  - action: action_order_status
+  - action: utter_anything_else
+  - intent: affirm
+  - action: utter_anything_else_options
 
-- story: User stops order_status
+- story: order status already logged in happy path + anything else deny
   steps:
-  - active_loop: order_status_form
-  - intent: deny
-  - action: utter_start_over
-  - action: utter_greet
-  - action: action_deactivate_loop
+  - intent: order_status
+  - slot_was_set:
+    - is_logged_in: true
   - active_loop: null
+  - action: action_order_status
+  - action: utter_anything_else
+  - intent: deny
+  - action: utter_i_am_here_for_you
 
-- story: User stops cancel_form
+- story: order status with login happy path + anything else affirm
   steps:
-  - active_loop: cancel_form
-  - intent: deny
-  - action: utter_start_over
-  - action: utter_greet
-  - action: action_deactivate_loop
+  - intent: order_status
+  - slot_was_set:
+    - is_logged_in: false
+  - slot_was_set:
+    - login_blocked: false
+  - action: utter_not_logged_in_prompt
+  - action: login_form
+  - active_loop: login_form
   - active_loop: null
+  - action: action_login_form
+  - slot_was_set:
+    - is_logged_in: true
+  - action: action_order_status
+  - action: utter_anything_else
+  - intent: affirm
+  - action: utter_anything_else_options
 
-- story: User stops return_form
+- story: Order status - Unregistered user - repair path - anything else affirm
   steps:
-  - active_loop: return_form
-  - intent: deny
-  - action: utter_start_over
-  - action: utter_greet
-  - action: action_deactivate_loop
+  - intent: order_status
+  - slot_was_set:
+    - is_logged_in: false
+  - slot_was_set:
+    - login_blocked: false
+  - action: utter_not_logged_in_prompt
+  - action: login_form
+  - active_loop: login_form
   - active_loop: null
+  - action: action_login_form
+  - slot_was_set:
+    - is_logged_in: false
+  - slot_was_set:
+    - login_blocked: false
+  - intent: affirm
+  - action: utter_signed_up_user_failed_login_response
+  - action: utter_anything_else
+  - intent: affirm
+  - action: utter_anything_else_options
 
-- story: User stops product_updates_form
+- story: Order status - registered user - repair path - anything else deny
   steps:
-  - active_loop: product_updates_form
-  - intent: deny
-  - action: utter_start_over
-  - action: utter_greet
-  - action: action_deactivate_loop
+  - intent: order_status
+  - slot_was_set:
+    - is_logged_in: false
+  - slot_was_set:
+    - login_blocked: false
+  - action: utter_not_logged_in_prompt
+  - action: login_form
+  - active_loop: login_form
   - active_loop: null
+  - action: action_login_form
+  - slot_was_set:
+    - is_logged_in: false
+  - slot_was_set:
+    - login_blocked: false
+  - intent: affirm
+  - action: utter_signed_up_user_failed_login_response
+  - action: utter_anything_else
+  - intent: deny
+  - action: utter_i_am_here_for_you
 
+
+- story: Order status - Unregistered user - repair path - anything else deny
+  steps:
+  - intent: order_status
+  - slot_was_set:
+    - is_logged_in: false
+  - slot_was_set:
+    - login_blocked: false
+  - action: utter_not_logged_in_prompt
+  - action: login_form
+  - active_loop: login_form
+  - active_loop: null
+  - action: action_login_form
+  - slot_was_set:
+    - is_logged_in: false
+  - slot_was_set:
+    - login_blocked: false
+  - intent: deny
+  - action: utter_anything_else
+  - intent: deny
+  - action: utter_i_am_here_for_you
+
+- story: Order status - Unregistered user - repair path - anything else deny
+  steps:
+  - intent: order_status
+  - slot_was_set:
+    - is_logged_in: false
+  - slot_was_set:
+    - login_blocked: false
+  - action: utter_not_logged_in_prompt
+  - action: login_form
+  - active_loop: login_form
+  - active_loop: null
+  - action: action_login_form
+  - slot_was_set:
+    - is_logged_in: false
+  - slot_was_set:
+    - login_blocked: false
+  - intent: deny
+  - action: utter_anything_else
+  - intent: affirm
+  - action: utter_anything_else_options
+
+- story: Unblock login
+  steps:
+  - slot_was_set:
+      - login_blocked: true
+  - intent: EXTERNAL_unblock_login
+  - action: action_unblock_login

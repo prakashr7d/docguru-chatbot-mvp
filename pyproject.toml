@@ -11,9 +11,12 @@ url = "https://pypi.rasa.com/simple"
 
 [tool.poetry.dependencies]
 python = ">=3.7,<3.9"
-rasa = "^2.3.4"
-rasa-x = "^0.37.1"
+rasa = "2.3.4"
 PyYAML = "^5.4.1"
+python-socketio = "4.6.1"
+python-engineio = "3.13.2"
+rasa-x = "0.37.0"
+spacy = "^3.0.5"
 
 [tool.poetry.dev-dependencies]
 isort = "^4.3.21"
