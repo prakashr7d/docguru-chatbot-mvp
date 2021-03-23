@@ -64,10 +64,10 @@ orders:
    order_number: 123458
    order_email: "dishant@neuralspace.ai"
    product_name: 'Shoes'
-   color: "gray"
-   size: '11'
+   color: "Navy blue"
+   size: '10'
    status: 'order pending'
-   image_url: "https://i0.wp.com/post.healthline.com/wp-content/uploads/2020/01/268453-Best_Running_Shoes_for_Flat_Feet-1296x728-header-1296x728.jpg?w=1155&h=1528"
+   image_url: "https://i02.appmifile.com/363_operator_in/13/10/2020/c7bde508f128d7b1fd10a224d18a5333.png"
 -
    id: 7
    order_date: "2021-01-05"
@@ -77,7 +77,7 @@ orders:
    color: "gray"
    size: '11'
    status: 'returning'
-   image_url: "https://i0.wp.com/post.healthline.com/wp-content/uploads/2020/01/268453-Best_Running_Shoes_for_Flat_Feet-1296x728-header-1296x728.jpg?w=1155&h=1528"
+   image_url: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRYQal2Wt0rgcL_9IIPCHwBr5Z_3ilg5rv0xQ&usqp=CAU"
 -
    id: 8
    order_date: "2021-01-05"
@@ -87,7 +87,7 @@ orders:
    color: "gray"
    size: '11'
    status: 'returning'
-   image_url: "https://i0.wp.com/post.healthline.com/wp-content/uploads/2020/01/268453-Best_Running_Shoes_for_Flat_Feet-1296x728-header-1296x728.jpg?w=1155&h=1528"
+   image_url: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTCytvY7-SDfxRIfcX4IuzzTdrq_15WV9d3Vw&usqp=CAU"
 -
    id: 9
    order_date: "2021-01-05"
@@ -97,7 +97,7 @@ orders:
    color: "gray"
    size: '11'
    status: 'shipped'
-   image_url: "https://i0.wp.com/post.healthline.com/wp-content/uploads/2020/01/268453-Best_Running_Shoes_for_Flat_Feet-1296x728-header-1296x728.jpg?w=1155&h=1528"
+   image_url: "https://i0.wp.com/post.healthline.com/wp-content/uploads/2020/09/hoka.png"
 -
    id: 10
    order_date: "2021-01-05"
@@ -107,7 +107,7 @@ orders:
    color: "gray"
    size: '11'
    status: 'shipped'
-   image_url: "https://i0.wp.com/post.healthline.com/wp-content/uploads/2020/01/268453-Best_Running_Shoes_for_Flat_Feet-1296x728-header-1296x728.jpg?w=1155&h=1528"
+   image_url: "https://cdnmedia.dsc-cricket.com/media/catalog/product/cache/67ee89799642c567a71fc92f3699d937/d/s/dsc-zooter-cricket-shoes-red.jpg"
 -
    id: 11
    order_date: "2021-01-05"

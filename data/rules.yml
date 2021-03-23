@@ -70,7 +70,6 @@ rules:
   steps:
   - intent: order_status
   - action: action_order_status
-  - action: utter_anything_else
 
 - rule: logout
   steps:

@@ -20,6 +20,9 @@ services:
     image: dash-ecomm:latest
     restart: always
     working_dir: /app
+    volumes:
+      - ./actions:/app/actions
+      - ./src:/app/src
     command: ["poetry","run","rasa","run","actions"]
     networks:
       - all
@@ -27,6 +30,8 @@ services:
     image: dash-ecomm:latest
     restart: always
     working_dir: /app/src/dash_ecomm
+    volumes:
+      - ./src:/app/src
     command: ["poetry","run","python","callback_server.py"]
     networks:
       - all

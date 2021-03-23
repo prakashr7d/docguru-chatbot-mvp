@@ -37,6 +37,7 @@ IS_LOGGED_IN = "is_logged_in"
 USER_OTP = "user_otp"
 REQUESTED_SLOT = "requested_slot"
 LOGIN_BLOCKED = "login_blocked"
+SHOW_MORE_COUNT = "show_more_count"
 
 
 # slot counters
