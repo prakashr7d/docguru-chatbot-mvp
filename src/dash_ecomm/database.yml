@@ -9,7 +9,7 @@ orders:
   status: "shipped"
   image_url: "https://images.unsplash.com/photo-1542291026-7eec264c27ff?ixid=MXwxMjA3fDB8MHxzZWFyY2h8Mnx8c2hvZXN8ZW58MHx8MHw%3D&ixlib=rb-1.2.1&w=1000&q=80"
 -
-   id: 0
+   id: 1
    order_date: "2021-03-12"
    order_number: 123456
    order_email: "pooja@neuralspace.ai"
@@ -19,7 +19,7 @@ orders:
    status: "canceled"
    image_url: "https://assets.ajio.com/medias/sys_master/root/h5a/h59/13018715881502/-1117Wx1400H-460342492-blue-MODEL.jpg"
 -
-   id: 1
+   id: 2
    order_date: "2021-03-11"
    order_number: 123456
    order_email: "pooja@neuralspace.ai"
@@ -29,7 +29,7 @@ orders:
    status: "shipped"
    image_url: "https://images.pexels.com/photos/19090/pexels-photo.jpg?auto=compress&cs=tinysrgb&dpr=1&w=500"
 -
-   id: 2
+   id: 3
    order_date: "2021-03-11"
    order_number: 123456
    order_email: "pooja@neuralspace.ai"
@@ -39,7 +39,7 @@ orders:
    status: "returning"
    image_url: "https://image.shutterstock.com/image-photo/pair-pink-sport-shoes-on-260nw-228691018.jpg"
 -
-   id: 2
+   id: 4
    order_date: "2021-03-11"
    order_number: 123456
    order_email: "pooja@neuralspace.ai"
@@ -49,7 +49,7 @@ orders:
    status: "pending"
    image_url: "https://images.pexels.com/photos/19090/pexels-photo.jpg?auto=compress&cs=tinysrgb&dpr=1&w=500"
 -
-   id: 3
+   id: 5
    order_date: "2021-01-05"
    order_number: 123457
    order_email: "ayushman@neuralspace.ai"
@@ -59,14 +59,64 @@ orders:
    status: "order pending"
    image_url: "https://images.unsplash.com/photo-1542291026-7eec264c27ff?ixid=MXwxMjA3fDB8MHxzZWFyY2h8Mnx8c2hvZXN8ZW58MHx8MHw%3D&ixlib=rb-1.2.1&w=1000&q=80"
 -
-   id: 4
+   id: 6
    order_date: "2021-01-05"
    order_number: 123458
    order_email: "dishant@neuralspace.ai"
    product_name: 'Shoes'
    color: "gray"
    size: '11'
+   status: 'order pending'
+   image_url: "https://i0.wp.com/post.healthline.com/wp-content/uploads/2020/01/268453-Best_Running_Shoes_for_Flat_Feet-1296x728-header-1296x728.jpg?w=1155&h=1528"
+-
+   id: 7
+   order_date: "2021-01-05"
+   order_number: 123459
+   order_email: "dishant@neuralspace.ai"
+   product_name: 'Shoes'
+   color: "gray"
+   size: '11'
    status: 'returning'
+   image_url: "https://i0.wp.com/post.healthline.com/wp-content/uploads/2020/01/268453-Best_Running_Shoes_for_Flat_Feet-1296x728-header-1296x728.jpg?w=1155&h=1528"
+-
+   id: 8
+   order_date: "2021-01-05"
+   order_number: 123459
+   order_email: "dishant@neuralspace.ai"
+   product_name: 'Shoes'
+   color: "gray"
+   size: '11'
+   status: 'returning'
+   image_url: "https://i0.wp.com/post.healthline.com/wp-content/uploads/2020/01/268453-Best_Running_Shoes_for_Flat_Feet-1296x728-header-1296x728.jpg?w=1155&h=1528"
+-
+   id: 9
+   order_date: "2021-01-05"
+   order_number: 123459
+   order_email: "dishant@neuralspace.ai"
+   product_name: 'Shoes'
+   color: "gray"
+   size: '11'
+   status: 'shipped'
+   image_url: "https://i0.wp.com/post.healthline.com/wp-content/uploads/2020/01/268453-Best_Running_Shoes_for_Flat_Feet-1296x728-header-1296x728.jpg?w=1155&h=1528"
+-
+   id: 10
+   order_date: "2021-01-05"
+   order_number: 123459
+   order_email: "dishant@neuralspace.ai"
+   product_name: 'Shoes'
+   color: "gray"
+   size: '11'
+   status: 'shipped'
+   image_url: "https://i0.wp.com/post.healthline.com/wp-content/uploads/2020/01/268453-Best_Running_Shoes_for_Flat_Feet-1296x728-header-1296x728.jpg?w=1155&h=1528"
+-
+   id: 11
+   order_date: "2021-01-05"
+   order_number: 123459
+   order_email: "dishant@neuralspace.ai"
+   product_name: 'Shoes'
+   color: "gray"
+   size: '11'
+   status: 'shipped'
    image_url: "https://i0.wp.com/post.healthline.com/wp-content/uploads/2020/01/268453-Best_Running_Shoes_for_Flat_Feet-1296x728-header-1296x728.jpg?w=1155&h=1528"
 
 products:
@@ -118,15 +168,18 @@ users:
       first_name: "Dishant"
       last_name: "Gandhi"
       otp: "1234"
+      no_of_orders : 6
    "ayushman@neuralspace.ai":
       id: 1
       user_email: "ayushman@neuralspace.ai"
       first_name: "Ayushman"
       last_name: "Dash"
       otp: "5678"
+      no_of_orders : 1
    "pooja@neuralspace.ai":
       id: 2
       user_email: "pooja@neuralspace.ai"
       first_name: "Pooja"
       last_name: "Mishra"
       otp: "9876"
+      no_of_orders : 4

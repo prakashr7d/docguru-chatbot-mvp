@@ -139,6 +139,11 @@ slots:
     influence_conversation: false
     max_value: 1.0
     min_value: 0.0
+  show_more_count:
+    type: float
+    initial_value: 1
+    auto_fill: true
+    influence_conversation: false
 responses:
   utter_generic_greet:
   - buttons:

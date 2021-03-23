@@ -56,7 +56,7 @@ REORDER = "Re-order"
 # order status
 SHIPPED = "shipped"
 DELIVERED = "delivered"
-ORDER_PENDING = "pending"
+ORDER_PENDING = "order pending"
 RETURNING = "returning"
 CANCELED = "canceled"
 

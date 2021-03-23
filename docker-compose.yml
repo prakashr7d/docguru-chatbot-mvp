@@ -10,7 +10,7 @@ services:
       - ./actions:/app/actions
       - ./src:/app/src
       - ./demo:/app/demo
-      command: ["poetry","run","rasa","x","--no-prompt"]
+    command: ["poetry","run","rasa","x","--no-prompt"]
     ports:
       - '5005:5005'
       - '5002:5002'

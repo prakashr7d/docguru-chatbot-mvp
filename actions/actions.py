@@ -343,7 +343,8 @@ class OrderStatus(Action):
 
         # retrieve row based on email
         current_orders = []
-        for order in get_all_orders():
+        orders = get_all_orders()
+        for order in orders:
             if order[ORDER_COLUMN_EMAIL] == order_email and order[
                 ORDER_COLUMN_STATUS
             ] in [SHIPPED, RETURNING, ORDER_PENDING]:
@@ -358,3 +359,20 @@ class OrderStatus(Action):
                 attachment=self.__create_order_carousel(current_orders)
             )
         return []
+
+
+class ActionShowMore(Action):
+    def name(self) -> Text:
+        return "show_more_action"
+
+    def run(
+        self,
+        dispatcher,
+        tracker: Tracker,
+        domain: "DomainDict",  # noqa:  F821
+    ) -> List[Dict[Text, Any]]:
+        intent = tracker.latest_message["intent"].get("name")
+        show_more_count = tracker.get_slot("show_more_count")
+        if intent == "show_more":
+            show_more_count += 1
+        return [SlotSet("show_more_count", show_more_count)]
