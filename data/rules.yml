@@ -76,3 +76,8 @@ rules:
   - intent: logout
   - action: action_logout
   - action: utter_logout
+
+- rule: show more
+  steps:
+  - intent: show_more
+  - action: show_more_action
