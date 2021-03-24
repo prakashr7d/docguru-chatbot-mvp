@@ -58,7 +58,7 @@ Use the following command
 
 Then, to setup image run:
 ```commandline
-docker build -t "dash-ecomm:latest" .
+docker-compose build
 ```
 
 ### Train a model
