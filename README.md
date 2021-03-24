@@ -23,11 +23,11 @@ To get started, check `Dockerfile` for packages and modules
 
 Then, to setup image run:
 ```commandline
-sudo docker build -t "dash-ecomm:latest"
+docker build -t "dash-ecomm:latest"
 ```
 Then, start `docker-compose.yml` to start all servers:
 ```commandline
-sudo docker-compose up -d
+docker-compose up -d
 ```
 
 Every url in `config.yml`, `credentials.yml` and `enpoints.yml` are connected to docker images.
