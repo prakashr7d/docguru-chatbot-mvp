@@ -16,6 +16,9 @@ A bot that will take care of all of your shopping needs in one go.
     Once you have installed it, activate the base environment and then run the following instructions.
 - [Docker](https://docs.docker.com/engine/install/)
 - [Docker Compose](https://docs.docker.com/compose/)
+- Helm
+- Kubernetes
+- Azure CLI
 
 # How to run the bot with docker
 
@@ -125,4 +128,35 @@ Note that if duckling isn't running when you do this, you'll see some failures.
 7. Add `actions` as needed while doing interactive training
 8. Make sure to follow clean code methodology
 9. Commit code every day even if you did very less addition
+
+
+# Deployment
+
+## Bootstrapping
+These steps need to followed while setting up the cluster for the first time
+
+- **Create a namespace**
+  ```shell script
+  kubectl apply -f deployment/namespace.yml
+  ```
+
+- **Create a static IP**
+  ```shell script
+  az network public-ip create --resource-group <your-cluster-resource-group> --name <some-name-for-your-ip> --sku Standard --allocation-method static --query publicIp.ipAddress -o tsv
+  ```
+  
+- **Create an Ingress Controller**
+  Make sure to update the `YOUR_STATIC_IP` and `DNS_LABEL` variables 
+  ```shell script
+  helm repo add ingress-nginx https://kubernetes.github.io/ingress-nginx
+
+  helm install nginx-ingress ingress-nginx/ingress-nginx \
+        --namespace dash-ecomm \
+        --set controller.replicaCount=2 \
+        --set controller.nodeSelector."beta\.kubernetes\.io/os"=linux \
+        --set defaultBackend.nodeSelector."beta\.kubernetes\.io/os"=linux \
+        --set controller.admissionWebhooks.patch.nodeSelector."beta\.kubernetes\.io/os"=linux \
+        --set controller.service.loadBalancerIP="YOUR_STATIC_IP" \
+        --set controller.service.annotations."service\.beta\.kubernetes\.io/azure-dns-label-name"="DNS_LABEL"  
+  ```
 
