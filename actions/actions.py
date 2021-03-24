@@ -422,6 +422,9 @@ class ShowMoreAction(Action):
         intent_name = []
         events = tracker.events
         show_more_count = tracker.get_slot(SHOW_MORE_COUNT)
+        if show_more_count is None:
+            dispatcher.utter_message(template="utter_show_more_something")
+            return []
         for event in range(4, len(events)):
             if events[event].get("event") == "user":
                 if "text" in events[event]:
@@ -430,6 +433,8 @@ class ShowMoreAction(Action):
                     )
         if "order_status" in intent_name and show_more_count > 0:
             followup_action.append(FollowupAction("action_order_status"))
+        elif show_more_count is None:
+            dispatcher.utter_message(template="utter_show_more_something")
         elif show_more_count < 0:
             dispatcher.utter_message(template="utter_show_more_something")
         else:

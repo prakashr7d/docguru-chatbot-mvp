@@ -266,10 +266,10 @@ responses:
   utter_order_status_for_blocked_user:
   - text: Sorry, I cannot show you your orders as login has been blocked temporairily
   utter_show_more_option:
-  - text: Check for more orders by clicking below button.
-    buttons:
+  - buttons:
     - payload: Show more
       title: Show more
+    text: Check for more orders by clicking below button.
   utter_show_more_something:
   - buttons:
     - payload: Check order status
@@ -278,6 +278,7 @@ responses:
       title: Product inquiry
     - payload: Return order
       title: Return order
+    text: I am sorry there's nothing to show more. You can try this things out
 actions:
 - personal_greet
 - validate_login_form
