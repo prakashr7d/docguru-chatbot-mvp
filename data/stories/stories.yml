@@ -145,3 +145,8 @@ stories:
   - action: action_order_status
   - intent: show_more
   - action: show_more_action
+
+- story: show more
+  steps:
+  - intent: show_more
+  - action: show_more_action

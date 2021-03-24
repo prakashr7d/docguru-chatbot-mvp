@@ -265,6 +265,11 @@ responses:
   - text: Sorry, it seems like the OTP you gave me is incorrect.
   utter_order_status_for_blocked_user:
   - text: Sorry, I cannot show you your orders as login has been blocked temporairily
+  utter_show_more_option:
+  - text: Check for more orders by clicking below button.
+    buttons:
+    - payload: Show more
+      title: Show more
   utter_show_more_something:
   - buttons:
     - payload: Check order status
