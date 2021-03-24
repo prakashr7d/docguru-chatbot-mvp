@@ -393,19 +393,15 @@ class OrderStatus(Action):
         current_orders, no_of_orders = self.__get_current_orders(
             no_of_orders, order_email, orders
         )
-
         if not current_orders:
             dispatcher.utter_message(template="utter_no_open_orders")
 
         else:
             dispatcher.utter_message(template="utter_open_current_orders")
             carousel_order = self.__create_order_carousel(current_orders)
-
+            dispatcher.utter_message(attachment=carousel_order)
             if no_of_orders != -1:
-                dispatcher.utter_message(attachment=carousel_order)
                 dispatcher.utter_message(template="utter_show_more_option")
-            else:
-                dispatcher.utter_message(attachment=carousel_order)
         return [SlotSet(SHOW_MORE_COUNT, no_of_orders)]
 
 

@@ -266,7 +266,8 @@ responses:
   utter_order_status_for_blocked_user:
   - text: Sorry, I cannot show you your orders as login has been blocked temporairily
   utter_show_more_option:
-  - buttons:
+  - text: "Check for more orders by clicking the button below or say 'show more'"
+    buttons:
     - payload: Show more
       title: Show more
   utter_show_more_something:

@@ -1,7 +1,7 @@
 # Dash E-Comm Bot
 
-#### This is a bot for our e-comm demo
-#### A bot that will take care of all of your shopping needs in one go.
+This is a bot for our e-comm demo.
+A bot that will take care of all of your shopping needs in one go.
 
 ## Features:
 - [x] Login n Logout
@@ -17,49 +17,14 @@
 - [Docker](https://docs.docker.com/engine/install/)
 - [Docker Compose](https://docs.docker.com/compose/)
 
-# How to run the bot with docker
+# Dev Setup
 
-To get started, check `Dockerfile` for packages and modules
-
-Then, to setup image run:
-```commandline
-docker build -t "dash-ecomm:latest"
-```
-Then, start `docker-compose.yml` to start all servers:
-```commandline
-docker-compose up -d
-```
-
-Every url in `config.yml`, `credentials.yml` and `enpoints.yml` are connected to docker images.
-
-# How to run the bot without docker
-
-Use `rasa train` to train a model.
-
-Then, to run, first set up your action server in one terminal window:
-```bash
-poetry run rasa run actions
-```
-
-In another window, run the duckling server (for entity extraction):
-```bash
-docker run -p 8000:8000 rasa/duckling
-```
-
-Then talk to your bot by running:
-```
-poetry run rasa shell --debug
-```
-
-Note that `--debug` mode will produce a lot of output meant to help you understand how the bot is working
-under the hood. To simply talk to the bot, you can remove this flag.
-
-# `PYTHONPATH` setup
+### `PYTHONPATH` setup
 
 - Pycharm: Mark `./src` as content root
 - Others: Set this environment variable `export PYTHONPATH=./src`
 
-# Dev Setup
+### Environment Setup
 Use the following command 
 
 - **A Makefile** with various helpful targets. E.g.,
@@ -83,6 +48,69 @@ Use the following command
   # to run flake8 and validate code formatting
   make lint
   ```
+
+
+# How to run the bot with docker
+
+### Train a model if needed
+
+### Build the Docker image
+
+Then, to setup image run:
+```commandline
+docker build -t "dash-ecomm:latest" .
+```
+
+### Train a model
+
+```shell script
+docker-compose run rasa-x poetry run rasa train
+```
+
+### Start all the services
+
+Then, start `docker-compose.yml` to start all servers:
+```commandline
+docker-compose up
+```
+
+`config.yml`, `credentials.yml` and `enpoints.yml` get added to the docker image. 
+Make sure to rebuild the image after making changes to these files.
+
+### Checkout the demo
+Once all the containers are up go to [http://localhost:7000](http://localhost:7000)
+
+
+# How to run the bot without docker
+
+### Train a model
+```shell script
+poetry run rasa train --config config-local.yml
+```
+
+### Start action server
+Then, to run, first set up your action server in one terminal window:
+```bash
+poetry run rasa run actions
+```
+
+### Start Duckling server
+In another window, run the duckling server (for entity extraction):
+```bash
+docker run -p 8000:8000 rasa/duckling
+```
+
+### Start Rasa server
+Then talk to your bot by running:
+```
+poetry run rasa run --enable-api --cors "*" --endpoints endpoints-local.yml
+```
+
+### [OPTIONAL] Run Rasa shell in Debug mode
+poetry run rasa shell --debug --endpoints endpoints-local.yml
+
+Note that `--debug` mode will produce a lot of output meant to help you understand how the bot is working
+under the hood. To simply talk to the bot, you can remove this flag.
 
 
 ## Overview of the files
