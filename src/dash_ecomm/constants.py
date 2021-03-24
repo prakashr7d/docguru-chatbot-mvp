@@ -3,6 +3,8 @@ from pathlib import Path
 
 this_path = Path(os.path.realpath(__file__))
 
+DEFAULT_SHOW_MORE_COUNT = -1
+
 DB_FILE = str(this_path.parent / "database.yml")
 DB_USER_COLUMN = "users"
 DB_USER_ORDERS = "orders"

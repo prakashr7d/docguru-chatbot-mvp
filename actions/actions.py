@@ -4,6 +4,7 @@ from typing import Any, Dict, List, Text, Tuple
 from dash_ecomm import generic_utils
 from dash_ecomm.constants import (
     CANCEL_ORDER,
+    DEFAULT_SHOW_MORE_COUNT,
     EMAIL_TRIES,
     IS_LOGGED_IN,
     LOGIN_BLOCKED,
@@ -412,6 +413,12 @@ class ShowMoreAction(Action):
     def name(self) -> Text:
         return "show_more_action"
 
+    def __get_show_more_count(self, tracker: Tracker) -> int:
+        count = tracker.get_slot(SHOW_MORE_COUNT)
+        if count is None:
+            count = DEFAULT_SHOW_MORE_COUNT
+        return count
+
     def run(
         self,
         dispatcher,
@@ -421,7 +428,7 @@ class ShowMoreAction(Action):
         followup_action = []
         intent_name = []
         events = tracker.events
-        show_more_count = tracker.get_slot(SHOW_MORE_COUNT)
+        show_more_count = self.__get_show_more_count(tracker)
         for event in range(4, len(events)):
             if events[event].get("event") == "user":
                 if "text" in events[event]:

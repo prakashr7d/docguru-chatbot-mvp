@@ -143,7 +143,7 @@ slots:
     min_value: 0.0
   show_more_count:
     type: float
-    initial_value: 0
+    initial_value: -1
     auto_fill: true
     influence_conversation: false
 responses:
@@ -266,8 +266,7 @@ responses:
   utter_order_status_for_blocked_user:
   - text: Sorry, I cannot show you your orders as login has been blocked temporairily
   utter_show_more_option:
-  - text: Check for more orders by clicking below button.
-    buttons:
+  - buttons:
     - payload: Show more
       title: Show more
   utter_show_more_something:
