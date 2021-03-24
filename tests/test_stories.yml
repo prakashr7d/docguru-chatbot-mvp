@@ -1,6 +1,6 @@
 version: "2.0"
 stories:
-- story: Story from Conversation ID 312285f24af744d7818bb662fd62a90e
+- story: login falied then login sucess
   steps:
   - intent: greet
   - action: personal_greet
@@ -96,7 +96,7 @@ stories:
   - action: utter_anything_else_options
 
 
-- story: Story from Conversation ID 63f0d00d47ca4db7b5480f22ed997ec4
+- story: login blocked
   steps:
   - intent: greet
   - action: personal_greet
@@ -166,7 +166,7 @@ stories:
   - slot_was_set:
     - otp_tries: 0
 
-- story: Story from Conversation ID 57888ab9266249949dad8876c69473c7
+- story: login failed
   steps:
   - intent: greet
   - action: personal_greet
@@ -237,3 +237,69 @@ stories:
     - email_tries: 0
   - slot_was_set:
     - otp_tries: 0
+
+- story: order status + login + show more
+  steps:
+  - intent: greet
+    user: |-
+      hi
+  - action: personal_greet
+  - slot_was_set:
+    - user_email: null
+  - slot_was_set:
+    - user_first_name: null
+  - slot_was_set:
+    - user_last_name: null
+  - slot_was_set:
+    - is_logged_in: false
+  - slot_was_set:
+    - user_otp: null
+  - intent: order_status
+    user: |-
+      order status
+  - action: utter_not_logged_in_prompt
+  - action: login_form
+  - active_loop: login_form
+  - slot_was_set:
+    - requested_slot: user_email
+  - intent: inform
+    user: |-
+      [dishant@neuralspace.ai](email)
+  - action: login_form
+  - slot_was_set:
+    - user_email: dishant@neuralspace.ai
+  - slot_was_set:
+    - requested_slot: user_otp
+  - intent: inform
+    user: |-
+      [1234]{"entity": "number", "value": 1234}
+  - action: login_form
+  - slot_was_set:
+    - user_otp: 1234
+  - slot_was_set:
+    - requested_slot: null
+  - active_loop: null
+  - action: action_login_form
+  - slot_was_set:
+    - user_email: dishant@neuralspace.ai
+  - slot_was_set:
+    - user_first_name: Dishant
+  - slot_was_set:
+    - user_last_name: Gandhi
+  - slot_was_set:
+    - is_logged_in: true
+  - slot_was_set:
+    - user_otp: '1234'
+  - action: action_order_status
+  - slot_was_set:
+    - show_more_count: 1
+  - intent: show_more
+    user: |-
+      show more
+  - action: action_order_status
+  - slot_was_set:
+    - show_more_count: -1
+  - intent: show_more
+    user: |-
+      show more
+  - action: show_more_action

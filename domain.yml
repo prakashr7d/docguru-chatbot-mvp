@@ -41,6 +41,8 @@ intents:
     use_entities: true
 - EXTERNAL_unblock_login:
     use_entities: true
+- show_more:
+    use_entities: []
 entities:
 - email
 - color
@@ -139,6 +141,11 @@ slots:
     influence_conversation: false
     max_value: 1.0
     min_value: 0.0
+  show_more_count:
+    type: float
+    initial_value: null
+    auto_fill: true
+    influence_conversation: false
 responses:
   utter_generic_greet:
   - buttons:
@@ -258,6 +265,20 @@ responses:
   - text: Sorry, it seems like the OTP you gave me is incorrect.
   utter_order_status_for_blocked_user:
   - text: Sorry, I cannot show you your orders as login has been blocked temporairily
+  utter_show_more_option:
+  - text: "Check for more orders by clicking the button below or say 'show more'"
+    buttons:
+    - payload: Show more
+      title: Show more
+  utter_show_more_something:
+  - buttons:
+    - payload: Check order status
+      title: Check order status
+    - payload: Product inquiry
+      title: Product inquiry
+    - payload: Return order
+      title: Return order
+    text: "Sorry, I don't have anything to show now. I suggest you could do one of these."
 actions:
 - personal_greet
 - validate_login_form
@@ -265,6 +286,7 @@ actions:
 - action_logout
 - action_login_form
 - action_order_status
+- show_more_action
 forms:
   login_form:
     user_email:
