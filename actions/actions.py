@@ -430,5 +430,7 @@ class ShowMoreAction(Action):
         if "order_status" in intent_name and show_more_count > 0:
             followup_action.append(FollowupAction("action_order_status"))
         elif show_more_count < 0:
-            dispatcher.utter_message(template="utter_show_more_invalid")
+            dispatcher.utter_message(template="utter_show_more_something")
+        else:
+            dispatcher.utter_message(template="utter_show_more_something")
         return followup_action

@@ -265,8 +265,14 @@ responses:
   - text: Sorry, it seems like the OTP you gave me is incorrect.
   utter_order_status_for_blocked_user:
   - text: Sorry, I cannot show you your orders as login has been blocked temporairily
-  utter_show_more_invalid:
-  - text: Sorry, show more isn't valid at this step.
+  utter_show_more_something:
+  - buttons:
+    - payload: Check order status
+      title: Check order status
+    - payload: Product inquiry
+      title: Product inquiry
+    - payload: Return order
+      title: Return order
 actions:
 - personal_greet
 - validate_login_form
