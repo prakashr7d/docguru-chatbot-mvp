@@ -188,3 +188,19 @@ These steps need to followed while setting up the cluster for the first time
         --set controller.service.annotations."service\.beta\.kubernetes\.io/azure-dns-label-name"="DNS_LABEL"  
   ```
 
+- **Test if you have an external IP**
+  ```shell script
+  kubectl --namespace dash-ecomm get services -o wide -w nginx-ingress-ingress-nginx-controller 
+  ```
+  
+- **Install a certificate manager if you don't have one already**
+  
+  Label the cert-manager namespace to disable resource validation
+  ```shell script
+  kubectl label namespace dash-ecomm cert-manager.io/disable-validation=true
+  ```
+  
+  Add the Jetstack Helm repository
+  ```shell script
+  helm repo add jetstack https://charts.jetstack.io
+  ```
