@@ -3,13 +3,20 @@ from typing import Any, Dict, List, Text, Tuple
 
 from dash_ecomm import generic_utils
 from dash_ecomm.constants import (
+    ACTION_CANCEL_ORDER,
+    ACTION_ORDER_STATUS,
+    ACTION_RETURN_ORDER,
+    ACTION_THAT_TRIGGERED_SHOW_MORE,
     CANCEL_ORDER,
-    DEFAULT_SHOW_MORE_COUNT,
     EMAIL_TRIES,
     IS_LOGGED_IN,
+    IS_SHOW_MORE_TRIGGERED,
     LOGIN_BLOCKED,
     MAX_EMAIL_TRIES,
+    MAX_ITEM_IN_CAROUSEL,
     MAX_OTP_TRIES,
+    MIN_ITEM_IN_CAROUSEL,
+    MIN_NUMBER_ZERO,
     ORDER_COLUMN_EMAIL,
     ORDER_COLUMN_IMAGE_URL,
     ORDER_COLUMN_PRODUCT_NAME,
@@ -21,6 +28,7 @@ from dash_ecomm.constants import (
     RETURNING,
     SHIPPED,
     SHOW_MORE_COUNT,
+    STOP_SHOW_MORE_COUNT,
     TRACK_ORDER,
     USER_EMAIL,
     USER_FIRST_NAME,
@@ -314,11 +322,11 @@ class OrderStatus(Action):
             "type": "template",
             "payload": {"template_type": "generic", "elements": []},
         }
-        for order in orders:
+        for selected_order in orders:
             carousel_element = {
-                "title": order[ORDER_COLUMN_PRODUCT_NAME],
-                "subtitle": f"Status: {order[ORDER_COLUMN_STATUS]}",
-                "image_url": order[ORDER_COLUMN_IMAGE_URL],
+                "title": selected_order[ORDER_COLUMN_PRODUCT_NAME],
+                "subtitle": f"Status: {selected_order[ORDER_COLUMN_STATUS]}",
+                "image_url": selected_order[ORDER_COLUMN_IMAGE_URL],
                 "buttons": [
                     {
                         "title": PRODUCT_DETAILS,
@@ -332,48 +340,56 @@ class OrderStatus(Action):
                     },
                 ],
             }
-            self.__add_track_item_button(order, carousel_element)
+            self.__add_track_item_button(selected_order, carousel_element)
             carousel["payload"]["elements"].append(carousel_element)
         return carousel
 
     def __get_current_orders(
-        self, no_of_orders: int, order_email: Text, orders: List[Dict[Text, Any]]
+        self, no_of_valid_orders: int, order_email: Text, orders: List[Dict[Text, Any]]
     ) -> (List[Dict[Text, Any]], int):
-        current_orders = []
-        minimum_orders = 0
-        maximum_orders = 0
-        if no_of_orders < 5:
-            minimum_orders = 0
-            maximum_orders = no_of_orders
-            no_of_orders = -1
+        valid_orders = []
+        minimum_order_index = MIN_ITEM_IN_CAROUSEL
+        maximum_order_index = MIN_ITEM_IN_CAROUSEL
+        if no_of_valid_orders < MAX_ITEM_IN_CAROUSEL:
+            minimum_order_index = MIN_ITEM_IN_CAROUSEL
+            maximum_order_index = no_of_valid_orders
+            no_of_valid_orders = STOP_SHOW_MORE_COUNT
         else:
-            minimum_orders = no_of_orders - 5
-            maximum_orders = no_of_orders
-            no_of_orders -= 5
-        for order in range(minimum_orders, maximum_orders):
-            if orders[order][ORDER_COLUMN_EMAIL] == order_email and orders[order][
+            minimum_order_index = no_of_valid_orders - MAX_ITEM_IN_CAROUSEL
+            maximum_order_index = no_of_valid_orders
+            no_of_valid_orders -= MAX_ITEM_IN_CAROUSEL
+        for selected_order in orders[minimum_order_index:maximum_order_index]:
+            if selected_order[ORDER_COLUMN_EMAIL] == order_email and selected_order[
                 ORDER_COLUMN_STATUS
             ] in [SHIPPED, RETURNING, ORDER_PENDING]:
-                current_orders.append(orders[order])
-        return current_orders, no_of_orders
+                valid_orders.append(selected_order)
+        return valid_orders, no_of_valid_orders
 
-    def __add_show_more_button(
-        self, carousel_orders: Dict[Text, Any]
-    ) -> Dict[Text, Any]:
-        carousel_element = {
-            "title": "Show more",
-            "subtitle": "",
-            "image_url": "",
-            "buttons": [
-                {
-                    "title": "Show more",
-                    "payload": "/show_more",
-                    "type": "postback",
-                }
-            ],
-        }
-        carousel_orders["payload"]["elements"].append(carousel_element)
-        return carousel_orders
+    def __validate_orders(
+        self,
+        valid_orders: List[Dict[Text, Any]],
+        no_of_valid_orders: int,
+        dispatcher: CollectingDispatcher,
+        is_show_more_triggered: bool,
+    ) -> (List[Any]):
+        slot_set = []
+        if not valid_orders:
+            dispatcher.utter_message(template="utter_no_open_orders")
+        else:
+            if is_show_more_triggered:
+                dispatcher.utter_message(template="utter_on_show_orders")
+            else:
+                dispatcher.utter_message(template="utter_open_current_orders")
+            carousel_order = self.__create_order_carousel(valid_orders)
+            dispatcher.utter_message(attachment=carousel_order)
+            if no_of_valid_orders > STOP_SHOW_MORE_COUNT:
+                dispatcher.utter_message(template="utter_show_more_option")
+                slot_set.append(
+                    SlotSet(ACTION_THAT_TRIGGERED_SHOW_MORE, ACTION_ORDER_STATUS)
+                )
+            else:
+                slot_set.append(SlotSet(ACTION_THAT_TRIGGERED_SHOW_MORE, None))
+        return slot_set
 
     def run(
         self,
@@ -383,37 +399,32 @@ class OrderStatus(Action):
     ) -> List[SlotSet]:
         order_email = tracker.get_slot(USER_EMAIL)
         show_more_count = tracker.get_slot(SHOW_MORE_COUNT)
-        current_orders = []
-        no_of_orders = 0
+        is_show_more_triggered = tracker.get_slot(IS_SHOW_MORE_TRIGGERED)
+        valid_orders = []
+        no_of_valid_orders = MIN_NUMBER_ZERO
         orders = get_all_orders_from_email(order_email)
-        if show_more_count is None or show_more_count < 0:
-            no_of_orders = get_valid_order_count(order_email)
+        if not is_show_more_triggered:
+            no_of_valid_orders = get_valid_order_count(order_email)
         else:
-            no_of_orders = show_more_count
-        current_orders, no_of_orders = self.__get_current_orders(
-            no_of_orders, order_email, orders
-        )
-        if not current_orders:
-            dispatcher.utter_message(template="utter_no_open_orders")
+            if show_more_count is None or show_more_count < MIN_NUMBER_ZERO:
+                no_of_valid_orders = get_valid_order_count(order_email)
+            else:
+                no_of_valid_orders = show_more_count
 
-        else:
-            dispatcher.utter_message(template="utter_open_current_orders")
-            carousel_order = self.__create_order_carousel(current_orders)
-            dispatcher.utter_message(attachment=carousel_order)
-            if no_of_orders != -1:
-                dispatcher.utter_message(template="utter_show_more_option")
-        return [SlotSet(SHOW_MORE_COUNT, no_of_orders)]
+        valid_orders, no_of_valid_orders = self.__get_current_orders(
+            no_of_valid_orders, order_email, orders
+        )
+        slot_set = self.__validate_orders(
+            valid_orders, no_of_valid_orders, dispatcher, is_show_more_triggered
+        )
+        slot_set.append(SlotSet(SHOW_MORE_COUNT, no_of_valid_orders))
+        slot_set.append(SlotSet(IS_SHOW_MORE_TRIGGERED, False))
+        return slot_set
 
 
 class ShowMoreAction(Action):
     def name(self) -> Text:
         return "show_more_action"
-
-    def __get_show_more_count(self, tracker: Tracker) -> int:
-        count = tracker.get_slot(SHOW_MORE_COUNT)
-        if count is None:
-            count = DEFAULT_SHOW_MORE_COUNT
-        return count
 
     def run(
         self,
@@ -422,19 +433,15 @@ class ShowMoreAction(Action):
         domain: "DomainDict",  # noqa: F821
     ) -> List[Dict[Text, Any]]:
         followup_action = []
-        intent_name = []
-        events = tracker.events
-        show_more_count = self.__get_show_more_count(tracker)
-        for event in range(4, len(events)):
-            if events[event].get("event") == "user":
-                if "text" in events[event]:
-                    intent_name.append(
-                        events[event]["parse_data"]["intent"].get("name")
-                    )
-        if "order_status" in intent_name and show_more_count > 0:
-            followup_action.append(FollowupAction("action_order_status"))
-        elif show_more_count < 0:
-            dispatcher.utter_message(template="utter_show_more_something")
+        action_triggered = tracker.get_slot(ACTION_THAT_TRIGGERED_SHOW_MORE)
+        if action_triggered in [
+            ACTION_ORDER_STATUS,
+            ACTION_RETURN_ORDER,
+            ACTION_CANCEL_ORDER,
+        ]:
+            followup_action.append(FollowupAction(action_triggered))
+            followup_action.append(SlotSet(IS_SHOW_MORE_TRIGGERED, True))
         else:
             dispatcher.utter_message(template="utter_show_more_something")
+            followup_action.append(SlotSet(IS_SHOW_MORE_TRIGGERED, False))
         return followup_action
