@@ -146,6 +146,16 @@ slots:
     initial_value: null
     auto_fill: true
     influence_conversation: false
+  action_that_triggered_show_more:
+    type: text
+    initial_value: null
+    auto_fill: true
+    influence_conversation: false
+  is_show_more_triggered:
+    type: bool
+    initial_value: false
+    auto_fill: false
+    influence_conversation: false
 responses:
   utter_generic_greet:
   - buttons:
@@ -265,6 +275,8 @@ responses:
   - text: Sorry, it seems like the OTP you gave me is incorrect.
   utter_order_status_for_blocked_user:
   - text: Sorry, I cannot show you your orders as login has been blocked temporairily
+  utter_on_show_orders:
+  - text: Here, are some more orders that are currently shipped, returning or in order pending mode
   utter_show_more_option:
   - text: "Check for more orders by clicking the button below or say 'show more'"
     buttons:

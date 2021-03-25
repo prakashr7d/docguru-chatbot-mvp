@@ -3,7 +3,10 @@ from pathlib import Path
 
 this_path = Path(os.path.realpath(__file__))
 
-DEFAULT_SHOW_MORE_COUNT = -1
+STOP_SHOW_MORE_COUNT = -1
+MAX_ITEM_IN_CAROUSEL = 5
+MIN_ITEM_IN_CAROUSEL = 0
+MIN_NUMBER_ZERO = 0
 
 DB_FILE = str(this_path.parent / "database.yml")
 DB_USER_COLUMN = "users"
@@ -40,7 +43,8 @@ USER_OTP = "user_otp"
 REQUESTED_SLOT = "requested_slot"
 LOGIN_BLOCKED = "login_blocked"
 SHOW_MORE_COUNT = "show_more_count"
-
+ACTION_THAT_TRIGGERED_SHOW_MORE = "action_that_triggered_show_more"
+IS_SHOW_MORE_TRIGGERED = "is_show_more_triggered"
 
 # slot counters
 EMAIL_TRIES = "email_tries"
@@ -67,3 +71,9 @@ CANCELED = "canceled"
 # Slot counters limits
 MAX_OTP_TRIES = 1
 MAX_EMAIL_TRIES = 1
+
+
+# actions name
+ACTION_ORDER_STATUS = "action_order_status"
+ACTION_RETURN_ORDER = "action_return_order"
+ACTION_CANCEL_ORDER = "action_cancel_order"
