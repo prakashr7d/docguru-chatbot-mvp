@@ -70,10 +70,14 @@ rules:
   steps:
   - intent: order_status
   - action: action_order_status
-  - action: utter_anything_else
 
 - rule: logout
   steps:
   - intent: logout
   - action: action_logout
   - action: utter_logout
+
+- rule: show more
+  steps:
+  - intent: show_more
+  - action: show_more_action
