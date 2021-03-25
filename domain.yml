@@ -153,7 +153,7 @@ slots:
     influence_conversation: false
   is_show_more_triggered:
     type: bool
-    initial_value: false
+    initial_value: null
     auto_fill: false
     influence_conversation: false
 responses:
