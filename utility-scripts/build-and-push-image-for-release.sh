@@ -8,7 +8,7 @@ DOCKER_IMAGE_TAG=$1
 echo "the latest git tag is ${DOCKER_IMAGE_TAG}"
 
 # export NS_CORE_NLP_IMAGE_TAG=latest
-docker build -t "${NS_ACR_PATH}:${DOCKER_IMAGE_TAG}" .
+docker build -t "${NS_ACR_PATH}:${DOCKER_IMAGE_TAG}" -f docker/Dockerfile .
 
 docker tag ${NS_ACR_PATH}:${DOCKER_IMAGE_TAG} ${NS_ACR_PATH}:latest
 

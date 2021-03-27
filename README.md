@@ -143,6 +143,11 @@ under the hood. To simply talk to the bot, you can remove this flag.
 Note that there are two copies of the demo page. One at `demo/local` and another one at `demo/prod`. 
 If you want any changes to reflect on prod then update the prod files as well
 
+
+# [Prod] Config files for Prod
+
+Config files for prod are kept in `configs/prod`. Make sure to change these files to reflect in prod.
+
 ## Overview of the files
 
 `data/stories` - contains stories

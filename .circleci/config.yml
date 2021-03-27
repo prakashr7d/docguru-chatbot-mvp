@@ -82,23 +82,38 @@ jobs:
   build-and-push:
     working_directory: ~/workdir
     docker:
+      - image: circleci/python:3.7.7
       - image: docker:17.05.0-ce-git
     steps:
       - checkout
       - setup_remote_docker
-      - run:
-          name: Install make
-          command: apk --no-cache --update add build-base
+
+      - attach_workspace:
+          at: /home/circleci
 
       - run:
-          name: Install bash
-          command: apk add --no-cache --upgrade bash
+          name: BASH_ENV PATH
+          command: echo "export PATH=$PATH:/home/circleci/.local/bin" >> $BASH_ENV
+
+#      - run:
+#          name: Install make
+#          command: apk --no-cache --update add build-base
+#
+#      - run:
+#          name: Install bash
+#          command: apk add --no-cache --upgrade bash
 
       # with credentials stored in the UI
       - run:
           name: Login to ACR
           command: |
             docker login $ACR_URL --username $ACR_USERNAME --password $ACR_PASSWORD
+
+      - run:
+          name: Train a new prod model
+          command: |
+            poetry run rasa train --config configs/k8s/config.yml
+
 
       # build the application image
       - run:
@@ -160,7 +175,7 @@ workflows:
             - test
           filters:
             branches:
-              only: "main"
+              only: /.*/
       - dev-deploy:
           requires:
             - build-and-push
