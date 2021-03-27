@@ -3,9 +3,16 @@
 This is a bot for our e-comm demo
 A bot that will take care of all of your shopping needs in one go.
 
+# Demo URL and Rasa X
+- Demo: [https://ns-botlibrary-ecomm.uksouth.cloudapp.azure.com/ecomm/index.html](https://ns-botlibrary-ecomm.uksouth.cloudapp.azure.com/ecomm/index.html)
+- Rasa X: [https://ns-botlibrary-ecomm.uksouth.cloudapp.azure.com/](https://ns-botlibrary-ecomm.uksouth.cloudapp.azure.com/)
+
+For username and password for both contact the product owner
+
 ## Features:
 - [x] Login n Logout
-- [x] Order status
+- [x] Check All Orders
+- [x] Show More
 - [ ] Product Return/Replace
 - [ ] Product Inquiry
 - [ ] Personalize shopping and so on....
@@ -60,8 +67,9 @@ Use the following command
 ### Build the Docker image
 
 Then, to setup image run:
-```commandline
+```shell script
 docker-compose build
+
 ```
 
 ### Train a model
@@ -83,12 +91,14 @@ Make sure to rebuild the image after making changes to these files.
 ### Checkout the demo
 Once all the containers are up go to [http://localhost:7000](http://localhost:7000)
 
+### NOTE:
+Models trained using docker-compose won't work locally. If you are running things locally you have to train a model locally by following the instructions in the next section.
 
 # How to run the bot without docker
 
 ### Train a model
 ```shell script
-poetry run rasa train --config config-local.yml
+poetry run rasa train --config configs/local/config.yml
 ```
 
 ### Start action server
@@ -103,11 +113,23 @@ In another window, run the duckling server (for entity extraction):
 docker run -p 8000:8000 rasa/duckling
 ```
 
+### Start Callback server
+In another window, run the callback server for reminders and scheduled requests:
+```bash
+poetry run python -m dash_ecomm.callback_server
+```
+
 ### Start Rasa server
+
 Then talk to your bot by running:
+
 ```
-poetry run rasa run --enable-api --cors "*" --endpoints endpoints-local.yml
+poetry run rasa run --enable-api --cors "*" --endpoints configs/local/endpoints.yml --credentials configs/local/credentials.yml
 ```
+
+### Open demo page
+
+Open the file in [demo/local/index.html](demo/prod/index.html)
 
 ### [OPTIONAL] Run Rasa shell in Debug mode
 poetry run rasa shell --debug --endpoints endpoints-local.yml
@@ -115,6 +137,11 @@ poetry run rasa shell --debug --endpoints endpoints-local.yml
 Note that `--debug` mode will produce a lot of output meant to help you understand how the bot is working
 under the hood. To simply talk to the bot, you can remove this flag.
 
+
+# Update the demo page locally and on prod
+
+Note that there are two copies of the demo page. One at `demo/local` and another one at `demo/prod`. 
+If you want any changes to reflect on prod then update the prod files as well
 
 ## Overview of the files
 
@@ -185,7 +212,7 @@ These steps need to followed while setting up the cluster for the first time
         --set defaultBackend.nodeSelector."beta\.kubernetes\.io/os"=linux \
         --set controller.admissionWebhooks.patch.nodeSelector."beta\.kubernetes\.io/os"=linux \
         --set controller.service.loadBalancerIP="YOUR_STATIC_IP" \
-        --set controller.service.annotations."service\.beta\.kubernetes\.io/azure-dns-label-name"="DNS_LABEL"  
+        --set controller.service.annotations."service\.beta\.kubernetes\.io/azure-dns-label-name"="ns-botlibrary-ecomm"  
   ```
 
 - **Test if you have an external IP**
@@ -203,4 +230,55 @@ These steps need to followed while setting up the cluster for the first time
   Add the Jetstack Helm repository
   ```shell script
   helm repo add jetstack https://charts.jetstack.io
+  
+  helm repo update
   ```
+  Deploy a certificate manager on the cluster  
+  
+  ```shell script
+  helm install \
+      cert-manager \
+      --namespace dash-ecomm \
+      --version v0.16.1 \
+      --set installCRDs=true \
+      --set nodeSelector."beta\.kubernetes\.io/os"=linux \
+      jetstack/cert-manager
+  ```
+  
+- **Deploy a CA Issuer**
+  ```shell script
+    kubectl apply -f deployment/cluster-issuer.yml
+   ```
+
+- **Create an SSL Certificate**
+  ```shell script
+    kubectl apply -f deployment/certificates.yml
+   ```
+
+- **Create a username and password to protect the demo page**
+  ```shell script
+  # Create a username and password
+  htpasswd -c auth <some-username> 
+  
+  # Create a kubernetes secret to store the credentials
+  kubectl -n dash-ecomm create secret generic basic-auth --from-file=auth
+  ```
+
+- **Deploy all services for the first time**
+  This deploys the following services:
+  - Rasa Actions Server
+  - Rasa Callback Server
+  - Duckling Server
+  - Rasa X
+  - Ecomm Demo Page
+  - Ingress for Rasa X, Rasa Core, Demo
+ 
+  ```shell script
+    make deloy-all
+   ```
+
+
+## Deployment - Staging
+
+Staging deployment happens in the CI pipeline. 
+Every time we merge something with master, a new version of the bot is deployed.

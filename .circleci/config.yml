@@ -79,6 +79,63 @@ jobs:
       - store_artifacts:
           path: ./results
 
+  build-and-push:
+    working_directory: ~/workdir
+    docker:
+      - image: docker:17.05.0-ce-git
+    steps:
+      - checkout
+      - setup_remote_docker
+      - run:
+          name: Install make
+          command: apk --no-cache --update add build-base
+
+      - run:
+          name: Install bash
+          command: apk add --no-cache --upgrade bash
+
+      # with credentials stored in the UI
+      - run:
+          name: Login to ACR
+          command: |
+            docker login $ACR_URL --username $ACR_USERNAME --password $ACR_PASSWORD
+
+      # build the application image
+      - run:
+          name: Build and push images
+          command: make build-and-push-for-release VERSION="$(echo $CIRCLE_SHA1 | cut -c -7)"
+
+  dev-deploy:
+    working_directory: ~/workdir
+    docker:
+        - image: circleci/python:3.7.7
+    steps:
+      - checkout
+
+      - run:
+          name: Install system requirements
+          command: make bootstrap-user
+
+      - run:
+          name: Login to Azure
+          command: az login --service-principal -u "${AZ_APP_ID}" -p "${AZ_PASSWORD}" --tenant "${AZURE_TENANT_ID}"
+
+      - run:
+          name: Install Kubectl
+          command: sudo az aks install-cli
+
+      - run:
+          name: Get AKS credentials
+          command: az aks get-credentials --resource-group ${NS_BL_AKS_RG} --name ${NS_BL_AKS_NAME}
+
+      - run:
+          name: Deploy new service if any
+          command: make deploy-all
+
+      - run:
+          name: Rollout latest version in dev
+          command: make restart-rollout
+
 
 ############
 # Workflows
@@ -88,7 +145,25 @@ workflows:
   version: 2
   build_test:
     jobs:
-      - install-dependencies
+      - install-dependencies:
+          filters:
+            tags:
+              only: /.*/
       - test:
           requires:
             - install-dependencies
+          filters:
+            tags:
+              only: /.*/
+      - build-and-push:
+          requires:
+            - test
+          filters:
+            branches:
+              only: "main"
+      - dev-deploy:
+          requires:
+            - build-and-push
+          filters:
+            branches:
+              only: "main"
