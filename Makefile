@@ -138,3 +138,10 @@ restart-rollout:
 	kubectl rollout restart  -f deployment/callback-server/deployment.yml
 	kubectl rollout restart  -f deployment/rasa-x/rasa-x-deployment.yml
 	kubectl rollout restart  -f deployment/demo/deployment.yml
+
+
+VERSION=""
+# Build and push Docker image
+.PHONY: build-and-push-for-release
+build-and-push-for-release:
+	./utility-scripts/build-and-push-image-for-release.sh ${VERSION}
