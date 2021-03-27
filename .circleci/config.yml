@@ -164,12 +164,12 @@ workflows:
           filters:
             tags:
               only: /.*/
-      - test:
-          requires:
-            - install-dependencies
-          filters:
-            tags:
-              only: /.*/
+#      - test:
+#          requires:
+#            - install-dependencies
+#          filters:
+#            tags:
+#              only: /.*/
       - build-and-push:
           requires:
             - test
@@ -181,4 +181,4 @@ workflows:
             - build-and-push
           filters:
             branches:
-              only: "main"
+              only: /.*/
