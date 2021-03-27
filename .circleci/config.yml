@@ -172,7 +172,7 @@ workflows:
 #              only: /.*/
       - build-and-push:
           requires:
-            - test
+            - install-dependencies
           filters:
             branches:
               only: /.*/
