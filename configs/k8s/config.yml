@@ -21,7 +21,7 @@ pipeline:
   threshold: 0.3
   ambiguity_threshold: 0.1
 - name: DucklingHTTPExtractor
-  url: http://localhost:8000
+  url: http://duckling:8000
   dimensions:
   - number
   - email

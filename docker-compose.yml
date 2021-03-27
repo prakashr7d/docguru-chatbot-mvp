@@ -2,15 +2,13 @@ version: '3.4'
 services:
   rasa-x:
     image: dash-ecomm:latest
-    build: .
+    build: "./"
     restart: always
     working_dir: /app
     volumes:
       - ./models:/app/models
       - ./data:/app/data
-#      - ./actions:/app/actions
       - ./src:/app/src
-#      - ./demo:/app/demo
     command: ["poetry","run","rasa","x","--no-prompt"]
     ports:
       - '5005:5005'
@@ -18,7 +16,7 @@ services:
     networks:
       - all
   rasa-actions:
-    build: .
+    build: "./"
     image: dash-ecomm:latest
     restart: always
     working_dir: /app
@@ -28,11 +26,10 @@ services:
     command: ["poetry","run","rasa","run","actions"]
     networks:
       - all
-  callback-reminder:
-    build: .
+  callback-server:
+    build: "./"
     image: dash-ecomm:latest
     restart: always
-#    working_dir: /app/src/dash_ecomm
     volumes:
       - ./src:/app/src
     command: ["poetry","run","python", "-m", "dash_ecomm.callback_server"]
@@ -43,9 +40,9 @@ services:
     networks:
       - all
   demo:
-    build: .
+    build: "./"
     image: dash-ecomm:latest
-    working_dir: /app/demo
+    working_dir: /app/demo/prod
     volumes:
       - ./demo:/app/demo
     command: ["poetry","run", "python", "-m", "http.server", "7000"]

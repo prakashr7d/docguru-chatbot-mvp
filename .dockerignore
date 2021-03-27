@@ -1,6 +1,5 @@
 # Data files for building the index and training a new models
 *.zip
-models/
 
 # results
 results/
