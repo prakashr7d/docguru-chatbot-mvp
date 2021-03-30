@@ -43,6 +43,14 @@ intents:
     use_entities: true
 - show_more:
     use_entities: []
+- return_order:
+    use_entities: []
+- ask_refund_account:
+    use_entities: true
+- ask_reason_for_return:
+    use_entities: true
+- select_return_order:
+    use_entities: true
 entities:
 - email
 - color
@@ -51,6 +59,9 @@ entities:
 - language
 - company
 - product
+- reason_for_return
+- refund_account
+- order_id
 slots:
   user_email:
     type: rasa.shared.core.slots.TextSlot
@@ -156,6 +167,32 @@ slots:
     initial_value: null
     auto_fill: false
     influence_conversation: false
+  order_id_for_return:
+    type: float
+    initial_value: null
+    auto_fill: true
+    influence_conversation: false
+  reason_for_return:
+    type: categorical
+    values:
+      - Don't need the Product
+      - Quality issues
+      - Incorrect Items
+    initial_value: null
+    influence_conversation: false
+  reason_for_return_description:
+    type: text
+    initial_value: null
+    influence_conversation: false
+  pickup_address_for_return:
+    type: text
+    initial_value: null
+    influence_conversation: false
+  refund_account:
+    type: categorical
+    values:
+      - Primary Account
+      - Credit Points
 responses:
   utter_generic_greet:
   - buttons:
@@ -291,6 +328,45 @@ responses:
     - payload: Return order
       title: Return order
     text: "Sorry, I don't have anything to show now. I suggest you could do one of these."
+  utter_orders_eligible_for_return:
+  - text: Sorry for the inconvience. Following are the orders eligible for return
+  utter_orders_return_show_more:
+  - text: Here are few more orders eligible for return
+  utter_orders_not_eligible_for_return:
+  - text: Sorry, there aren't any orders eligible for return
+  utter_no_delivered_orders:
+  - text: Sorry, it seems like there aren't any delivered orders. If any order is delivered today please wait for 24hrs for it to reflect on our end.
+  utter_ask_reason_for_return:
+  - buttons:
+    - payload: Don't need the Product
+      title: Don't need the Product
+    - payload: Quality issues
+      title: Quality issues
+    - payload: Incorrect Items
+      title: Incorrect Items
+    text: Sorry for the inconvenience; could you please share the reason for returning the order?
+  utter_ask_reason_for_return_description:
+  - text:  Thank you for sharing reason for returning the order, could you please explain it in brief? Feel free to add comments that you have regarding the product.
+  utter_ask_pickup_address_for_return:
+  - text: Thank you for sharing the reason in detail, can you please provide a pickup address?
+  utter_ask_order_id_for_return:
+  - text: Can you please share order id of delivered order with us?
+  utter_ask_refund_account:
+  - buttons:
+    - payload: Primary Account
+      title: Primary Account
+    - payload: Credit Points
+      title: Credit Points
+    text: Can you please pick where you want your refund amount to be sent from the buttons below?
+  utter_ineligible_order_id:
+  - text: Sorry, I wasn't able to find any order with that id. Please recheck your order id any send me here.
+  utter_invalid_reason:
+  - text: Sorry, please select a valid reason for returning from below buttons.
+  utter_return_order_blocked:
+  - text: Sorry, currently you can't return order because you have been blocked.
+  utter_return_initiated:
+  - text: Again, apologies. Your return order request has been initiated, and you will receive a refund within 7-10 business days.
+
 actions:
 - personal_greet
 - validate_login_form
@@ -299,6 +375,9 @@ actions:
 - action_login_form
 - action_order_status
 - show_more_action
+- action_show_valid_return_order
+- action_return_order
+- action_validate_return_order_form
 forms:
   login_form:
     user_email:
@@ -307,4 +386,19 @@ forms:
     user_otp:
     - entity: number
       type: from_entity
+  return_order_form:
+    order_id_for_return:
+    - entity: order_id
+      type: from_entity
+    reason_for_return:
+    - entity: reason_for_return
+      type: from_entity
+    reason_for_return_description:
+    - type: from_text
+    pickup_address_for_return:
+    - type: from_text
+    refund_account:
+    - entity: refund_account
+      type: from_entity
+
 e2e_actions: []

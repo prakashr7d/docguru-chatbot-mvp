@@ -6,7 +6,9 @@ from dash_ecomm.constants import (
     DB_FILE,
     DB_USER_COLUMN,
     DB_USER_ORDERS,
+    DELIVERED,
     ORDER_COLUMN_EMAIL,
+    ORDER_COLUMN_RETURNABLE,
     ORDER_COLUMN_STATUS,
     ORDER_PENDING,
     RETURNING,
@@ -17,6 +19,7 @@ from dash_ecomm.constants import (
     USER_PROFILE_COLUMN_LASTNAME,
     USER_PROFILE_COLUMN_OTP,
 )
+from dash_ecomm.generic_utils import is_valid_order_id
 
 with open(DB_FILE, "r") as dbf:
     DATABASE = yaml.safe_load(dbf)
@@ -91,11 +94,41 @@ def get_valid_order_count(ordermail: Text) -> int:
 
     order_count = 0
     orders = get_all_orders_from_email(ordermail)
-    for order in orders:
-        if order[ORDER_COLUMN_EMAIL] == ordermail and order[ORDER_COLUMN_STATUS] in [
+    for selected_order in orders:
+        if selected_order[ORDER_COLUMN_EMAIL] == ordermail and selected_order[
+            ORDER_COLUMN_STATUS
+        ] in [
             SHIPPED,
             RETURNING,
             ORDER_PENDING,
         ]:
             order_count += 1
     return order_count
+
+
+def get_valid_order_return(ordermail: Text) -> List[Dict[Text, Any]]:
+    global DATABASE
+
+    delivered_order = []
+    orders = get_all_orders_from_email(ordermail)
+    for selected_order in orders:
+        if (
+            selected_order[ORDER_COLUMN_EMAIL] == ordermail
+            and selected_order[ORDER_COLUMN_STATUS] in [DELIVERED]
+            and selected_order[ORDER_COLUMN_RETURNABLE]
+        ):
+            delivered_order.append(selected_order)
+    return delivered_order
+
+
+def validate_order_id(order_id: Text, order_email: Text) -> bool:
+    global DATABASE
+
+    if is_valid_order_id(order_id):
+        if (
+            order_id in DATABASE[DB_USER_ORDERS]
+            and order_email == DATABASE[DB_USER_ORDERS][order_id][ORDER_COLUMN_EMAIL]
+        ):
+            return True
+    else:
+        return False

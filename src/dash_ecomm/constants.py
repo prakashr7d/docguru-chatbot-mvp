@@ -12,14 +12,12 @@ DB_FILE = str(this_path.parent / "database.yml")
 DB_USER_COLUMN = "users"
 DB_USER_ORDERS = "orders"
 
-
 # users
 USER_PROFILE_COLUMN_ID = "id"
 USER_PROFILE_COLUMN_EMAIL = "user_email"
 USER_PROFILE_COLUMN_FIRSTNAME = "first_name"
 USER_PROFILE_COLUMN_LASTNAME = "last_name"
 USER_PROFILE_COLUMN_OTP = "otp"
-
 
 # orders
 ORDER_COLUMN_ID = "id"
@@ -30,8 +28,8 @@ ORDER_COLUMN_DATE = "order_date"
 ORDER_COLUMN_COLOUR = "color"
 ORDER_COLUMN_SIZE = "size"
 ORDER_COLUMN_STATUS = "status"
+ORDER_COLUMN_RETURNABLE = "returnable"
 ORDER_COLUMN_IMAGE_URL = "image_url"
-
 
 # Slot Names
 LOGIN_TOKEN = "login_token"
@@ -45,11 +43,15 @@ LOGIN_BLOCKED = "login_blocked"
 SHOW_MORE_COUNT = "show_more_count"
 ACTION_THAT_TRIGGERED_SHOW_MORE = "action_that_triggered_show_more"
 IS_SHOW_MORE_TRIGGERED = "is_show_more_triggered"
+ORDER_ID_FOR_RETURN = "order_id_for_return"
+REASON_FOR_RETURN = "reason_for_return"
+REASON_FOR_RETURN_DESCRIPTION = "reason_for_return_description"
+PICKUP_ADDRESS_FOR_RETURN = "pickup_address_for_return"
+REFUND_ACCOUNT = "refund_account"
 
 # slot counters
 EMAIL_TRIES = "email_tries"
 OTP_TRIES = "otp_tries"
-
 
 # Button Titles
 CANCEL_ORDER = "Cancel Order"
@@ -58,7 +60,7 @@ TRACK_ORDER = "Track Item"
 PRODUCT_DETAILS = "Product details"
 ADD_REVIEW = "Review"
 REORDER = "Re-order"
-
+SELECT_ORDER = "Select this order"
 
 # order status
 SHIPPED = "shipped"
@@ -67,13 +69,20 @@ ORDER_PENDING = "order pending"
 RETURNING = "returning"
 CANCELED = "canceled"
 
-
 # Slot counters limits
 MAX_OTP_TRIES = 1
 MAX_EMAIL_TRIES = 1
 
-
 # actions name
 ACTION_ORDER_STATUS = "action_order_status"
-ACTION_RETURN_ORDER = "action_return_order"
+ACTION_RETURN_ORDER = "action_show_valid_return_order"
 ACTION_CANCEL_ORDER = "action_cancel_order"
+
+# reasons for return
+DONT_NEED_THE_PRODUCT = "Don't need the Product"
+QUALITY_ISSUES = "Quality issues"
+INCORRECT_ITEMS = "Incorrect Items"
+
+# type of payment account
+PRIMARY_ACCOUNT = "primary_account"
+CREDIT_POINTS = "credit_points"

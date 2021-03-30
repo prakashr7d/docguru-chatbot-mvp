@@ -81,3 +81,28 @@ rules:
   steps:
   - intent: show_more
   - action: show_more_action
+
+- rule:  return form + valid login
+  condition:
+  - slot_was_set:
+    - is_logged_in: true
+  steps:
+  - intent: select_order
+  - action: return_order_form
+  - active_loop: return_order_form
+
+- rule: return form + blocked login
+  condition:
+  - slot_was_set:
+    - login_blocked: true
+  steps:
+  - intent: select_order
+  - action: utter_order_status_for_blocked_user
+  - action: action_login_form
+
+- rule: submit, return form
+  active_loop: return_order_form
+  steps:
+  - action: return_order_form
+  - active_loop: null
+  - action: action_return_order

@@ -7,8 +7,11 @@ from dash_ecomm.constants import (
     ACTION_ORDER_STATUS,
     ACTION_RETURN_ORDER,
     ACTION_THAT_TRIGGERED_SHOW_MORE,
-    CANCEL_ORDER,
+    ADD_REVIEW,
+    CREDIT_POINTS,
+    DONT_NEED_THE_PRODUCT,
     EMAIL_TRIES,
+    INCORRECT_ITEMS,
     IS_LOGGED_IN,
     IS_SHOW_MORE_TRIGGERED,
     LOGIN_BLOCKED,
@@ -18,18 +21,26 @@ from dash_ecomm.constants import (
     MIN_ITEM_IN_CAROUSEL,
     MIN_NUMBER_ZERO,
     ORDER_COLUMN_EMAIL,
+    ORDER_COLUMN_ID,
     ORDER_COLUMN_IMAGE_URL,
     ORDER_COLUMN_PRODUCT_NAME,
     ORDER_COLUMN_STATUS,
+    ORDER_ID_FOR_RETURN,
     ORDER_PENDING,
     OTP_TRIES,
-    PRODUCT_DETAILS,
+    PICKUP_ADDRESS_FOR_RETURN,
+    PRIMARY_ACCOUNT,
+    QUALITY_ISSUES,
+    REASON_FOR_RETURN,
+    REASON_FOR_RETURN_DESCRIPTION,
+    REFUND_ACCOUNT,
+    REORDER,
     REQUESTED_SLOT,
     RETURNING,
+    SELECT_ORDER,
     SHIPPED,
     SHOW_MORE_COUNT,
     STOP_SHOW_MORE_COUNT,
-    TRACK_ORDER,
     USER_EMAIL,
     USER_FIRST_NAME,
     USER_LAST_NAME,
@@ -39,9 +50,11 @@ from dash_ecomm.database_utils import (
     get_all_orders_from_email,
     get_user_info_from_db,
     get_valid_order_count,
+    get_valid_order_return,
     is_valid_otp,
     is_valid_user,
 )
+from dash_ecomm.generic_utils import create_order_carousel, validate_order_id
 from rasa_sdk import Action, FormValidationAction, Tracker, events
 from rasa_sdk.events import AllSlotsReset, EventType, FollowupAction, SlotSet
 from rasa_sdk.executor import CollectingDispatcher
@@ -309,41 +322,6 @@ class OrderStatus(Action):
     def name(self) -> Text:
         return "action_order_status"
 
-    def __add_track_item_button(
-        self, order: Dict[Text, Any], carousel: Dict[Text, Any]
-    ) -> Dict[Text, Any]:
-        if order[ORDER_COLUMN_STATUS] in [SHIPPED, RETURNING, ORDER_PENDING]:
-            carousel["buttons"].append(
-                {"title": TRACK_ORDER, "payload": "", "type": "postback"}
-            )
-
-    def __create_order_carousel(self, orders: List[Dict[Text, Any]]) -> Dict[Text, Any]:
-        carousel = {
-            "type": "template",
-            "payload": {"template_type": "generic", "elements": []},
-        }
-        for selected_order in orders:
-            carousel_element = {
-                "title": selected_order[ORDER_COLUMN_PRODUCT_NAME],
-                "subtitle": f"Status: {selected_order[ORDER_COLUMN_STATUS]}",
-                "image_url": selected_order[ORDER_COLUMN_IMAGE_URL],
-                "buttons": [
-                    {
-                        "title": PRODUCT_DETAILS,
-                        "payload": "",
-                        "type": "postback",
-                    },
-                    {
-                        "title": CANCEL_ORDER,
-                        "payload": "",
-                        "type": "postback",
-                    },
-                ],
-            }
-            self.__add_track_item_button(selected_order, carousel_element)
-            carousel["payload"]["elements"].append(carousel_element)
-        return carousel
-
     def __get_current_orders(
         self, no_of_valid_orders: int, order_email: Text, orders: List[Dict[Text, Any]]
     ) -> (List[Dict[Text, Any]], int):
@@ -380,7 +358,7 @@ class OrderStatus(Action):
                 dispatcher.utter_message(template="utter_on_show_orders")
             else:
                 dispatcher.utter_message(template="utter_open_current_orders")
-            carousel_order = self.__create_order_carousel(valid_orders)
+            carousel_order = create_order_carousel(valid_orders)
             dispatcher.utter_message(attachment=carousel_order)
             if no_of_valid_orders > STOP_SHOW_MORE_COUNT:
                 dispatcher.utter_message(template="utter_show_more_option")
@@ -445,3 +423,217 @@ class ShowMoreAction(Action):
             dispatcher.utter_message(template="utter_show_more_something")
             followup_action.append(SlotSet(IS_SHOW_MORE_TRIGGERED, False))
         return followup_action
+
+
+class ShowValidReturnOrders(Action):
+    def name(self) -> Text:
+        return "action_show_valid_return_order"
+
+    def __create_order_carousel(
+        self, delivered_orders: List[Dict[Text, Any]]
+    ) -> Dict[Text, Any]:
+        carousel = {
+            "type": "template",
+            "payload": {"template_type": "generic", "elements": []},
+        }
+        for selected_order in delivered_orders:
+            carousel_element = {
+                "title": selected_order[ORDER_COLUMN_PRODUCT_NAME],
+                "subtitle": f"Status: {selected_order[ORDER_COLUMN_STATUS]}",
+                "image_url": selected_order[ORDER_COLUMN_IMAGE_URL],
+                "buttons": [
+                    {
+                        "title": SELECT_ORDER,
+                        "payload": f"I want to return {selected_order[ORDER_COLUMN_ID]} order number",
+                        "type": "postback",
+                    },
+                    {
+                        "title": REORDER,
+                        "payload": "",
+                        "type": "postback",
+                    },
+                    {
+                        "title": ADD_REVIEW,
+                        "payload": "",
+                        "type": "postback",
+                    },
+                ],
+            }
+            carousel["payload"]["elements"].append(carousel_element)
+        return carousel
+
+    def __get_current_order(
+        self,
+        no_of_valid_orders: int,
+        valid_orders: List[Dict[Text, Any]],
+        user_mail: Text,
+    ):
+        carsousel_orders = []
+        minimum_order_index = MIN_ITEM_IN_CAROUSEL
+        maximum_order_index = MIN_ITEM_IN_CAROUSEL
+        if no_of_valid_orders < MAX_ITEM_IN_CAROUSEL:
+            minimum_order_index = MIN_ITEM_IN_CAROUSEL
+            maximum_order_index = no_of_valid_orders
+            no_of_valid_orders = STOP_SHOW_MORE_COUNT
+        else:
+            minimum_order_index = no_of_valid_orders - MAX_ITEM_IN_CAROUSEL
+            maximum_order_index = no_of_valid_orders
+            no_of_valid_orders -= MAX_ITEM_IN_CAROUSEL
+        for selected_order in valid_orders[minimum_order_index:maximum_order_index]:
+            carsousel_orders.append(selected_order)
+        return carsousel_orders, no_of_valid_orders
+
+    def __validate_orders(
+        self,
+        valid_orders: List[Dict[Text, Any]],
+        no_of_valid_orders: int,
+        dispatcher: CollectingDispatcher,
+        is_show_more_triggered: bool,
+    ) -> (List[Any]):
+        slot_set = []
+        if not valid_orders:
+            dispatcher.utter_message(template="utter_no_open_orders")
+        else:
+            if is_show_more_triggered:
+                dispatcher.utter_message(template="utter_orders_return_show_more")
+            else:
+                dispatcher.utter_message(template="utter_orders_eligible_for_return")
+            carousel_order = create_order_carousel(valid_orders)
+            dispatcher.utter_message(attachment=carousel_order)
+            if no_of_valid_orders > STOP_SHOW_MORE_COUNT:
+                dispatcher.utter_message(template="utter_show_more_option")
+                slot_set.append(
+                    SlotSet(ACTION_THAT_TRIGGERED_SHOW_MORE, ACTION_RETURN_ORDER)
+                )
+            else:
+                slot_set.append(SlotSet(ACTION_THAT_TRIGGERED_SHOW_MORE, None))
+        return slot_set
+
+    def run(
+        self,
+        dispatcher,
+        tracker: Tracker,
+        domain: "DomainDict",  # noqa: F821
+    ) -> List[Dict[Text, Any]]:
+        user_mail = tracker.get_slot(USER_EMAIL)
+        show_more_count = tracker.get_slot(SHOW_MORE_COUNT)
+        is_show_more_triggered = tracker.get_slot(IS_SHOW_MORE_TRIGGERED)
+        valid_orders = get_valid_order_return(user_mail)
+        no_of_valid_orders = 0
+        if not is_show_more_triggered:
+            no_of_valid_orders = len(valid_orders)
+        else:
+            if show_more_count is None or show_more_count < MIN_NUMBER_ZERO:
+                no_of_valid_orders = len(valid_orders)
+            else:
+                no_of_valid_orders = show_more_count
+        valid_orders, no_of_valid_orders = self.__get_current_order(
+            no_of_valid_orders, valid_orders, user_mail
+        )
+        slot_set = self.__validate_orders(
+            valid_orders, no_of_valid_orders, dispatcher, is_show_more_triggered
+        )
+        slot_set.append(SlotSet(SHOW_MORE_COUNT, no_of_valid_orders))
+        slot_set.append(SlotSet(IS_SHOW_MORE_TRIGGERED, False))
+
+
+class ReturnOrderAction(Action):
+    def name(self) -> Text:
+        return "action_return_order"
+
+    def run(
+        self,
+        dispatcher,
+        tracker: Tracker,
+        domain: "DomainDict",  # noqa: F821
+    ) -> List[Dict[Text, Any]]:
+        """
+        gets order number, with email id
+        changes the order status to return and changes returnable to false
+        adds new column as refunded to false
+        :return:
+        """
+        dispatcher.utter_message(template="utter_return_initiated")
+        return []
+
+
+class ValidateReturnOrder(FormValidationAction):
+    def name(self) -> Text:
+        return "action_validate_return_order"
+
+    def validate_order_id_for_return(
+        self,
+        value: Text,
+        dispatcher: "CollectingDispatcher",
+        tracker: "Tracker",
+        domain: "DomainDict",  # noqa: F821
+    ) -> List[EventType]:
+        user_email = tracker.get_slot(USER_EMAIL)
+        slot_set = {}
+        if value is not None and validate_order_id(value, user_email):
+            slot_set = {ORDER_ID_FOR_RETURN: value}
+        else:
+            dispatcher.utter_message(template="utter_ineligible_order_id")
+            slot_set = {REQUESTED_SLOT: ORDER_ID_FOR_RETURN}
+        return slot_set
+
+    def validate_reason_for_return(
+        self,
+        value: Text,
+        dispatcher: "CollectingDispatcher",
+        tracker: "Tracker",
+        domain: "DomainDict",  # noqa: F821
+    ) -> List[EventType]:
+        slot_set = {}
+        if value is not None and value in [
+            DONT_NEED_THE_PRODUCT,
+            QUALITY_ISSUES,
+            INCORRECT_ITEMS,
+        ]:
+            slot_set = {REASON_FOR_RETURN: value}
+        else:
+            dispatcher.utter_message(template="utter_invalid_reason")
+            slot_set = {REQUESTED_SLOT: REASON_FOR_RETURN}
+        return slot_set
+
+    def validate_reason_for_return_description(
+        self,
+        value: Text,
+        dispatcher: "CollectingDispatcher",
+        tracker: "Tracker",
+        domain: "DomainDict",  # noqa: F821
+    ) -> List[EventType]:
+        slot_set = {}
+        if value is not None:
+            slot_set = {REASON_FOR_RETURN_DESCRIPTION: value}
+        else:
+            slot_set = {REQUESTED_SLOT: REASON_FOR_RETURN_DESCRIPTION}
+        return slot_set
+
+    def validate_pickup_address_for_return(
+        self,
+        value: Text,
+        dispatcher: "CollectingDispatcher",
+        tracker: "Tracker",
+        domain: "DomainDict",  # noqa: F821
+    ) -> List[EventType]:
+        slot_set = {}
+        if value is not None:
+            slot_set = {PICKUP_ADDRESS_FOR_RETURN: value}
+        else:
+            slot_set = {REQUESTED_SLOT: PICKUP_ADDRESS_FOR_RETURN}
+        return slot_set
+
+    def validate_refund_account(
+        self,
+        value: Text,
+        dispatcher: "CollectingDispatcher",
+        tracker: "Tracker",
+        domain: "DomainDict",  # noqa: F821
+    ) -> List[EventType]:
+        slot_set = {}
+        if value is not None and value in [PRIMARY_ACCOUNT, CREDIT_POINTS]:
+            slot_set = {REFUND_ACCOUNT: value}
+        else:
+            slot_set = {REQUESTED_SLOT: REFUND_ACCOUNT}
+        return slot_set

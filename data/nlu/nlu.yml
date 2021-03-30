@@ -64,6 +64,40 @@ nlu:
     - can you please show more
     - anything more
     - show me more
+- intent: return_order
+  examples: |
+    - I want to return my order
+    - can you please return my order?
+    - I want refund for my order
+    - I don't want my product
+    - I want to send my product back
+- intent: select_return_order
+  examples: |
+    - I want to return [1](order_id)
+    - please place a return for [0](order_id)
+    - [3](order_id)
+    - place a return for [8](order_id)
+    - [9](order_id)
+- intent: ask_reason_for_return
+  examples: |
+    - i want to return my product because I [don't want it]{"entity":"reason_for_return","value":"Don't need the Product"}
+    - i want to return my product because I [don't need it]{"entity":"reason_for_return","value":"Don't need the Product"}
+    - [Don't need the product]{"entity":"reason_for_return","value":"Don't need the Product"}
+    - [Quality problem]{"entity":"reason_for_return","value":"Quality issues"}
+    - [Quality issues]{"entity":"reason_for_return","value":"Quality issues"}
+    - i got a [wrong product]{"entity":"reason_for_return","value":"Incorrect Items"}
+    - [I didn't receive correct product]{"entity":"reason_for_return","value":"Incorrect Items"}
+    - I received [incorrect product]{"entity":"reason_for_return","value":"Incorrect Items"}
+    - [Incorrect Items]{"entity":"reason_for_return","value":"Incorrect Items"}
+- intent: ask_refund_account
+  examples: |
+    - [Primary Account]{"entity":"refund_account","value":"Primary Account"}
+    - just to my [Default Account]{"entity":"refund_account","value":"Primary Account"}
+    - to [primary Account]{"entity":"refund_account","value":"Primary Account"}
+    - [Credit Points]{"entity":"refund_account","value":"Credit Points"}
+    - [Credit Points]{"entity":"refund_account","value":"Credit Points"} works for me
+    - I would like to get my refund in [Credit]{"entity":"refund_account","value":"Credit Points"}
+    - I would like to get my refund in [primary]{"entity":"refund_account","value":"Primary Account"} one
 - intent: affirm
   examples: |
     - Accept
