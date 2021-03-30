@@ -77,11 +77,19 @@ format:
 lint:
 	poetry run flake8 src/dash_ecomm tests actions
 
+.PHONY: train
+train:
+	PYTHONPATH='./src/' poetry run rasa train
+
 N_THREADS=1
 # Run tests
-.PHONY: test
-test:
-	PYTHONPATH='./src/' poetry run pytest tests/ -s -n ${N_THREADS} -vv
+.PHONY: test-nlu
+test-nlu:
+	PYTHONPATH='./src/' poetry run rasa test nlu --nlu data/nlu --cross-validation
+
+.PHONY: test-core
+test-core:
+	PYTHONPATH='./src/' poetry run rasa test core --stories test/test_stories.yml --fail-on-prediction-errors
 
 # Run coverage
 .PHONY: coverage
@@ -95,14 +103,45 @@ coverage:
 .PHONY: test-coverage
 test-coverage: test coverage
 
+# Deploy all services
+.PHONY: deploy-all
+deploy-all:
+	#duckling
+	kubectl apply -f deployment/duckling/service.yml
+	kubectl apply -f deployment/duckling/deployment.yml
 
-# Run tests and coverage
-.PHONY: build-action-image
-build-action-image:
-	docker build -f Dockerfile_actions -t textclouddev.azurecr.io/botlibrary/dashbot-ecomm:latest .
+	# rasa actions
+	kubectl apply -f deployment/rasa-actions/service.yml
+	kubectl apply -f deployment/rasa-actions/deployment.yml
+
+	# callback server
+	kubectl apply -f deployment/callback-server/service.yml
+	kubectl apply -f deployment/callback-server/deployment.yml
+
+	# rasa x
+	kubectl apply -f deployment/rasa-x/rasa-x-service.yml
+	kubectl apply -f deployment/rasa-x/rasa-x-deployment.yml
+	kubectl apply -f deployment/rasa-x/rasa-x-ingress.yml
+	kubectl apply -f deployment/rasa-x/rasa-prod-ingress.yml
+
+	# demo
+	kubectl apply -f deployment/demo/service.yml
+	kubectl apply -f deployment/demo/deployment.yml
+	kubectl apply -f deployment/demo/ingress.yml
 
 
-# Run tests and coverage
-.PHONY: push-action-image
-push-action-image:
-	docker push textclouddev.azurecr.io/botlibrary/dashbot-ecomm:latest
+# Restart and Rollout
+.PHONY: restart-rollout
+restart-rollout:
+	kubectl rollout restart  -f deployment/duckling/deployment.yml
+	kubectl rollout restart  -f deployment/rasa-actions/deployment.yml
+	kubectl rollout restart  -f deployment/callback-server/deployment.yml
+	kubectl rollout restart  -f deployment/rasa-x/rasa-x-deployment.yml
+	kubectl rollout restart  -f deployment/demo/deployment.yml
+
+
+VERSION=""
+# Build and push Docker image
+.PHONY: build-and-push-for-release
+build-and-push-for-release:
+	./utility-scripts/build-and-push-image-for-release.sh ${VERSION}

@@ -58,6 +58,12 @@ nlu:
     - can I login here?
     - make me login in
     - can you login me
+- intent: show_more
+  examples: |
+    - show more
+    - can you please show more
+    - anything more
+    - show me more
 - intent: affirm
   examples: |
     - Accept
