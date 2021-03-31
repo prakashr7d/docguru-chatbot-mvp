@@ -38,6 +38,7 @@ ADD configs/k8s/config.yml config.yml
 ADD domain.yml domain.yml
 ADD configs/k8s/credentials.yml credentials.yml
 ADD configs/k8s/endpoints.yml endpoints.yml
+ADD configs/k8s/endpoints-rasa-prod.yml endpoints-rasa-prod.yml
 ADD src src
 ADD actions actions
 ADD data data
