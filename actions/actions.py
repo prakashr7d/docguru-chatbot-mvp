@@ -577,7 +577,10 @@ class ValidateReturnOrder(FormValidationAction):
         if value is not None and validate_order_id(value, user_email):
             slot_set = {ORDER_ID_FOR_RETURN: value}
         else:
-            dispatcher.utter_message(template="utter_ineligible_order_id")
+            if validate_order_id(value, user_email) is False:
+                dispatcher.utter_message(template="utter_ineligible_order_id")
+            else:
+                dispatcher.utter_message(template="utter_ineligible_order_id")
             slot_set = {REQUESTED_SLOT: ORDER_ID_FOR_RETURN}
         return slot_set
 

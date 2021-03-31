@@ -5,6 +5,13 @@ rules:
   steps:
   - intent: chitchat
   - action: utter_chitchat
+
+- rule: anything else deny
+  steps:
+  - action: utter_anything_else
+  - intent: deny
+  - action: utter_i_am_here_for_you
+
 - rule: out of scope
   steps:
   - or:

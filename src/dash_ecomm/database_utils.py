@@ -1,3 +1,4 @@
+import logging
 from dataclasses import dataclass
 from typing import Any, Dict, List, Text
 
@@ -25,6 +26,8 @@ from dash_ecomm.generic_utils import is_valid_order_id
 
 with open(DB_FILE, "r") as dbf:
     DATABASE = yaml.safe_load(dbf)
+
+logger = logging.getLogger(__name__)
 
 
 @dataclass
