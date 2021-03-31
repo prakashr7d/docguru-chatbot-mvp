@@ -6,6 +6,7 @@ A bot that will take care of all of your shopping needs in one go.
 # Demo URL and Rasa X
 - Demo: [https://ns-botlibrary-ecomm.uksouth.cloudapp.azure.com/ecomm/index.html](https://ns-botlibrary-ecomm.uksouth.cloudapp.azure.com/ecomm/index.html)
 - Rasa X: [https://ns-botlibrary-ecomm.uksouth.cloudapp.azure.com/](https://ns-botlibrary-ecomm.uksouth.cloudapp.azure.com/)
+- Kibana: [https://ns-botlibrary-ecomm.uksouth.cloudapp.azure.com/bot-analytics/](https://ns-botlibrary-ecomm.uksouth.cloudapp.azure.com/bot-analytics/)
 
 For username and password for both contact the product owner
 
