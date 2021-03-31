@@ -18,6 +18,6 @@ spec:
     http:
       paths:
       - backend:
-          serviceName: rasa-x
+          serviceName: rasa-prod
           servicePort: 5005
         path: /core/(.*)

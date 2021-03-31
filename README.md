@@ -6,6 +6,7 @@ A bot that will take care of all of your shopping needs in one go.
 # Demo URL and Rasa X
 - Demo: [https://ns-botlibrary-ecomm.uksouth.cloudapp.azure.com/ecomm/index.html](https://ns-botlibrary-ecomm.uksouth.cloudapp.azure.com/ecomm/index.html)
 - Rasa X: [https://ns-botlibrary-ecomm.uksouth.cloudapp.azure.com/](https://ns-botlibrary-ecomm.uksouth.cloudapp.azure.com/)
+- Kibana: [https://ns-botlibrary-ecomm.uksouth.cloudapp.azure.com/bot-analytics/](https://ns-botlibrary-ecomm.uksouth.cloudapp.azure.com/bot-analytics/)
 
 For username and password for both contact the product owner
 
@@ -129,7 +130,7 @@ poetry run rasa run --enable-api --cors "*" --endpoints configs/local/endpoints.
 
 ### Open demo page
 
-Open the file in [demo/local/index.html](demo/prod/index.html)
+Open the file in [demo/local/index.html](demo/local/index.html)
 
 ### [OPTIONAL] Run Rasa shell in Debug mode
 poetry run rasa shell --debug --endpoints endpoints-local.yml
@@ -269,6 +270,14 @@ These steps need to followed while setting up the cluster for the first time
   kubectl -n dash-ecomm create secret generic basic-auth --from-file=auth
   ```
 
+- **Deploy RabbitMQ, Kibana, and Elasticsearch for the first time**
+  - RabbitMQ
+  - Elasticsearch (single node)
+  - Kibana
+  ```shell script
+  make deploy-es-kib-rmq
+  ```
+
 - **Deploy all services for the first time**
   This deploys the following services:
   - Rasa Actions Server
@@ -277,6 +286,7 @@ These steps need to followed while setting up the cluster for the first time
   - Rasa X
   - Ecomm Demo Page
   - Ingress for Rasa X, Rasa Core, Demo
+  - Rasa event consumer (for logging and analytics)
  
   ```shell script
     make deloy-all

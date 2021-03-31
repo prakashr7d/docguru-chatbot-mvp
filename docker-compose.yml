@@ -9,12 +9,15 @@ services:
       - ./models:/app/models
       - ./data:/app/data
       - ./src:/app/src
-    command: ["poetry","run","rasa","x","--no-prompt"]
+    command: ["poetry","run","rasa","x", "--no-prompt"]
     ports:
       - '5005:5005'
       - '5002:5002'
+    depends_on:
+      - rabbitmq
     networks:
       - all
+
   rasa-actions:
     build: "./"
     image: dash-ecomm:latest
@@ -26,6 +29,7 @@ services:
     command: ["poetry","run","rasa","run","actions"]
     networks:
       - all
+
   callback-server:
     build: "./"
     image: dash-ecomm:latest
@@ -35,14 +39,17 @@ services:
     command: ["poetry","run","python", "-m", "dash_ecomm.callback_server"]
     networks:
       - all
+
+
   duckling:
     image: rasa/duckling:latest
     networks:
       - all
+
   demo:
     build: "./"
     image: dash-ecomm:latest
-    working_dir: /app/demo/prod
+    working_dir: /app/demo/local
     volumes:
       - ./demo:/app/demo
     command: ["poetry","run", "python", "-m", "http.server", "7000"]
@@ -50,6 +57,7 @@ services:
       - '7000:7000'
     networks:
       - all
+
 
 networks:
   all:

@@ -129,6 +129,8 @@ deploy-all:
 	kubectl apply -f deployment/demo/deployment.yml
 	kubectl apply -f deployment/demo/ingress.yml
 
+	# event consumer
+	kubectl apply -f deployment/event-consumer/deployment.yml
 
 # Restart and Rollout
 .PHONY: restart-rollout
@@ -138,7 +140,21 @@ restart-rollout:
 	kubectl rollout restart  -f deployment/callback-server/deployment.yml
 	kubectl rollout restart  -f deployment/rasa-x/rasa-x-deployment.yml
 	kubectl rollout restart  -f deployment/demo/deployment.yml
+	kubectl rollout restart  -f deployment/event-consumer/deployment.yml
 
+
+# Deploy all services
+.PHONY: deploy-es-kib
+deploy-es-kib-rmq:
+	kubectl apply -f deployment/rabbitmq/service.yml
+	kubectl apply -f deployment/rabbitmq/deployment.yml
+
+	kubectl apply -f deployment/elasticsearch/service.yml
+	kubectl apply -f deployment/elasticsearch/deployment.yml
+
+	kubectl apply -f deployment/kibana/service.yml
+	kubectl apply -f deployment/kibana/deployment.yml
+	kubectl apply -f deployment/ingress/deployment.yml
 
 VERSION=""
 # Build and push Docker image
