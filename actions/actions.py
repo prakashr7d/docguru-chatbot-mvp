@@ -53,8 +53,10 @@ from dash_ecomm.database_utils import (
     get_valid_order_return,
     is_valid_otp,
     is_valid_user,
+    update_order_status,
+    validate_order_id,
 )
-from dash_ecomm.generic_utils import create_order_carousel, validate_order_id
+from dash_ecomm.generic_utils import create_order_carousel
 from rasa_sdk import Action, FormValidationAction, Tracker, events
 from rasa_sdk.events import AllSlotsReset, EventType, FollowupAction, SlotSet
 from rasa_sdk.executor import CollectingDispatcher
@@ -498,7 +500,7 @@ class ShowValidReturnOrders(Action):
                 dispatcher.utter_message(template="utter_orders_return_show_more")
             else:
                 dispatcher.utter_message(template="utter_orders_eligible_for_return")
-            carousel_order = create_order_carousel(valid_orders)
+            carousel_order = self.__create_order_carousel(valid_orders)
             dispatcher.utter_message(attachment=carousel_order)
             if no_of_valid_orders > STOP_SHOW_MORE_COUNT:
                 dispatcher.utter_message(template="utter_show_more_option")
@@ -547,14 +549,16 @@ class ReturnOrderAction(Action):
         tracker: Tracker,
         domain: "DomainDict",  # noqa: F821
     ) -> List[Dict[Text, Any]]:
-        """
-        gets order number, with email id
-        changes the order status to return and changes returnable to false
-        adds new column as refunded to false
-        :return:
-        """
-        dispatcher.utter_message(template="utter_return_initiated")
-        return []
+        order_id = tracker.get_slot(ORDER_ID_FOR_RETURN)
+        update_order_status(RETURNING, order_id)
+        dispatcher.utter_message(template="utter_return_initiated", order_no=order_id)
+        return [
+            SlotSet(ORDER_COLUMN_ID, None),
+            SlotSet(REASON_FOR_RETURN, None),
+            SlotSet(REASON_FOR_RETURN_DESCRIPTION),
+            SlotSet(PICKUP_ADDRESS_FOR_RETURN, None),
+            SlotSet(REFUND_ACCOUNT, None),
+        ]
 
 
 class ValidateReturnOrder(FormValidationAction):

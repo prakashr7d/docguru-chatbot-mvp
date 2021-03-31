@@ -9,6 +9,7 @@ MIN_ITEM_IN_CAROUSEL = 0
 MIN_NUMBER_ZERO = 0
 
 DB_FILE = str(this_path.parent / "database.yml")
+
 DB_USER_COLUMN = "users"
 DB_USER_ORDERS = "orders"
 
@@ -29,6 +30,7 @@ ORDER_COLUMN_COLOUR = "color"
 ORDER_COLUMN_SIZE = "size"
 ORDER_COLUMN_STATUS = "status"
 ORDER_COLUMN_RETURNABLE = "returnable"
+ORDER_COLUMN_REFUNDED = "refunded"
 ORDER_COLUMN_IMAGE_URL = "image_url"
 
 # Slot Names

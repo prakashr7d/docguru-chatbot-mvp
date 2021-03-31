@@ -150,3 +150,15 @@ stories:
   steps:
   - intent: show_more
   - action: show_more_action
+
+- story: return order
+  steps:
+  - intent: return_order
+  - slot_was_set:
+    - is_logged_in: true
+  - action: action_show_valid_return_order
+  - intent: select_return_order
+  - action: return_order_form
+  - active_loop: return_order_form
+  - active_loop: null
+  - action: action_return_order

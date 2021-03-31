@@ -8,6 +8,8 @@ from dash_ecomm.constants import (
     DB_USER_ORDERS,
     DELIVERED,
     ORDER_COLUMN_EMAIL,
+    ORDER_COLUMN_ID,
+    ORDER_COLUMN_REFUNDED,
     ORDER_COLUMN_RETURNABLE,
     ORDER_COLUMN_STATUS,
     ORDER_PENDING,
@@ -113,8 +115,7 @@ def get_valid_order_return(ordermail: Text) -> List[Dict[Text, Any]]:
     orders = get_all_orders_from_email(ordermail)
     for selected_order in orders:
         if (
-            selected_order[ORDER_COLUMN_EMAIL] == ordermail
-            and selected_order[ORDER_COLUMN_STATUS] in [DELIVERED]
+            selected_order[ORDER_COLUMN_STATUS] == DELIVERED
             and selected_order[ORDER_COLUMN_RETURNABLE]
         ):
             delivered_order.append(selected_order)
@@ -125,10 +126,23 @@ def validate_order_id(order_id: Text, order_email: Text) -> bool:
     global DATABASE
 
     if is_valid_order_id(order_id):
-        if (
-            order_id in DATABASE[DB_USER_ORDERS]
-            and order_email == DATABASE[DB_USER_ORDERS][order_id][ORDER_COLUMN_EMAIL]
-        ):
-            return True
+        for selected_order in DATABASE[DB_USER_ORDERS]:
+            if (
+                order_id in selected_order[ORDER_COLUMN_ID]
+                and order_email == selected_order[ORDER_COLUMN_EMAIL]
+            ):
+                return True
     else:
         return False
+
+
+def update_order_status(status: Text, order_id: Text):
+    global DATABASE
+
+    for selected_order in DATABASE[DB_USER_ORDERS]:
+        if order_id in selected_order[ORDER_COLUMN_ID]:
+            selected_order[ORDER_COLUMN_STATUS] = status
+            selected_order[ORDER_COLUMN_RETURNABLE] = False
+            selected_order[ORDER_COLUMN_REFUNDED] = False
+    with open(DB_FILE, "w+") as dbfw:
+        yaml.dump(DATABASE, dbfw)

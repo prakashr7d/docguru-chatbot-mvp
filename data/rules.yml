@@ -36,7 +36,7 @@ rules:
 - rule: login unblocked event
   condition:
   - slot_was_set:
-      - login_blocked: true
+    - login_blocked: true
   steps:
   - intent: EXTERNAL_unblock_login
   - action: action_unblock_login
@@ -87,7 +87,7 @@ rules:
   - slot_was_set:
     - is_logged_in: true
   steps:
-  - intent: select_order
+  - intent: select_return_order
   - action: return_order_form
   - active_loop: return_order_form
 
@@ -96,12 +96,13 @@ rules:
   - slot_was_set:
     - login_blocked: true
   steps:
-  - intent: select_order
+  - intent: select_return_order
   - action: utter_order_status_for_blocked_user
   - action: action_login_form
 
 - rule: submit, return form
-  active_loop: return_order_form
+  condition:
+  - active_loop: return_order_form
   steps:
   - action: return_order_form
   - active_loop: null

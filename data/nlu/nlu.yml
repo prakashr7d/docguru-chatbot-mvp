@@ -73,11 +73,11 @@ nlu:
     - I want to send my product back
 - intent: select_return_order
   examples: |
-    - I want to return [1](order_id)
-    - please place a return for [0](order_id)
-    - [3](order_id)
-    - place a return for [8](order_id)
-    - [9](order_id)
+    - I want to return [DASH123450](order_id)
+    - please place a return for [DASH123460](order_id)
+    - [DASH123470](order_id)
+    - place a return for [DASH113450](order_id)
+    - [DASH1268745](order_id)
 - intent: ask_reason_for_return
   examples: |
     - i want to return my product because I [don't want it]{"entity":"reason_for_return","value":"Don't need the Product"}

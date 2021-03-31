@@ -365,7 +365,7 @@ responses:
   utter_return_order_blocked:
   - text: Sorry, currently you can't return order because you have been blocked.
   utter_return_initiated:
-  - text: Again, apologies. Your return order request has been initiated, and you will receive a refund within 7-10 business days.
+  - text: Again, apologies. Your return order request for order no. {order_no} has been initiated, and you will receive a refund within 7-10 business days.
 
 actions:
 - personal_greet
