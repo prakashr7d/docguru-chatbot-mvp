@@ -95,14 +95,6 @@ jobs:
           name: BASH_ENV PATH
           command: echo "export PATH=$PATH:/home/circleci/.local/bin" >> $BASH_ENV
 
-#      - run:
-#          name: Install make
-#          command: apk --no-cache --update add build-base
-#
-#      - run:
-#          name: Install bash
-#          command: apk add --no-cache --upgrade bash
-
       # with credentials stored in the UI
       - run:
           name: Login to ACR

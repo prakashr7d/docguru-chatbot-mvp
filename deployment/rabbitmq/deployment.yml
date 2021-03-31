@@ -1,30 +1,27 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: rasa-x
+  name: rabbitmq
   namespace: dash-ecomm
 spec:
   replicas: 1
   selector:
     matchLabels:
-      component: rasa-x
+      component: rabbitmq
       type: dash-ecomm
   template:
     metadata:
       labels:
-        component: rasa-x
+        component: rabbitmq
         type: dash-ecomm
     spec:
       containers:
-      - image: textclouddev.azurecr.io/neuralspace/dash-ecomm:latest
+      - image: rabbitmq:3-management
         imagePullPolicy: Always
-        command: [ "poetry","run","rasa","x", "--cors", "*", "--no-prompt"]
-        name: dash-ecomm-rasa-x
-        env:
-          - name: RASA_X_PASSWORD
-            value: oldNg8j9NFUAJ
+        name: dash-ecomm-rabbit-mq
         ports:
-        - containerPort: 5002
+        - containerPort: 15672
+        - containerPort: 5672
         resources:
           requests:
             cpu: 0.2
