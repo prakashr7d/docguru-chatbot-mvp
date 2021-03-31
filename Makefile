@@ -122,7 +122,11 @@ deploy-all:
 	kubectl apply -f deployment/rasa-x/rasa-x-service.yml
 	kubectl apply -f deployment/rasa-x/rasa-x-deployment.yml
 	kubectl apply -f deployment/rasa-x/rasa-x-ingress.yml
-	kubectl apply -f deployment/rasa-x/rasa-prod-ingress.yml
+
+	# rasa prod
+	kubectl apply -f deployment/rasa-prod/rasa-prod-service.yml
+	kubectl apply -f deployment/rasa-prod/rasa-prod-deployment.yml
+	kubectl apply -f deployment/rasa-prod/rasa-prod-ingress.yml
 
 	# demo
 	kubectl apply -f deployment/demo/service.yml
@@ -139,6 +143,7 @@ restart-rollout:
 	kubectl rollout restart  -f deployment/rasa-actions/deployment.yml
 	kubectl rollout restart  -f deployment/callback-server/deployment.yml
 	kubectl rollout restart  -f deployment/rasa-x/rasa-x-deployment.yml
+	kubectl rollout restart  -f deployment/rasa-prod/rasa-prod-deployment.yml
 	kubectl rollout restart  -f deployment/demo/deployment.yml
 	kubectl rollout restart  -f deployment/event-consumer/deployment.yml
 
