@@ -454,11 +454,6 @@ class ShowValidReturnOrders(Action):
                         "payload": "",
                         "type": "postback",
                     },
-                    {
-                        "title": ADD_REVIEW,
-                        "payload": "",
-                        "type": "postback",
-                    },
                 ],
             }
             carousel["payload"]["elements"].append(carousel_element)
