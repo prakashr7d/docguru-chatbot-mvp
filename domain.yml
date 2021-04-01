@@ -193,6 +193,11 @@ slots:
     values:
       - Primary Account
       - Credit Points
+  type_of_return:
+    type: categorical
+    values:
+      - Return Product
+      - Replace Product
 responses:
   utter_generic_greet:
   - buttons:
