@@ -12,7 +12,7 @@ from dash_ecomm.constants import (
     PRODUCT_DETAILS,
     RETURNING,
     SHIPPED,
-    TRACK_ORDER,
+    ORDER_STATUS,
 )
 
 
@@ -28,7 +28,7 @@ def add_track_item_button(
 ) -> Dict[Text, Any]:
     if order[ORDER_COLUMN_STATUS] in [SHIPPED, RETURNING, ORDER_PENDING]:
         carousel["buttons"].append(
-            {"title": TRACK_ORDER, "payload": "", "type": "postback"}
+            {"title": ORDER_STATUS, "payload": "", "type": "postback"}
         )
 
 

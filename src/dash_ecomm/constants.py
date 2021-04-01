@@ -58,10 +58,11 @@ OTP_TRIES = "otp_tries"
 # Button Titles
 CANCEL_ORDER = "Cancel Order"
 RETURN_ORDER = "Return Order"
-TRACK_ORDER = "Track Item"
+ORDER_STATUS = "Order Status"
 PRODUCT_DETAILS = "Product details"
 ADD_REVIEW = "Review"
 REORDER = "Re-order"
+REFUND_ORDER = "Ask For Refund"
 SELECT_ORDER = "Select this order"
 
 # order status
@@ -76,7 +77,7 @@ MAX_OTP_TRIES = 1
 MAX_EMAIL_TRIES = 1
 
 # actions name
-ACTION_ORDER_STATUS = "action_order_status"
+ACTION_CHECK_ALL_ORDERS = "action_check_all_orders"
 ACTION_RETURN_ORDER = "action_show_valid_return_order"
 ACTION_CANCEL_ORDER = "action_cancel_order"
 

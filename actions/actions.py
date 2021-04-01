@@ -4,16 +4,18 @@ from typing import Any, Dict, List, Text, Tuple
 from dash_ecomm import generic_utils
 from dash_ecomm.constants import (
     ACTION_CANCEL_ORDER,
-    ACTION_ORDER_STATUS,
+    ACTION_CHECK_ALL_ORDERS,
     ACTION_RETURN_ORDER,
     ACTION_THAT_TRIGGERED_SHOW_MORE,
     ADD_REVIEW,
+    ORDER_COLUMN_RETURNABLE,
     CREDIT_POINTS,
     DONT_NEED_THE_PRODUCT,
     EMAIL_TRIES,
     INCORRECT_ITEMS,
     IS_LOGGED_IN,
     IS_SHOW_MORE_TRIGGERED,
+    DELIVERED,
     LOGIN_BLOCKED,
     MAX_EMAIL_TRIES,
     MAX_ITEM_IN_CAROUSEL,
@@ -28,6 +30,11 @@ from dash_ecomm.constants import (
     ORDER_ID_FOR_RETURN,
     ORDER_PENDING,
     OTP_TRIES,
+    REFUND_ORDER,
+    ORDER_STATUS,
+    RETURN_ORDER,
+    CANCEL_ORDER,
+    PRODUCT_DETAILS,
     PICKUP_ADDRESS_FOR_RETURN,
     PRIMARY_ACCOUNT,
     QUALITY_ISSUES,
@@ -320,9 +327,79 @@ class ActionLogout(Action):
         return [AllSlotsReset()]
 
 
-class OrderStatus(Action):
+class CheckAllOrders(Action):
     def name(self) -> Text:
-        return "action_order_status"
+        return "action_check_all_orders"
+
+    @staticmethod
+    def respective_buttons(status, is_eligible):
+        required_buttons = []
+
+        if status == ORDER_PENDING or status == SHIPPED:
+            required_buttons.append({
+                "title": ORDER_STATUS,
+                "payload": "",
+                "type": "postback"
+            })
+            required_buttons.append({
+                "title": PRODUCT_DETAILS,
+                "payload": "",
+                "type": "postback"
+            })
+            required_buttons.append({
+                "title": CANCEL_ORDER,
+                "payload": "",
+                "type": "postback"
+            })
+        elif status == DELIVERED and is_eligible:
+            required_buttons.append({
+                "title": ORDER_STATUS,
+                "payload": "",
+                "type": "postback"
+            })
+            required_buttons.append({
+                "title": RETURN_ORDER,
+                "payload": "",
+                "type": "postback"
+            })
+            required_buttons.append({
+                "title": REFUND_ORDER,
+                "payload": "",
+                "type": "postback"
+            })
+        else:
+            required_buttons.append({
+                "title": ORDER_STATUS,
+                "payload": "",
+                "type": "postback"
+            })
+            required_buttons.append({
+                "title": PRODUCT_DETAILS,
+                "payload": "",
+                "type": "postback"
+            })
+        return required_buttons
+
+    def __create_order_carousel(self, orders: List[Dict[Text, Any]]) -> Dict[Text, Any]:
+        carousel = {
+            "type": "template",
+            "payload": {"template_type": "generic", "elements": []},
+        }
+
+        for selected_order in orders:
+            required_buttons = self.respective_buttons(selected_order[ORDER_COLUMN_STATUS],
+                                                       selected_order[ORDER_COLUMN_RETURNABLE])
+            logger.info("1")
+            carousel_element = {
+                "title": selected_order[ORDER_COLUMN_PRODUCT_NAME],
+                "subtitle": f"Status: {selected_order[ORDER_COLUMN_STATUS]}",
+                "image_url": selected_order[ORDER_COLUMN_IMAGE_URL],
+                "buttons": required_buttons,
+            }
+            logger.info(carousel_element)
+            carousel["payload"]["elements"].append(carousel_element)
+        return carousel
+
 
     def __get_current_orders(
         self, no_of_valid_orders: int, order_email: Text, orders: List[Dict[Text, Any]]
@@ -339,9 +416,7 @@ class OrderStatus(Action):
             maximum_order_index = no_of_valid_orders
             no_of_valid_orders -= MAX_ITEM_IN_CAROUSEL
         for selected_order in orders[minimum_order_index:maximum_order_index]:
-            if selected_order[ORDER_COLUMN_EMAIL] == order_email and selected_order[
-                ORDER_COLUMN_STATUS
-            ] in [SHIPPED, RETURNING, ORDER_PENDING]:
+            if selected_order[ORDER_COLUMN_EMAIL] == order_email:
                 valid_orders.append(selected_order)
         return valid_orders, no_of_valid_orders
 
@@ -360,12 +435,12 @@ class OrderStatus(Action):
                 dispatcher.utter_message(template="utter_on_show_orders")
             else:
                 dispatcher.utter_message(template="utter_open_current_orders")
-            carousel_order = create_order_carousel(valid_orders)
+            carousel_order = self.__create_order_carousel(valid_orders)
             dispatcher.utter_message(attachment=carousel_order)
             if no_of_valid_orders > STOP_SHOW_MORE_COUNT:
                 dispatcher.utter_message(template="utter_show_more_option")
                 slot_set.append(
-                    SlotSet(ACTION_THAT_TRIGGERED_SHOW_MORE, ACTION_ORDER_STATUS)
+                    SlotSet(ACTION_THAT_TRIGGERED_SHOW_MORE, ACTION_CHECK_ALL_ORDERS)
                 )
             else:
                 slot_set.append(SlotSet(ACTION_THAT_TRIGGERED_SHOW_MORE, None))
@@ -415,7 +490,7 @@ class ShowMoreAction(Action):
         followup_action = []
         action_triggered = tracker.get_slot(ACTION_THAT_TRIGGERED_SHOW_MORE)
         if action_triggered in [
-            ACTION_ORDER_STATUS,
+            ACTION_CHECK_ALL_ORDERS,
             ACTION_RETURN_ORDER,
             ACTION_CANCEL_ORDER,
         ]:
