@@ -532,6 +532,7 @@ class ShowValidReturnOrders(Action):
         )
         slot_set.append(SlotSet(SHOW_MORE_COUNT, no_of_valid_orders))
         slot_set.append(SlotSet(IS_SHOW_MORE_TRIGGERED, False))
+        return slot_set
 
 
 class ReturnOrderAction(Action):

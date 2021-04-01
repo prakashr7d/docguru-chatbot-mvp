@@ -6,9 +6,9 @@ orders:
   order_email: not-registered@me.com
   order_number: 123456
   product_name: Shoes
-  size: '9'
   refunded: false
   returnable: false
+  size: '9'
   status: shipped
 - color: blue
   id: DASH123451
@@ -17,9 +17,9 @@ orders:
   order_email: pooja@neuralspace.ai
   order_number: 123456
   product_name: Shoes
-  size: '9'
   refunded: true
   returnable: false
+  size: '9'
   status: canceled
 - color: Blue
   id: DASH123452
@@ -28,9 +28,9 @@ orders:
   order_email: pooja@neuralspace.ai
   order_number: 123456
   product_name: Shoes
-  size: '9'
   refunded: false
   returnable: false
+  size: '9'
   status: shipped
 - color: Pink
   id: DASH123453
@@ -50,9 +50,9 @@ orders:
   order_email: pooja@neuralspace.ai
   order_number: 123456
   product_name: Shoes
-  size: '9'
   refunded: false
   returnable: false
+  size: '9'
   status: order pending
 - color: black
   id: DASH123455
@@ -61,9 +61,9 @@ orders:
   order_email: ayushman@neuralspace.ai
   order_number: 123457
   product_name: Shoes
-  size: '10'
   refunded: false
   returnable: false
+  size: '10'
   status: order pending
 - color: Navy blue
   id: DASH123456
@@ -72,9 +72,9 @@ orders:
   order_email: dishant@neuralspace.ai
   order_number: 123458
   product_name: Shoes
-  size: '10'
   refunded: false
   returnable: false
+  size: '10'
   status: order pending
 - color: gray
   id: DASH123457
@@ -105,9 +105,9 @@ orders:
   order_email: dishant@neuralspace.ai
   order_number: 123459
   product_name: Shoes
-  size: '11'
   refunded: false
   returnable: false
+  size: '11'
   status: shipped
 - color: gray
   id: DASH123460
@@ -116,10 +116,21 @@ orders:
   order_email: dishant@neuralspace.ai
   order_number: 123459
   product_name: Shoes
-  size: '11'
   refunded: false
   returnable: false
+  size: '11'
   status: shipped
+- color: gray
+  id: DASH123443
+  image_url: https://cdnmedia.dsc-cricket.com/media/catalog/product/cache/67ee89799642c567a71fc92f3699d937/d/s/dsc-zooter-cricket-shoes-red.jpg
+  order_date: '2021-01-05'
+  order_email: dishant@neuralspace.ai
+  order_number: 123459
+  product_name: Shoes
+  refunded: false
+  returnable: false
+  size: '11'
+  status: returning
 - color: gray
   id: DASH123461
   image_url: https://i0.wp.com/post.healthline.com/wp-content/uploads/2020/01/268453-Best_Running_Shoes_for_Flat_Feet-1296x728-header-1296x728.jpg?w=1155&h=1528
@@ -127,9 +138,9 @@ orders:
   order_email: dishant@neuralspace.ai
   order_number: 123459
   product_name: Shoes
-  size: '11'
   refunded: false
   returnable: false
+  size: '11'
   status: shipped
 products:
 - color: blue
