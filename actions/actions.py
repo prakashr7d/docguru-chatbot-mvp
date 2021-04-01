@@ -7,7 +7,6 @@ from dash_ecomm.constants import (
     ACTION_ORDER_STATUS,
     ACTION_RETURN_ORDER,
     ACTION_THAT_TRIGGERED_SHOW_MORE,
-    ADD_REVIEW,
     CREDIT_POINTS,
     DONT_NEED_THE_PRODUCT,
     EMAIL_TRIES,
@@ -26,7 +25,6 @@ from dash_ecomm.constants import (
     ORDER_COLUMN_PRODUCT_NAME,
     ORDER_COLUMN_STATUS,
     ORDER_ID_FOR_RETURN,
-    ORDER_PENDING,
     OTP_TRIES,
     PICKUP_ADDRESS_FOR_RETURN,
     PRIMARY_ACCOUNT,
@@ -34,13 +32,14 @@ from dash_ecomm.constants import (
     REASON_FOR_RETURN,
     REASON_FOR_RETURN_DESCRIPTION,
     REFUND_ACCOUNT,
-    REORDER,
+    REPLACE_ORDER,
+    REPLACE_PRODUCT,
     REQUESTED_SLOT,
-    RETURNING,
-    SELECT_ORDER,
-    SHIPPED,
+    RETURN_ORDER,
+    RETURN_PRODUCT,
     SHOW_MORE_COUNT,
     STOP_SHOW_MORE_COUNT,
+    TYPE_OF_RETURN,
     USER_EMAIL,
     USER_FIRST_NAME,
     USER_LAST_NAME,
@@ -53,7 +52,6 @@ from dash_ecomm.database_utils import (
     get_valid_order_return,
     is_valid_otp,
     is_valid_user,
-    update_order_status,
     validate_order_id,
 )
 from dash_ecomm.generic_utils import create_order_carousel
@@ -339,9 +337,7 @@ class OrderStatus(Action):
             maximum_order_index = no_of_valid_orders
             no_of_valid_orders -= MAX_ITEM_IN_CAROUSEL
         for selected_order in orders[minimum_order_index:maximum_order_index]:
-            if selected_order[ORDER_COLUMN_EMAIL] == order_email and selected_order[
-                ORDER_COLUMN_STATUS
-            ] in [SHIPPED, RETURNING, ORDER_PENDING]:
+            if selected_order[ORDER_COLUMN_EMAIL] == order_email:
                 valid_orders.append(selected_order)
         return valid_orders, no_of_valid_orders
 
@@ -439,19 +435,20 @@ class ShowValidReturnOrders(Action):
             "payload": {"template_type": "generic", "elements": []},
         }
         for selected_order in delivered_orders:
+            logger.info(selected_order[ORDER_COLUMN_ID])
             carousel_element = {
                 "title": selected_order[ORDER_COLUMN_PRODUCT_NAME],
                 "subtitle": f"Status: {selected_order[ORDER_COLUMN_STATUS]}",
                 "image_url": selected_order[ORDER_COLUMN_IMAGE_URL],
                 "buttons": [
                     {
-                        "title": SELECT_ORDER,
-                        "payload": f"I want to return {selected_order[ORDER_COLUMN_ID]} order number",
+                        "title": RETURN_ORDER,
+                        "payload": f"please place a return for {selected_order[ORDER_COLUMN_ID]}",
                         "type": "postback",
                     },
                     {
-                        "title": REORDER,
-                        "payload": "",
+                        "title": REPLACE_ORDER,
+                        "payload": "/replace_order",
                         "type": "postback",
                     },
                 ],
@@ -546,10 +543,14 @@ class ReturnOrderAction(Action):
         domain: "DomainDict",  # noqa: F821
     ) -> List[Dict[Text, Any]]:
         order_id = tracker.get_slot(ORDER_ID_FOR_RETURN)
-        update_order_status(RETURNING, order_id)
-        dispatcher.utter_message(template="utter_return_initiated", order_no=order_id)
+        pickup_address_for_return = tracker.get_slot(PICKUP_ADDRESS_FOR_RETURN)
+        dispatcher.utter_message(
+            template="utter_return_initiated",
+            order_no=order_id,
+            address=pickup_address_for_return,
+        )
         return [
-            SlotSet(ORDER_COLUMN_ID, None),
+            SlotSet(ORDER_ID_FOR_RETURN, None),
             SlotSet(REASON_FOR_RETURN, None),
             SlotSet(REASON_FOR_RETURN_DESCRIPTION),
             SlotSet(PICKUP_ADDRESS_FOR_RETURN, None),
@@ -597,6 +598,24 @@ class ValidateReturnOrder(FormValidationAction):
         else:
             dispatcher.utter_message(template="utter_invalid_reason")
             slot_set = {REQUESTED_SLOT: REASON_FOR_RETURN}
+        return slot_set
+
+    def validate_type_of_return(
+        self,
+        value: Text,
+        dispatcher: "CollectingDispatcher",
+        tracker: "Tracker",
+        domain: "DomainDict",  # noqa: F821
+    ) -> List[EventType]:
+        slot_set = {}
+        if value is not None and value in [RETURN_PRODUCT]:
+            slot_set = {TYPE_OF_RETURN: value}
+        else:
+            slot_set = {REQUESTED_SLOT: TYPE_OF_RETURN}
+            if value in [REPLACE_PRODUCT]:
+                dispatcher.utter_message(template="utter_replace_order_inprogress")
+            else:
+                dispatcher.utter_message(template="utter_invalid_type_of_return")
         return slot_set
 
     def validate_reason_for_return_description(

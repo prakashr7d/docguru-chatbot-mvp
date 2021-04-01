@@ -61,6 +61,14 @@ rules:
   - intent: login
   - action: action_login_form
 
+- rule: already login
+  condition:
+  - slot_was_set:
+    - is_logged_in: true
+  steps:
+  - intent: login
+  - action: utter_already_logged_in
+
 - rule: order status + login blocked
   condition:
   - slot_was_set:
@@ -110,7 +118,16 @@ rules:
 - rule: submit, return form
   condition:
   - active_loop: return_order_form
+  - slot_was_set:
+    - is_logged_in: true
   steps:
   - action: return_order_form
   - active_loop: null
   - action: action_return_order
+  - action: utter_anything_else
+
+- rule: replace order
+  steps:
+  - intent: replace_order
+  - action: utter_replace_order_inprogress
+  - action: utter_anything_else_options

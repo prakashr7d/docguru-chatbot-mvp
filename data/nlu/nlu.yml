@@ -71,6 +71,14 @@ nlu:
     - I want refund for my order
     - I don't want my product
     - I want to send my product back
+    - start a return
+    - I don't want my shoes anymore
+    - how do I return these?
+    - return some shoes
+    - Which items are available to return?
+    - Start a return
+    - Okay. I would like to return some shoes I bought
+    - yeah I want to return something
 - intent: select_return_order
   examples: |
     - I want to return [DASH123450](order_id)
@@ -89,6 +97,15 @@ nlu:
     - [I didn't receive correct product]{"entity":"reason_for_return","value":"Incorrect Items"}
     - I received [incorrect product]{"entity":"reason_for_return","value":"Incorrect Items"}
     - [Incorrect Items]{"entity":"reason_for_return","value":"Incorrect Items"}
+- intent: ask_type_of_return
+  examples: |
+    - get [refund]{"entity":"type_of_return","value":"Return Product"}
+    - I want to [Return product]{"entity":"type_of_return","value":"Return Product"}
+    - give me [Refund]{"entity":"type_of_return","value":"Return Product"}
+    - just go for [Return]{"entity":"type_of_return","value":"Return Product"}
+    - [replace]{"entity":"type_of_return","value":"Replace Product"} it
+    - [Replace product]{"entity":"type_of_return","value":"Replace Product"}
+    - I can get [Replacement]{"entity":"type_of_return","value":"Replace Product"} my product though
 - intent: ask_refund_account
   examples: |
     - [Primary Account]{"entity":"refund_account","value":"Primary Account"}
@@ -98,6 +115,18 @@ nlu:
     - [Credit Points]{"entity":"refund_account","value":"Credit Points"} works for me
     - I would like to get my refund in [Credit]{"entity":"refund_account","value":"Credit Points"}
     - I would like to get my refund in [primary]{"entity":"refund_account","value":"Primary Account"} one
+- intent: replace_order
+  examples: |
+    - I want to replace an item
+    - can you please replace this item for me
+    - requesting replacement
+    - replace my order
+    - replace an item for me
+    - can you raise replace order request
+    - I want to change the order
+    - can you please change my product
+    - hwo do I change my product
+    - I got wrong product so can you raise replace it
 - intent: affirm
   examples: |
     - Accept

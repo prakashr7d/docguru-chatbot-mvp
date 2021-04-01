@@ -47,6 +47,7 @@ ACTION_THAT_TRIGGERED_SHOW_MORE = "action_that_triggered_show_more"
 IS_SHOW_MORE_TRIGGERED = "is_show_more_triggered"
 ORDER_ID_FOR_RETURN = "order_id_for_return"
 REASON_FOR_RETURN = "reason_for_return"
+TYPE_OF_RETURN = "type_of_return"
 REASON_FOR_RETURN_DESCRIPTION = "reason_for_return_description"
 PICKUP_ADDRESS_FOR_RETURN = "pickup_address_for_return"
 REFUND_ACCOUNT = "refund_account"
@@ -57,12 +58,13 @@ OTP_TRIES = "otp_tries"
 
 # Button Titles
 CANCEL_ORDER = "Cancel Order"
-RETURN_ORDER = "Return Order"
+RETURN_ORDER = "Return Item"
 TRACK_ORDER = "Track Item"
 PRODUCT_DETAILS = "Product details"
 ADD_REVIEW = "Review"
 REORDER = "Re-order"
 SELECT_ORDER = "Select this order"
+REPLACE_ORDER = "Replace Item"
 
 # order status
 SHIPPED = "shipped"
@@ -88,3 +90,7 @@ INCORRECT_ITEMS = "Incorrect Items"
 # type of payment account
 PRIMARY_ACCOUNT = "primary_account"
 CREDIT_POINTS = "credit_points"
+
+# type of return
+RETURN_PRODUCT = "Return Product"
+REPLACE_PRODUCT = "Replace Product"

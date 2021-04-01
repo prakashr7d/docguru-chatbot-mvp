@@ -49,8 +49,12 @@ intents:
     use_entities: true
 - ask_reason_for_return:
     use_entities: true
+- ask_type_of_return:
+    use_entities: true
 - select_return_order:
     use_entities: true
+- replace_order:
+    use_entities: []
 entities:
 - email
 - color
@@ -60,6 +64,7 @@ entities:
 - company
 - product
 - reason_for_return
+- type_of_return
 - refund_account
 - order_id
 slots:
@@ -198,6 +203,7 @@ slots:
     values:
       - Return Product
       - Replace Product
+    influence_conversation: true
 responses:
   utter_generic_greet:
   - buttons:
@@ -269,6 +275,15 @@ responses:
     - payload: /deny
       title: no
     text: Sorry, I could not validate your account. Have you signed up on our website?
+  utter_already_logged_in:
+  - buttons:
+    - payload: Check all orders
+      title: Check all orders
+    - payload: Return an order
+      title: Return an order
+    - payload: Product Inquiry
+      title: Product Inquiry
+    text: You are logged, you can try out these few options.
   utter_not_signed_up_response:
   - text: You can signup on our website any time. Once you are a registered user, I will be able to give you a personalized experience.
   utter_signed_up_user_failed_login_response:
@@ -349,7 +364,18 @@ responses:
       title: Quality issues
     - payload: Incorrect Items
       title: Incorrect Items
-    text: Sorry for the inconvenience; could you please share the reason for returning the order?
+    - payload: Hi
+      title: Back to Main Menu
+    text: Could you please share the reason for returning the order?
+  utter_ask_type_of_return:
+  - buttons:
+    - payload: Get refund for my product
+      title: Ask for Refund
+    - payload: Get replacement for my product
+      title: Ask for Replacement
+    text: What would you like to do?
+  utter_invalid_type_of_return:
+  - text: Sorry, I wasn't able to understand, it seems like you typed an invalid option. Try selecting one from buttons below.
   utter_ask_reason_for_return_description:
   - text:  Thank you for sharing reason for returning the order, could you please explain it in brief? Feel free to add comments that you have regarding the product.
   utter_ask_pickup_address_for_return:
@@ -366,12 +392,13 @@ responses:
   utter_ineligible_order_id:
   - text: Sorry, I wasn't able to find any order with that id. Please recheck your order id any send me here.
   utter_invalid_reason:
-  - text: Sorry, please select a valid reason for returning from below buttons.
+  - text: Please select a valid reason for returning from below buttons.
   utter_return_order_blocked:
   - text: Sorry, currently you can't return order because you have been blocked.
   utter_return_initiated:
-  - text: Again, apologies. Your return order request for order no. {order_no} has been initiated, and you will receive a refund within 7-10 business days.
-
+  - text: "Your return order request for order no. \b{order_no}\b has been initiated and your order will be picked up from address: {address} within 2-3 days. Your refund request will be initiated within 7-10 business days once we receive your order and it passes quality check"
+  utter_replace_order_inprogress:
+  - text: Sorry for the inconvenience! We can only provide return order functionality now as we're still working on implementing replacement order functionality.
 actions:
 - personal_greet
 - validate_login_form
@@ -400,6 +427,9 @@ forms:
       type: from_entity
     reason_for_return_description:
     - type: from_text
+    type_of_return:
+    - entity: type_of_return
+      type: from_entity
     pickup_address_for_return:
     - type: from_text
     refund_account:
