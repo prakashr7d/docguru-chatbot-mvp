@@ -560,7 +560,7 @@ class ReturnOrderAction(Action):
 
 class ValidateReturnOrder(FormValidationAction):
     def name(self) -> Text:
-        return "action_validate_return_order"
+        return "validate_return_order_form"
 
     def validate_order_id_for_return(
         self,
@@ -589,12 +589,13 @@ class ValidateReturnOrder(FormValidationAction):
         domain: "DomainDict",  # noqa: F821
     ) -> List[EventType]:
         slot_set = {}
-        if value is not None and value in [
-            DONT_NEED_THE_PRODUCT,
-            QUALITY_ISSUES,
-            INCORRECT_ITEMS,
-        ]:
-            slot_set = {REASON_FOR_RETURN: value}
+        if value is not None:
+            logger.info(value)
+            if value in [QUALITY_ISSUES, INCORRECT_ITEMS, DONT_NEED_THE_PRODUCT]:
+                slot_set = {
+                    REASON_FOR_RETURN: value,
+                    REQUESTED_SLOT: REASON_FOR_RETURN_DESCRIPTION,
+                }
         else:
             dispatcher.utter_message(template="utter_invalid_reason")
             slot_set = {REQUESTED_SLOT: REASON_FOR_RETURN}

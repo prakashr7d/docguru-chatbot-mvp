@@ -158,52 +158,64 @@ slots:
     max_value: 1.0
     min_value: 0.0
   show_more_count:
-    type: float
+    type: rasa.shared.core.slots.FloatSlot
     initial_value: null
     auto_fill: true
     influence_conversation: false
+    max_value: 1.0
+    min_value: 0.0
   action_that_triggered_show_more:
-    type: text
+    type: rasa.shared.core.slots.TextSlot
     initial_value: null
     auto_fill: true
     influence_conversation: false
   is_show_more_triggered:
-    type: bool
+    type: rasa.shared.core.slots.BooleanSlot
     initial_value: null
     auto_fill: false
     influence_conversation: false
   order_id_for_return:
-    type: float
+    type: rasa.shared.core.slots.FloatSlot
     initial_value: null
     auto_fill: true
     influence_conversation: false
+    max_value: 1.0
+    min_value: 0.0
   reason_for_return:
-    type: categorical
-    values:
-      - Don't need the Product
-      - Quality issues
-      - Incorrect Items
+    type: rasa.shared.core.slots.CategoricalSlot
     initial_value: null
+    auto_fill: true
     influence_conversation: false
+    values:
+    - don't need the product
+    - quality issues
+    - incorrect items
   reason_for_return_description:
-    type: text
+    type: rasa.shared.core.slots.TextSlot
     initial_value: null
+    auto_fill: true
     influence_conversation: false
   pickup_address_for_return:
-    type: text
+    type: rasa.shared.core.slots.TextSlot
     initial_value: null
+    auto_fill: true
     influence_conversation: false
   refund_account:
-    type: categorical
-    values:
-      - Primary Account
-      - Credit Points
-  type_of_return:
-    type: categorical
-    values:
-      - Return Product
-      - Replace Product
+    type: rasa.shared.core.slots.CategoricalSlot
+    initial_value: null
+    auto_fill: true
     influence_conversation: true
+    values:
+    - primary account
+    - credit points
+  type_of_return:
+    type: rasa.shared.core.slots.CategoricalSlot
+    initial_value: null
+    auto_fill: true
+    influence_conversation: true
+    values:
+    - return product
+    - replace product
 responses:
   utter_generic_greet:
   - buttons:
@@ -335,10 +347,10 @@ responses:
   utter_on_show_orders:
   - text: Here, are some more orders that are currently shipped, returning or in order pending mode
   utter_show_more_option:
-  - text: "Check for more orders by clicking the button below or say 'show more'"
-    buttons:
+  - buttons:
     - payload: Show more
       title: Show more
+    text: Check for more orders by clicking the button below or say 'show more'
   utter_show_more_something:
   - buttons:
     - payload: Check order status
@@ -347,7 +359,7 @@ responses:
       title: Product inquiry
     - payload: Return order
       title: Return order
-    text: "Sorry, I don't have anything to show now. I suggest you could do one of these."
+    text: Sorry, I don't have anything to show now. I suggest you could do one of these.
   utter_orders_eligible_for_return:
   - text: Sorry for the inconvience. Following are the orders eligible for return
   utter_orders_return_show_more:
@@ -377,7 +389,7 @@ responses:
   utter_invalid_type_of_return:
   - text: Sorry, I wasn't able to understand, it seems like you typed an invalid option. Try selecting one from buttons below.
   utter_ask_reason_for_return_description:
-  - text:  Thank you for sharing reason for returning the order, could you please explain it in brief? Feel free to add comments that you have regarding the product.
+  - text: Thank you for sharing reason for returning the order, could you please explain it in brief? Feel free to add comments that you have regarding the product.
   utter_ask_pickup_address_for_return:
   - text: Thank you for sharing the reason in detail, can you please provide a pickup address?
   utter_ask_order_id_for_return:
@@ -409,7 +421,7 @@ actions:
 - show_more_action
 - action_show_valid_return_order
 - action_return_order
-- action_validate_return_order_form
+- validate_return_order_form
 forms:
   login_form:
     user_email:
@@ -435,5 +447,4 @@ forms:
     refund_account:
     - entity: refund_account
       type: from_entity
-
 e2e_actions: []
