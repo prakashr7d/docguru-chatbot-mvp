@@ -158,7 +158,7 @@ stories:
   - intent: show_more
   - action: show_more_action
 
-- story: return order
+- story: return order with login
   steps:
   - intent: return_order
   - slot_was_set:
@@ -169,7 +169,7 @@ stories:
   - active_loop: return_order_form
   - active_loop: null
   - action: action_return_order
-
+  - action: utter_anything_else
 
 - story: return order with login happy path + anything else affirm
   steps:
@@ -191,3 +191,30 @@ stories:
   - active_loop: return_order_form
   - active_loop: null
   - action: action_return_order
+  - action: utter_anything_else
+
+- story: return order freestyle with login happy path + anything else affirm
+  steps:
+  - intent: select_return_order
+  - slot_was_set:
+    - is_logged_in: false
+  - slot_was_set:
+    - login_blocked: false
+  - action: utter_not_logged_in_prompt
+  - action: login_form
+  - active_loop: login_form
+  - active_loop: null
+  - action: action_login_form
+  - slot_was_set:
+    - is_logged_in: true
+  - action: return_order_form
+  - active_loop: return_order_form
+  - active_loop: null
+  - action: action_return_order
+  - action: utter_anything_else
+
+- story: replace order
+  steps:
+  - intent: replace_order
+  - action: utter_replace_order_inprogress
+  - action: utter_anything_else_options

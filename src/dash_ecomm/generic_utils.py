@@ -9,10 +9,10 @@ from dash_ecomm.constants import (
     ORDER_COLUMN_PRODUCT_NAME,
     ORDER_COLUMN_STATUS,
     ORDER_PENDING,
+    ORDER_STATUS,
     PRODUCT_DETAILS,
     RETURNING,
     SHIPPED,
-    ORDER_STATUS,
 )
 
 

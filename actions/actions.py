@@ -1,21 +1,24 @@
 import logging
 from typing import Any, Dict, List, Text, Tuple
 
+from rasa_sdk import Action, FormValidationAction, Tracker, events
+from rasa_sdk.events import AllSlotsReset, EventType, FollowupAction, SlotSet
+from rasa_sdk.executor import CollectingDispatcher
+
 from dash_ecomm import generic_utils
 from dash_ecomm.constants import (
     ACTION_CANCEL_ORDER,
     ACTION_CHECK_ALL_ORDERS,
     ACTION_RETURN_ORDER,
     ACTION_THAT_TRIGGERED_SHOW_MORE,
-    ADD_REVIEW,
-    ORDER_COLUMN_RETURNABLE,
+    CANCEL_ORDER,
     CREDIT_POINTS,
+    DELIVERED,
     DONT_NEED_THE_PRODUCT,
     EMAIL_TRIES,
     INCORRECT_ITEMS,
     IS_LOGGED_IN,
     IS_SHOW_MORE_TRIGGERED,
-    DELIVERED,
     LOGIN_BLOCKED,
     MAX_EMAIL_TRIES,
     MAX_ITEM_IN_CAROUSEL,
@@ -26,28 +29,29 @@ from dash_ecomm.constants import (
     ORDER_COLUMN_ID,
     ORDER_COLUMN_IMAGE_URL,
     ORDER_COLUMN_PRODUCT_NAME,
+    ORDER_COLUMN_RETURNABLE,
     ORDER_COLUMN_STATUS,
     ORDER_ID_FOR_RETURN,
     ORDER_PENDING,
-    OTP_TRIES,
-    REFUND_ORDER,
     ORDER_STATUS,
-    RETURN_ORDER,
-    CANCEL_ORDER,
-    PRODUCT_DETAILS,
+    OTP_TRIES,
     PICKUP_ADDRESS_FOR_RETURN,
     PRIMARY_ACCOUNT,
+    PRODUCT_DETAILS,
     QUALITY_ISSUES,
     REASON_FOR_RETURN,
     REASON_FOR_RETURN_DESCRIPTION,
     REFUND_ACCOUNT,
-    REORDER,
+    REFUND_ORDER,
+    REPLACE_ORDER,
+    REPLACE_PRODUCT,
     REQUESTED_SLOT,
-    RETURNING,
-    SELECT_ORDER,
+    RETURN_ORDER,
+    RETURN_PRODUCT,
     SHIPPED,
     SHOW_MORE_COUNT,
     STOP_SHOW_MORE_COUNT,
+    TYPE_OF_RETURN,
     USER_EMAIL,
     USER_FIRST_NAME,
     USER_LAST_NAME,
@@ -57,16 +61,10 @@ from dash_ecomm.database_utils import (
     get_all_orders_from_email,
     get_user_info_from_db,
     get_valid_order_count,
-    get_valid_order_return,
     is_valid_otp,
     is_valid_user,
-    update_order_status,
     validate_order_id,
 )
-from dash_ecomm.generic_utils import create_order_carousel
-from rasa_sdk import Action, FormValidationAction, Tracker, events
-from rasa_sdk.events import AllSlotsReset, EventType, FollowupAction, SlotSet
-from rasa_sdk.executor import CollectingDispatcher
 
 logger = logging.getLogger(__name__)
 
@@ -334,50 +332,34 @@ class CheckAllOrders(Action):
     @staticmethod
     def respective_buttons(status, is_eligible):
         required_buttons = []
-
+        logger.info(status)
         if status == ORDER_PENDING or status == SHIPPED:
-            required_buttons.append({
-                "title": ORDER_STATUS,
-                "payload": "",
-                "type": "postback"
-            })
-            required_buttons.append({
-                "title": PRODUCT_DETAILS,
-                "payload": "",
-                "type": "postback"
-            })
-            required_buttons.append({
-                "title": CANCEL_ORDER,
-                "payload": "",
-                "type": "postback"
-            })
+            required_buttons.append(
+                {"title": ORDER_STATUS, "payload": "", "type": "postback"}
+            )
+            required_buttons.append(
+                {"title": PRODUCT_DETAILS, "payload": "", "type": "postback"}
+            )
+            required_buttons.append(
+                {"title": CANCEL_ORDER, "payload": "", "type": "postback"}
+            )
         elif status == DELIVERED and is_eligible:
-            required_buttons.append({
-                "title": ORDER_STATUS,
-                "payload": "",
-                "type": "postback"
-            })
-            required_buttons.append({
-                "title": RETURN_ORDER,
-                "payload": "",
-                "type": "postback"
-            })
-            required_buttons.append({
-                "title": REFUND_ORDER,
-                "payload": "",
-                "type": "postback"
-            })
+            required_buttons.append(
+                {"title": ORDER_STATUS, "payload": "", "type": "postback"}
+            )
+            required_buttons.append(
+                {"title": RETURN_ORDER, "payload": "", "type": "postback"}
+            )
+            required_buttons.append(
+                {"title": REFUND_ORDER, "payload": "", "type": "postback"}
+            )
         else:
-            required_buttons.append({
-                "title": ORDER_STATUS,
-                "payload": "",
-                "type": "postback"
-            })
-            required_buttons.append({
-                "title": PRODUCT_DETAILS,
-                "payload": "",
-                "type": "postback"
-            })
+            required_buttons.append(
+                {"title": ORDER_STATUS, "payload": "", "type": "postback"}
+            )
+            required_buttons.append(
+                {"title": PRODUCT_DETAILS, "payload": "", "type": "postback"}
+            )
         return required_buttons
 
     def __create_order_carousel(self, orders: List[Dict[Text, Any]]) -> Dict[Text, Any]:
@@ -387,23 +369,23 @@ class CheckAllOrders(Action):
         }
 
         for selected_order in orders:
-            required_buttons = self.respective_buttons(selected_order[ORDER_COLUMN_STATUS],
-                                                       selected_order[ORDER_COLUMN_RETURNABLE])
-            logger.info("1")
+            required_buttons = self.respective_buttons(
+                selected_order[ORDER_COLUMN_STATUS],
+                selected_order[ORDER_COLUMN_RETURNABLE],
+            )
             carousel_element = {
                 "title": selected_order[ORDER_COLUMN_PRODUCT_NAME],
                 "subtitle": f"Status: {selected_order[ORDER_COLUMN_STATUS]}",
                 "image_url": selected_order[ORDER_COLUMN_IMAGE_URL],
                 "buttons": required_buttons,
             }
-            logger.info(carousel_element)
             carousel["payload"]["elements"].append(carousel_element)
         return carousel
-
 
     def __get_current_orders(
         self, no_of_valid_orders: int, order_email: Text, orders: List[Dict[Text, Any]]
     ) -> (List[Dict[Text, Any]], int):
+        logger.info(orders)
         valid_orders = []
         minimum_order_index = MIN_ITEM_IN_CAROUSEL
         maximum_order_index = MIN_ITEM_IN_CAROUSEL
@@ -520,13 +502,13 @@ class ShowValidReturnOrders(Action):
                 "image_url": selected_order[ORDER_COLUMN_IMAGE_URL],
                 "buttons": [
                     {
-                        "title": SELECT_ORDER,
-                        "payload": f"I want to return {selected_order[ORDER_COLUMN_ID]} order number",
+                        "title": RETURN_ORDER,
+                        "payload": f"please place a return for {selected_order[ORDER_COLUMN_ID]}",
                         "type": "postback",
                     },
                     {
-                        "title": REORDER,
-                        "payload": "",
+                        "title": REPLACE_ORDER,
+                        "payload": "/replace_order",
                         "type": "postback",
                     },
                 ],
@@ -590,7 +572,7 @@ class ShowValidReturnOrders(Action):
         user_mail = tracker.get_slot(USER_EMAIL)
         show_more_count = tracker.get_slot(SHOW_MORE_COUNT)
         is_show_more_triggered = tracker.get_slot(IS_SHOW_MORE_TRIGGERED)
-        valid_orders = get_valid_order_return(user_mail)
+        valid_orders = get_all_orders_from_email(user_mail)
         no_of_valid_orders = 0
         if not is_show_more_triggered:
             no_of_valid_orders = len(valid_orders)
@@ -621,10 +603,14 @@ class ReturnOrderAction(Action):
         domain: "DomainDict",  # noqa: F821
     ) -> List[Dict[Text, Any]]:
         order_id = tracker.get_slot(ORDER_ID_FOR_RETURN)
-        update_order_status(RETURNING, order_id)
-        dispatcher.utter_message(template="utter_return_initiated", order_no=order_id)
+        pickup_address_for_return = tracker.get_slot(PICKUP_ADDRESS_FOR_RETURN)
+        dispatcher.utter_message(
+            template="utter_return_initiated",
+            order_no=order_id,
+            address=pickup_address_for_return,
+        )
         return [
-            SlotSet(ORDER_COLUMN_ID, None),
+            SlotSet(ORDER_ID_FOR_RETURN, None),
             SlotSet(REASON_FOR_RETURN, None),
             SlotSet(REASON_FOR_RETURN_DESCRIPTION),
             SlotSet(PICKUP_ADDRESS_FOR_RETURN, None),
@@ -634,7 +620,7 @@ class ReturnOrderAction(Action):
 
 class ValidateReturnOrder(FormValidationAction):
     def name(self) -> Text:
-        return "action_validate_return_order"
+        return "validate_return_order_form"
 
     def validate_order_id_for_return(
         self,
@@ -663,15 +649,34 @@ class ValidateReturnOrder(FormValidationAction):
         domain: "DomainDict",  # noqa: F821
     ) -> List[EventType]:
         slot_set = {}
-        if value is not None and value in [
-            DONT_NEED_THE_PRODUCT,
-            QUALITY_ISSUES,
-            INCORRECT_ITEMS,
-        ]:
-            slot_set = {REASON_FOR_RETURN: value}
+        if value is not None:
+            logger.info(value)
+            if value in [QUALITY_ISSUES, INCORRECT_ITEMS, DONT_NEED_THE_PRODUCT]:
+                slot_set = {
+                    REASON_FOR_RETURN: value,
+                    REQUESTED_SLOT: REASON_FOR_RETURN_DESCRIPTION,
+                }
         else:
             dispatcher.utter_message(template="utter_invalid_reason")
             slot_set = {REQUESTED_SLOT: REASON_FOR_RETURN}
+        return slot_set
+
+    def validate_type_of_return(
+        self,
+        value: Text,
+        dispatcher: "CollectingDispatcher",
+        tracker: "Tracker",
+        domain: "DomainDict",  # noqa: F821
+    ) -> List[EventType]:
+        slot_set = {}
+        if value is not None and value in [RETURN_PRODUCT]:
+            slot_set = {TYPE_OF_RETURN: value}
+        else:
+            slot_set = {REQUESTED_SLOT: TYPE_OF_RETURN}
+            if value in [REPLACE_PRODUCT]:
+                dispatcher.utter_message(template="utter_replace_order_inprogress")
+            else:
+                dispatcher.utter_message(template="utter_invalid_type_of_return")
         return slot_set
 
     def validate_reason_for_return_description(
