@@ -581,7 +581,7 @@ class ValidateReturnOrder(FormValidationAction):
             slot_set = {REQUESTED_SLOT: ORDER_ID_FOR_RETURN}
         return slot_set
 
-    def validate_reason_for_return(
+    def validate_return_a_reason(
         self,
         value: Text,
         dispatcher: "CollectingDispatcher",
@@ -601,7 +601,7 @@ class ValidateReturnOrder(FormValidationAction):
             slot_set = {REQUESTED_SLOT: REASON_FOR_RETURN}
         return slot_set
 
-    def validate_type_of_return(
+    def validate_return_e_type(
         self,
         value: Text,
         dispatcher: "CollectingDispatcher",
@@ -619,7 +619,7 @@ class ValidateReturnOrder(FormValidationAction):
                 dispatcher.utter_message(template="utter_invalid_type_of_return")
         return slot_set
 
-    def validate_reason_for_return_description(
+    def validate_return_a_reason_description(
         self,
         value: Text,
         dispatcher: "CollectingDispatcher",
@@ -633,7 +633,7 @@ class ValidateReturnOrder(FormValidationAction):
             slot_set = {REQUESTED_SLOT: REASON_FOR_RETURN_DESCRIPTION}
         return slot_set
 
-    def validate_pickup_address_for_return(
+    def validate_return_pickup_address(
         self,
         value: Text,
         dispatcher: "CollectingDispatcher",
@@ -647,7 +647,7 @@ class ValidateReturnOrder(FormValidationAction):
             slot_set = {REQUESTED_SLOT: PICKUP_ADDRESS_FOR_RETURN}
         return slot_set
 
-    def validate_refund_account(
+    def validate_return_refund_account(
         self,
         value: Text,
         dispatcher: "CollectingDispatcher",
@@ -655,8 +655,26 @@ class ValidateReturnOrder(FormValidationAction):
         domain: "DomainDict",  # noqa: F821
     ) -> List[EventType]:
         slot_set = {}
-        if value is not None and value in [PRIMARY_ACCOUNT, CREDIT_POINTS]:
+        if value is not None and value.lower() in [PRIMARY_ACCOUNT, CREDIT_POINTS]:
             slot_set = {REFUND_ACCOUNT: value}
         else:
             slot_set = {REQUESTED_SLOT: REFUND_ACCOUNT}
         return slot_set
+
+
+# class ActionAskSwitch(Action):
+#     def name(self) -> Text:
+#         return "action_ask_switch"
+#
+#     def run(
+#         self,
+#         dispatcher,
+#         tracker: Tracker,
+#         domain: "DomainDict",
+#     ) -> List[Dict[Text, Any]]:
+#         active_form = tracker.active_loop.get("name").text
+#         intent_name = tracker.latest_message.get("name").text
+#         message = ""
+#         if active_form in [LOGIN_FORM, RETURN_ORDER_FORM] and intent_name in FORM_DESCRIPTION[active_form]:
+#             message = SWITCH_FORM_ASK.format(next_action="", active_form=active_form)
+#

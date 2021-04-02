@@ -218,3 +218,106 @@ stories:
   - intent: replace_order
   - action: utter_replace_order_inprogress
   - action: utter_anything_else_options
+
+- story: return order - happy path
+  steps:
+  - intent: greet
+  - action: personal_greet
+  - slot_was_set:
+    - user_email: dishant@neuralspace.ai
+  - slot_was_set:
+    - user_first_name: Dishant
+  - slot_was_set:
+    - user_last_name: Gandhi
+  - slot_was_set:
+    - is_logged_in: true
+  - slot_was_set:
+    - user_otp: '1234'
+  - intent: return_order
+  - action: action_show_valid_return_order
+  - slot_was_set:
+    - action_that_triggered_show_more: null
+  - slot_was_set:
+    - show_more_count: -1
+  - slot_was_set:
+    - is_show_more_triggered: false
+  - intent: select_return_order
+    entities:
+    - order_id: DASH123457
+    - number: 123457
+  - action: return_order_form
+  - active_loop: return_order_form
+  - slot_was_set:
+    - order_id_for_return: DASH123457
+  - slot_was_set:
+    - requested_slot: return_a_reason
+  - intent: ask_return_a_reason
+    entities:
+    - return_a_reason: Quality issues
+  - slot_was_set:
+    - return_a_reason: Quality issues
+  - action: return_order_form
+  - slot_was_set:
+    - return_a_reason: Quality issues
+  - slot_was_set:
+    - requested_slot: return_a_reason_description
+  - intent: ask_return_a_reason
+    entities:
+    - return_a_reason: product
+  - slot_was_set:
+    - return_a_reason: product
+  - action: return_order_form
+  - slot_was_set:
+    - return_a_reason_description: I got a damaged product
+  - slot_was_set:
+    - return_a_reason: product
+  - slot_was_set:
+    - requested_slot: return_e_type
+  - intent: ask_return_e_type
+    entities:
+    - return_e_type: Return Product
+  - slot_was_set:
+    - return_e_type: Return Product
+  - action: return_order_form
+  - slot_was_set:
+    - return_e_type: Return Product
+  - slot_was_set:
+    - requested_slot: return_pickup_address
+  - intent: order_status
+  - action: return_order_form
+  - slot_was_set:
+    - return_pickup_address: my building, my country
+  - slot_was_set:
+    - requested_slot: return_refund_account
+  - intent: ask_return_refund_account
+    entities:
+    - return_refund_account: Primary Account
+  - slot_was_set:
+    - return_refund_account: Primary Account
+  - action: return_order_form
+  - slot_was_set:
+    - return_refund_account: Primary Account
+  - slot_was_set:
+    - requested_slot: null
+  - active_loop: null
+  - action: action_return_order
+  - slot_was_set:
+    - order_id_for_return: null
+  - slot_was_set:
+    - return_a_reason: null
+  - slot_was_set:
+    - return_a_reason_description: null
+  - slot_was_set:
+    - return_pickup_address: null
+  - slot_was_set:
+    - return_refund_account: null
+  - action: utter_anything_else
+  - intent: ask_return_refund_account
+    entities:
+    - return_refund_account: Primary Account
+  - slot_was_set:
+    - return_refund_account: Primary Account
+  - action: action_default_fallback
+  - intent: deny
+  - action: utter_i_am_here_for_you
+

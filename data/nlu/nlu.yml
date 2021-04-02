@@ -86,35 +86,40 @@ nlu:
     - [DASH123470](order_id)
     - place a return for [DASH113450](order_id)
     - [DASH1268745](order_id)
-- intent: ask_reason_for_return
+    - please place a return for [DASH123457](order_id)
+    - I want to return [DASH123457](order_id)
+- intent: ask_return_a_reason
   examples: |
-    - i want to return my product because I [don't want it]{"entity":"reason_for_return","value":"Don't need the Product"}
-    - i want to return my product because I [don't need it]{"entity":"reason_for_return","value":"Don't need the Product"}
-    - [Don't need the product]{"entity":"reason_for_return","value":"Don't need the Product"}
-    - [Quality problem]{"entity":"reason_for_return","value":"Quality issues"}
-    - [Quality issues]{"entity":"reason_for_return","value":"Quality issues"}
-    - i got a [wrong product]{"entity":"reason_for_return","value":"Incorrect Items"}
-    - [I didn't receive correct product]{"entity":"reason_for_return","value":"Incorrect Items"}
-    - I received [incorrect product]{"entity":"reason_for_return","value":"Incorrect Items"}
-    - [Incorrect Items]{"entity":"reason_for_return","value":"Incorrect Items"}
-- intent: ask_type_of_return
+    - i want to return my product because I [don't want it]{"entity": "return_a_reason", "value": "Don't need the Product"}
+    - i want to return my product because I [don't need it]{"entity": "return_a_reason", "value": "Don't need the Product"}
+    - [Don't need the product]{"entity": "return_a_reason", "value": "Don't need the Product"}
+    - [Quality problem]{"entity": "return_a_reason", "value": "Quality issues"}
+    - [Quality issues](return_a_reason)
+    - i got a [wrong product]{"entity": "return_a_reason", "value": "Incorrect Items"}
+    - [I didn't receive correct product]{"entity": "return_a_reason", "value": "Incorrect Items"}
+    - I received [incorrect product]{"entity": "return_a_reason", "value": "Incorrect Items"}
+    - [Incorrect Items](return_a_reason)
+    - [Don't need the Product](return_a_reason)
+- intent: ask_return_e_type
   examples: |
-    - get [refund]{"entity":"type_of_return","value":"Return Product"}
-    - I want to [Return product]{"entity":"type_of_return","value":"Return Product"}
-    - give me [Refund]{"entity":"type_of_return","value":"Return Product"}
-    - just go for [Return]{"entity":"type_of_return","value":"Return Product"}
-    - [replace]{"entity":"type_of_return","value":"Replace Product"} it
-    - [Replace product]{"entity":"type_of_return","value":"Replace Product"}
-    - I can get [Replacement]{"entity":"type_of_return","value":"Replace Product"} my product though
-- intent: ask_refund_account
+    - get [refund]{"entity": "return_e_type", "value": "Return Product"}
+    - I want to [Return product]{"entity": "return_e_type", "value": "Return Product"}
+    - give me [Refund]{"entity": "return_e_type", "value": "Return Product"}
+    - just go for [Return]{"entity": "return_e_type", "value": "Return Product"}
+    - [replace]{"entity": "return_e_type", "value": "Replace Product"} it
+    - [Replace product]{"entity": "return_e_type", "value": "Replace Product"}
+    - I can get [Replacement]{"entity": "return_e_type", "value": "Replace Product"} my product though
+    - Get [refund](return_e_type) for my product
+    - Get [replacement](return_e_type) for my product
+- intent: ask_return_refund_account
   examples: |
-    - [Primary Account]{"entity":"refund_account","value":"Primary Account"}
-    - just to my [Default Account]{"entity":"refund_account","value":"Primary Account"}
-    - to [primary Account]{"entity":"refund_account","value":"Primary Account"}
-    - [Credit Points]{"entity":"refund_account","value":"Credit Points"}
-    - [Credit Points]{"entity":"refund_account","value":"Credit Points"} works for me
-    - I would like to get my refund in [Credit]{"entity":"refund_account","value":"Credit Points"}
-    - I would like to get my refund in [primary]{"entity":"refund_account","value":"Primary Account"} one
+    - [Primary Account](return_refund_account)
+    - just to my [Default Account]{"entity": "return_refund_account", "value": "Primary Account"}
+    - to [primary Account]{"entity": "return_refund_account", "value": "Primary Account"}
+    - [Credit Points](return_refund_account)
+    - [Credit Points](return_refund_account) works for me
+    - I would like to get my refund in [Credit]{"entity": "return_refund_account", "value": "Credit Points"}
+    - I would like to get my refund in [primary]{"entity": "return_refund_account", "value": "Primary Account"} one
 - intent: replace_order
   examples: |
     - I want to replace an item
@@ -539,3 +544,36 @@ nlu:
     - wertyuiokjhgfdecvuytrfv
     - ertyuikjhgfdcvbhjhgfc
     - ertyuiolkjhgfdfghjk,
+- synonym: Don't need the Product
+  examples: |
+    - don't want it
+    - don't need it
+    - Don't need the product
+- synonym: Quality issues
+  examples: |
+    - Quality problem
+- synonym: Incorrect Items
+  examples: |
+    - wrong product
+    - I didn't receive correct product
+    - incorrect product
+- synonym: Return Product
+  examples: |
+    - refund
+    - Return product
+    - Refund
+    - Return
+- synonym: Replace Product
+  examples: |
+    - replace
+    - Replace product
+    - Replacement
+    - replacement
+- synonym: Primary Account
+  examples: |
+    - Default Account
+    - primary Account
+    - primary
+- synonym: Credit Points
+  examples: |
+    - Credit

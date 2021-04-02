@@ -1,0 +1,27 @@
+version: "2.0"
+stories:
+
+- story: return order, switch to order status, deny
+  steps:
+  - intent: select_return_order
+  - action: return_order_form
+  - active_loop: return_order_form
+  - intent: order_status
+  - action: utter_ask_switch_form
+  - intent: deny
+  - action: return_order_form
+  - active_loop: return_order_form
+
+- story: return order, switch to order status, affirm
+  steps:
+  - intent: select_return_order
+  - action: return_order_form
+  - active_loop: return_order_form
+  - intent: order_status
+  - action: utter_ask_switch_form
+  - intent: affirm
+  - slot_was_set:
+    - requested_slot: null
+  - active_loop: null
+  - action: action_order_status
+  - action: utter_anything_else
