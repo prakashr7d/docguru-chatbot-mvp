@@ -23,5 +23,6 @@ stories:
   - slot_was_set:
     - requested_slot: null
   - active_loop: null
+  - action: action_ask_switch
   - action: action_order_status
   - action: utter_anything_else

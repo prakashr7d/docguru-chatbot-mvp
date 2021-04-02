@@ -10,6 +10,7 @@ from dash_ecomm.constants import (
     CREDIT_POINTS,
     DONT_NEED_THE_PRODUCT,
     EMAIL_TRIES,
+    FORM_SLOTS,
     INCORRECT_ITEMS,
     IS_LOGGED_IN,
     IS_SHOW_MORE_TRIGGERED,
@@ -36,6 +37,7 @@ from dash_ecomm.constants import (
     REPLACE_PRODUCT,
     REQUESTED_SLOT,
     RETURN_ORDER,
+    RETURN_ORDER_FORM,
     RETURN_PRODUCT,
     SHOW_MORE_COUNT,
     STOP_SHOW_MORE_COUNT,
@@ -56,7 +58,13 @@ from dash_ecomm.database_utils import (
 )
 from dash_ecomm.generic_utils import create_order_carousel
 from rasa_sdk import Action, FormValidationAction, Tracker, events
-from rasa_sdk.events import AllSlotsReset, EventType, FollowupAction, SlotSet
+from rasa_sdk.events import (
+    ActiveLoop,
+    AllSlotsReset,
+    EventType,
+    FollowupAction,
+    SlotSet,
+)
 from rasa_sdk.executor import CollectingDispatcher
 
 logger = logging.getLogger(__name__)
@@ -552,7 +560,8 @@ class ReturnOrderAction(Action):
         return [
             SlotSet(ORDER_ID_FOR_RETURN, None),
             SlotSet(REASON_FOR_RETURN, None),
-            SlotSet(REASON_FOR_RETURN_DESCRIPTION),
+            SlotSet(REASON_FOR_RETURN_DESCRIPTION, None),
+            SlotSet(TYPE_OF_RETURN, None),
             SlotSet(PICKUP_ADDRESS_FOR_RETURN, None),
             SlotSet(REFUND_ACCOUNT, None),
         ]
@@ -662,19 +671,21 @@ class ValidateReturnOrder(FormValidationAction):
         return slot_set
 
 
-# class ActionAskSwitch(Action):
-#     def name(self) -> Text:
-#         return "action_ask_switch"
-#
-#     def run(
-#         self,
-#         dispatcher,
-#         tracker: Tracker,
-#         domain: "DomainDict",
-#     ) -> List[Dict[Text, Any]]:
-#         active_form = tracker.active_loop.get("name").text
-#         intent_name = tracker.latest_message.get("name").text
-#         message = ""
-#         if active_form in [LOGIN_FORM, RETURN_ORDER_FORM] and intent_name in FORM_DESCRIPTION[active_form]:
-#             message = SWITCH_FORM_ASK.format(next_action="", active_form=active_form)
-#
+class ActionAskSwitch(Action):
+    def name(self) -> Text:
+        return "action_ask_switch"
+
+    def run(
+        self,
+        dispatcher,
+        tracker: Tracker,
+        domain: "DomainDict",  # noqa: F821
+    ) -> List[Dict[Text, Any]]:
+        active_form = tracker.active_loop.get("name")
+        slot_set = []
+        if active_form in [RETURN_ORDER_FORM]:
+            for slot in FORM_SLOTS[active_form]:
+                slot_set.append(SlotSet(slot, None))
+        slot_set.append(ActiveLoop(None))
+        slot_set.append(SlotSet(REQUESTED_SLOT, None))
+        return slot_set

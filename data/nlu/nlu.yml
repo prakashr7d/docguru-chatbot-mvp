@@ -20,6 +20,7 @@ nlu:
     - when will I receive my orders
     - are my orders on their way?
     - find my orders dash
+    - order status
 - intent: inform
   examples: |
     - example@rasa.com
@@ -58,6 +59,7 @@ nlu:
     - can I login here?
     - make me login in
     - can you login me
+    - hi login
 - intent: show_more
   examples: |
     - show more
@@ -79,6 +81,7 @@ nlu:
     - Start a return
     - Okay. I would like to return some shoes I bought
     - yeah I want to return something
+    - /return_order
 - intent: select_return_order
   examples: |
     - I want to return [DASH123450](order_id)
@@ -88,6 +91,8 @@ nlu:
     - [DASH1268745](order_id)
     - please place a return for [DASH123457](order_id)
     - I want to return [DASH123457](order_id)
+    - [DASH123457](order_id)
+    - return [DASH123457](order_id)
 - intent: ask_return_a_reason
   examples: |
     - i want to return my product because I [don't want it]{"entity": "return_a_reason", "value": "Don't need the Product"}

@@ -103,8 +103,13 @@ RETURN_ORDER_FORM = "return_order_form"
 SWITCH_FORM_ASK = "Would you like to switch to {next_action} from {active_form}?"
 
 # form names with intents dictionary
-FORM_DESCRIPTION = {
-    "action_order_status": "order_status",
-    "login_form": "login",
-    "return_order_form": ["select_return_order", "return_order"],
+FORM_SLOTS = {
+    "return_order_form": [
+        ORDER_ID_FOR_RETURN,
+        REASON_FOR_RETURN,
+        REASON_FOR_RETURN_DESCRIPTION,
+        TYPE_OF_RETURN,
+        PICKUP_ADDRESS_FOR_RETURN,
+        REFUND_ACCOUNT,
+    ],
 }
