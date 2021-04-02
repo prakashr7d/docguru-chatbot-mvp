@@ -138,8 +138,8 @@ orders:
   order_email: dishant@neuralspace.ai
   order_number: 123459
   product_name: Shoes
-  refunded: false
-  returnable: false
+  refunded: true
+  returnable: true
   size: '11'
   status: delivered
 products:
