@@ -13,8 +13,6 @@ services:
     ports:
       - '5005:5005'
       - '5002:5002'
-    depends_on:
-      - rabbitmq
     networks:
       - all
 

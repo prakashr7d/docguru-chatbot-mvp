@@ -124,7 +124,7 @@ poetry run python -m dash_ecomm.callback_server
 
 Then talk to your bot by running:
 
-```
+```bash
 poetry run rasa run --enable-api --cors "*" --endpoints configs/local/endpoints.yml --credentials configs/local/credentials.yml
 ```
 

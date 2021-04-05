@@ -5,6 +5,13 @@ rules:
   steps:
   - intent: chitchat
   - action: utter_chitchat
+
+- rule: anything else deny
+  steps:
+  - action: utter_anything_else
+  - intent: deny
+  - action: utter_i_am_here_for_you
+
 - rule: out of scope
   steps:
   - or:
@@ -36,7 +43,7 @@ rules:
 - rule: login unblocked event
   condition:
   - slot_was_set:
-      - login_blocked: true
+    - login_blocked: true
   steps:
   - intent: EXTERNAL_unblock_login
   - action: action_unblock_login
@@ -54,13 +61,21 @@ rules:
   - intent: login
   - action: action_login_form
 
+- rule: already login
+  condition:
+  - slot_was_set:
+    - is_logged_in: true
+  steps:
+  - intent: login
+  - action: utter_already_logged_in
+
 - rule: order status + login blocked
   condition:
   - slot_was_set:
     - login_blocked: true
   steps:
-  - intent: order_status
-  - action: utter_order_status_for_blocked_user
+  - intent: check_all_orders
+  - action: utter_check_all_orders_for_blocked_user
   - action: action_login_form
 
 - rule: order status + valid login
@@ -68,8 +83,8 @@ rules:
   - slot_was_set:
     - is_logged_in: true
   steps:
-  - intent: order_status
-  - action: action_order_status
+  - intent: check_all_orders
+  - action: action_check_all_orders
 
 - rule: logout
   steps:
@@ -81,3 +96,38 @@ rules:
   steps:
   - intent: show_more
   - action: show_more_action
+
+- rule:  return form + valid login
+  condition:
+  - slot_was_set:
+    - is_logged_in: true
+  steps:
+  - intent: select_return_order
+  - action: return_order_form
+  - active_loop: return_order_form
+
+- rule: return form + blocked login
+  condition:
+  - slot_was_set:
+    - login_blocked: true
+  steps:
+  - intent: select_return_order
+  - action: utter_check_all_orders_for_blocked_user
+  - action: action_login_form
+
+- rule: submit, return form
+  condition:
+  - active_loop: return_order_form
+  - slot_was_set:
+    - is_logged_in: true
+  steps:
+  - action: return_order_form
+  - active_loop: null
+  - action: action_return_order
+  - action: utter_anything_else
+
+- rule: replace order
+  steps:
+  - intent: replace_order
+  - action: utter_replace_order_inprogress
+  - action: utter_anything_else_options
