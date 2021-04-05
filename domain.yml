@@ -433,7 +433,7 @@ actions:
 - action_show_valid_return_order
 - action_return_order
 - validate_return_order_form
-- action_ask_switch
+- action_switch
 forms:
   login_form:
     user_email:

@@ -673,7 +673,7 @@ class ValidateReturnOrder(FormValidationAction):
 
 class ActionAskSwitch(Action):
     def name(self) -> Text:
-        return "action_ask_switch"
+        return "action_switch"
 
     def run(
         self,

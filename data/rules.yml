@@ -99,10 +99,31 @@ rules:
   - intent: show_more
   - action: show_more_action
 
+- rule: return order, show valid return orders, login
+  condition:
+  - slot_was_set:
+    - is_logged_in: true
+  steps:
+  - intent: return_order
+  - active_loop: null
+  - action: action_show_valid_return_order
+
+- rule: return order, show valid return orders, not login
+  condition:
+  - slot_was_set:
+    - is_logged_in: false
+  steps:
+  - intent: return_order
+  - action: utter_not_logged_in_prompt
+  - action: login_form
+  - active_loop: login_form
+
 - rule:  return form + valid login
   condition:
   - slot_was_set:
     - is_logged_in: true
+  - slot_was_set:
+    - login_blocked: false
   - active_loop: null
   steps:
   - intent: select_return_order
