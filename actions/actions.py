@@ -39,6 +39,7 @@ from dash_ecomm.constants import (
     RETURN_ORDER,
     RETURN_ORDER_FORM,
     RETURN_PRODUCT,
+    RETURNING,
     SHOW_MORE_COUNT,
     STOP_SHOW_MORE_COUNT,
     TYPE_OF_RETURN,
@@ -54,6 +55,7 @@ from dash_ecomm.database_utils import (
     get_valid_order_return,
     is_valid_otp,
     is_valid_user,
+    update_order_status,
     validate_order_id,
 )
 from dash_ecomm.generic_utils import create_order_carousel
@@ -552,6 +554,7 @@ class ReturnOrderAction(Action):
     ) -> List[Dict[Text, Any]]:
         order_id = tracker.get_slot(ORDER_ID_FOR_RETURN)
         pickup_address_for_return = tracker.get_slot(PICKUP_ADDRESS_FOR_RETURN)
+        update_order_status(RETURNING, order_id)
         dispatcher.utter_message(
             template="utter_return_initiated",
             order_no=order_id,
