@@ -53,6 +53,8 @@ intents:
     use_entities: true
 - select_return_order:
     use_entities: true
+- order_status:
+    use_entities: true
 - replace_order:
     use_entities: []
 entities:
@@ -411,12 +413,18 @@ responses:
   - text: "Your return order request for order no. \b{order_no}\b has been initiated and your order will be picked up from address: {address} within 2-3 days. Your refund request will be initiated within 7-10 business days once we receive your order and it passes quality check"
   utter_replace_order_inprogress:
   - text: Sorry for the inconvenience! We can only provide return order functionality now as we're still working on implementing replacement order functionality.
+  utter_order_status:
+  - text: Your order {order_id} has been {status}. |Track order@ https://sites.google.com/view/orderstatus-{small_order_id}/home
+  utter_order_status_failed:
+  - text: Selected order is not available in the database please contact us about the querry at neuralspace@neuraspace.ai
+
 actions:
 - personal_greet
 - validate_login_form
 - action_unblock_login
 - action_logout
 - action_login_form
+- action_order_status
 - action_check_all_orders
 - show_more_action
 - action_show_valid_return_order

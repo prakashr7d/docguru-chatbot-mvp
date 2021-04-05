@@ -59,6 +59,7 @@ from dash_ecomm.constants import (
 )
 from dash_ecomm.database_utils import (
     get_all_orders_from_email,
+    get_order_by_order_id,
     get_user_info_from_db,
     get_valid_order_count,
     is_valid_otp,
@@ -330,11 +331,12 @@ class CheckAllOrders(Action):
         return "action_check_all_orders"
 
     @staticmethod
-    def respective_buttons(status, is_eligible):
+    def respective_buttons(order_id,status, is_eligible):
         required_buttons = []
+        payload = "order status of {}".format(order_id)
         if status == ORDER_PENDING or status == SHIPPED:
             required_buttons.append(
-                {"title": ORDER_STATUS, "payload": "", "type": "postback"}
+                {"title": ORDER_STATUS, "payload": payload, "type": "postback"}
             )
             required_buttons.append(
                 {"title": PRODUCT_DETAILS, "payload": "", "type": "postback"}
@@ -344,7 +346,7 @@ class CheckAllOrders(Action):
             )
         elif status == DELIVERED and is_eligible:
             required_buttons.append(
-                {"title": ORDER_STATUS, "payload": "", "type": "postback"}
+                {"title": ORDER_STATUS, "payload": payload, "type": "postback"}
             )
             required_buttons.append(
                 {"title": RETURN_ORDER, "payload": "", "type": "postback"}
@@ -354,7 +356,7 @@ class CheckAllOrders(Action):
             )
         else:
             required_buttons.append(
-                {"title": ORDER_STATUS, "payload": "", "type": "postback"}
+                {"title": ORDER_STATUS, "payload": payload, "type": "postback"}
             )
             required_buttons.append(
                 {"title": PRODUCT_DETAILS, "payload": "", "type": "postback"}
@@ -369,6 +371,7 @@ class CheckAllOrders(Action):
 
         for selected_order in orders:
             required_buttons = self.respective_buttons(
+                selected_order[ORDER_COLUMN_ID],
                 selected_order[ORDER_COLUMN_STATUS],
                 selected_order[ORDER_COLUMN_RETURNABLE],
             )
@@ -480,6 +483,31 @@ class ShowMoreAction(Action):
             dispatcher.utter_message(template="utter_show_more_something")
             followup_action.append(SlotSet(IS_SHOW_MORE_TRIGGERED, False))
         return followup_action
+
+
+class ActionOrderStatus(Action):
+    def name(self) -> Text:
+        return "action_order_status"
+
+    def run(
+        self,
+        dispatcher,
+        tracker: Tracker,
+        domain: "DomainDict",  # noqa: F821
+    ) -> List[Dict[Text, Any]]:
+        order_id_to_show_order_status = tracker.latest_message['entities'][0]['value']
+        logger.info(order_id_to_show_order_status)
+        order_for_order_id = get_order_by_order_id(order_id_to_show_order_status)
+        if order_for_order_id:
+            status_for_order_id = order_for_order_id[ORDER_COLUMN_STATUS]
+            utter = {"template": "utter_order_status", "order_id": order_id_to_show_order_status,
+                     "small_order_id": order_id_to_show_order_status.lower(),
+                     "status": status_for_order_id}
+            dispatcher.utter_message(**utter)
+        else:
+            utter = {"template": "utter_order_status_failed", "order_id": order_id_to_show_order_status}
+            dispatcher.utter_message(**utter)
+
 
 
 class ShowValidReturnOrders(Action):

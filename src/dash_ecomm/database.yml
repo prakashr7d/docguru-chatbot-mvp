@@ -106,7 +106,7 @@ orders:
   order_number: 123459
   product_name: Shoes
   refunded: false
-  returnable: false
+  returnable: true
   size: '11'
   status: shipped
 - color: gray
@@ -138,10 +138,10 @@ orders:
   order_email: dishant@neuralspace.ai
   order_number: 123459
   product_name: Shoes
-  refunded: true
-  returnable: true
+  refunded: false
+  returnable: false
   size: '11'
-  status: delivered
+  status: Shipped
 products:
 - color: blue
   product_name: Shoes

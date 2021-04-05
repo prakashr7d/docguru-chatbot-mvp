@@ -10,6 +10,12 @@ nlu:
     - I want to check on my orders
     - i want to see my orders
     - show my orders dash
+- intent: order_status
+  examples: |
+    - Check order status of [DASH123450](order_id)
+    - order status of [DASH123621](order_id)
+    - I want to check status of my order [DASH123420](order_id)
+    - Show status of my order [DASH123430](order_id)
 - intent: inform
   examples: |
     - example@rasa.com

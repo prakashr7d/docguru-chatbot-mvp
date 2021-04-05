@@ -78,7 +78,7 @@ stories:
   - intent: affirm
   - action: utter_anything_else_options
 
-- story: order status already logged in happy path + anything else deny
+- story: order status already logged in happy path
   steps:
   - intent: check_all_orders
   - slot_was_set:
@@ -88,7 +88,29 @@ stories:
   - intent: show_more
   - action: show_more_action
 
-- story: order status with login happy path + anything else affirm
+- story: order status already logged in happy path + order status without show_more
+  steps:
+  - intent: check_all_orders
+  - slot_was_set:
+    - is_logged_in: true
+  - active_loop: null
+  - action: action_check_all_orders
+  - intent: order_status
+  - action: action_order_status
+
+- story: order status already logged in happy path
+  steps:
+  - intent: check_all_orders
+  - slot_was_set:
+    - is_logged_in: true
+  - active_loop: null
+  - action: action_check_all_orders
+  - intent: show_more
+  - action: show_more_action
+  - intent: order_status
+  - action: action_order_status
+
+- story: order status with login happy path
   steps:
   - intent: check_all_orders
   - slot_was_set:
