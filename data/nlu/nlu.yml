@@ -2,21 +2,20 @@ version: "2.0"
 nlu:
 - intent: check_all_orders
   examples: |
-    - check status of my order
+    - check all my order
     - when are my shoes coming in
     - when will they get here
     - I'd like to check the status of my order pls
     - check status
     - I'd like an update on my order
-    - Check status of my order
     - I haven't received my order yet, can we check that?
     - where is my order?
-    - I want to check the status of my order
-    - actually can I check the status of my order
-    - order status for example@rasa.com
+    - I want to check all my order
+    - actually can I check all my orders
+    - check all orders for example@rasa.com
     - /check_all_orders
-    - I want to track my orders
-    - where are my orders
+    - I want to check on my orders
+    - i want to see my orders
     - when will I receive my orders
     - are my orders on their way?
     - find my orders dash
