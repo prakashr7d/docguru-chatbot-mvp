@@ -73,6 +73,7 @@ rules:
   condition:
   - slot_was_set:
     - login_blocked: true
+  - active_loop: null
   steps:
   - intent: order_status
   - action: utter_order_status_for_blocked_user
@@ -82,6 +83,7 @@ rules:
   condition:
   - slot_was_set:
     - is_logged_in: true
+  - active_loop: null
   steps:
   - intent: order_status
   - action: action_order_status
