@@ -14,7 +14,7 @@ stories:
     - is_logged_in: false
   - slot_was_set:
     - user_otp: null
-  - intent: order_status
+  - intent: check_all_orders
   - action: utter_not_logged_in_prompt
   - action: login_form
   - active_loop: login_form
@@ -39,7 +39,7 @@ stories:
   - action: utter_anything_else
   - intent: deny
   - action: utter_i_am_here_for_you
-  - intent: order_status
+  - intent: check_all_orders
   - action: utter_not_logged_in_prompt
   - action: login_form
   - active_loop: login_form
@@ -83,14 +83,14 @@ stories:
     - is_logged_in: true
   - slot_was_set:
     - user_otp: '9876'
-  - action: action_order_status
+  - action: action_check_all_orders
   - action: utter_anything_else
   - intent: deny
   - action: utter_i_am_here_for_you
   - intent: affirm
   - action: utter_anything_else_options
-  - intent: order_status
-  - action: action_order_status
+  - intent: check_all_orders
+  - action: action_check_all_orders
   - action: utter_anything_else
   - intent: affirm
   - action: utter_anything_else_options
@@ -110,7 +110,7 @@ stories:
     - is_logged_in: false
   - slot_was_set:
     - user_otp: null
-  - intent: order_status
+  - intent: check_all_orders
   - action: utter_not_logged_in_prompt
   - action: login_form
   - active_loop: login_form
@@ -134,7 +134,7 @@ stories:
     entities:
     - email: a@a.com
   - action: action_default_fallback
-  - intent: order_status
+  - intent: check_all_orders
   - action: utter_not_logged_in_prompt
   - action: login_form
   - active_loop: login_form
@@ -158,8 +158,8 @@ stories:
     - email_tries: 0
   - slot_was_set:
     - otp_tries: 0
-  - intent: order_status
-  - action: utter_order_status_for_blocked_user
+  - intent: check_all_orders
+  - action: utter_check_all_orders_for_blocked_user
   - action: action_login_form
   - slot_was_set:
     - email_tries: 0
@@ -180,7 +180,7 @@ stories:
     - is_logged_in: false
   - slot_was_set:
     - user_otp: null
-  - intent: order_status
+  - intent: check_all_orders
   - action: utter_not_logged_in_prompt
   - action: login_form
   - active_loop: login_form
@@ -206,7 +206,7 @@ stories:
     - otp_tries: 1
   - slot_was_set:
     - requested_slot: user_email
-  - intent: order_status
+  - intent: check_all_orders
   - action: utter_not_logged_in_prompt
   - action: login_form
   - slot_was_set:
@@ -238,7 +238,7 @@ stories:
   - slot_was_set:
     - otp_tries: 0
 
-- story: order status + login + show more
+- story: check all orders + login + show more 1
   steps:
   - intent: greet
     user: |-
@@ -254,9 +254,9 @@ stories:
     - is_logged_in: false
   - slot_was_set:
     - user_otp: null
-  - intent: order_status
+  - intent: check_all_orders
     user: |-
-      order status
+      check all orders
   - action: utter_not_logged_in_prompt
   - action: login_form
   - active_loop: login_form
@@ -290,13 +290,13 @@ stories:
     - is_logged_in: true
   - slot_was_set:
     - user_otp: '1234'
-  - action: action_order_status
+  - action: action_check_all_orders
   - slot_was_set:
     - show_more_count: 1
   - intent: show_more
     user: |-
       show more
-  - action: action_order_status
+  - action: action_check_all_orders
   - slot_was_set:
     - show_more_count: -1
   - intent: show_more
@@ -304,3 +304,92 @@ stories:
       show more
   - action: show_more_action
 
+- story: check all orders + login + show more 2
+  steps:
+  - intent: greet
+    user: |-
+      hi
+  - action: personal_greet
+  - slot_was_set:
+    - user_email: null
+  - slot_was_set:
+    - user_first_name: null
+  - slot_was_set:
+    - user_last_name: null
+  - slot_was_set:
+    - is_logged_in: false
+  - slot_was_set:
+    - user_otp: null
+  - intent: check_all_orders
+    user: |-
+      /check_all_orders
+  - action: utter_not_logged_in_prompt
+  - action: login_form
+  - active_loop: login_form
+  - slot_was_set:
+    - requested_slot: user_email
+  - intent: inform
+    user: |-
+      [1234]{"entity": "number", "value": 1234}
+  - action: login_form
+  - slot_was_set:
+    - user_otp: null
+  - slot_was_set:
+    - otp_tries: 1
+  - slot_was_set:
+    - requested_slot: user_email
+  - intent: inform
+    user: |-
+      [dishant@neuralspace.ai](email)
+  - action: login_form
+  - slot_was_set:
+    - user_email: dishant@neuralspace.ai
+  - slot_was_set:
+    - requested_slot: user_otp
+  - intent: inform
+    user: |-
+      [1234]{"entity": "number", "value": 1234}
+  - action: login_form
+  - slot_was_set:
+    - user_otp: 1234
+  - slot_was_set:
+    - requested_slot: null
+  - active_loop: null
+  - action: action_login_form
+  - slot_was_set:
+    - user_email: dishant@neuralspace.ai
+  - slot_was_set:
+    - user_first_name: Dishant
+  - slot_was_set:
+    - user_last_name: Gandhi
+  - slot_was_set:
+    - is_logged_in: true
+  - slot_was_set:
+    - user_otp: '1234'
+  - intent: greet
+    user: |-
+      hi
+  - action: personal_greet
+  - intent: check_all_orders
+    user: |-
+      /check_all_orders
+  - action: action_check_all_orders
+  - slot_was_set:
+    - action_that_triggered_show_more: action_check_all_orders
+  - slot_was_set:
+    - show_more_count: 2
+  - slot_was_set:
+    - is_show_more_triggered: false
+  - intent: show_more
+    user: |-
+      Show more
+  - action: show_more_action
+  - slot_was_set:
+    - is_show_more_triggered: true
+  - action: action_check_all_orders
+  - slot_was_set:
+    - action_that_triggered_show_more: null
+  - slot_was_set:
+    - show_more_count: -1
+  - slot_was_set:
+    - is_show_more_triggered: false

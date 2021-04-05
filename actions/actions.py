@@ -332,7 +332,6 @@ class CheckAllOrders(Action):
     @staticmethod
     def respective_buttons(status, is_eligible):
         required_buttons = []
-        logger.info(status)
         if status == ORDER_PENDING or status == SHIPPED:
             required_buttons.append(
                 {"title": ORDER_STATUS, "payload": "", "type": "postback"}
@@ -385,7 +384,6 @@ class CheckAllOrders(Action):
     def __get_current_orders(
         self, no_of_valid_orders: int, order_email: Text, orders: List[Dict[Text, Any]]
     ) -> (List[Dict[Text, Any]], int):
-        logger.info(orders)
         valid_orders = []
         minimum_order_index = MIN_ITEM_IN_CAROUSEL
         maximum_order_index = MIN_ITEM_IN_CAROUSEL
@@ -650,7 +648,6 @@ class ValidateReturnOrder(FormValidationAction):
     ) -> List[EventType]:
         slot_set = {}
         if value is not None:
-            logger.info(value)
             if value in [QUALITY_ISSUES, INCORRECT_ITEMS, DONT_NEED_THE_PRODUCT]:
                 slot_set = {
                     REASON_FOR_RETURN: value,
