@@ -1,10 +1,6 @@
 import logging
 from typing import Any, Dict, List, Text, Tuple
 
-from rasa_sdk import Action, FormValidationAction, Tracker, events
-from rasa_sdk.events import AllSlotsReset, EventType, FollowupAction, SlotSet
-from rasa_sdk.executor import CollectingDispatcher
-
 from dash_ecomm import generic_utils
 from dash_ecomm.constants import (
     ACTION_CANCEL_ORDER,
@@ -66,6 +62,9 @@ from dash_ecomm.database_utils import (
     is_valid_user,
     validate_order_id,
 )
+from rasa_sdk import Action, FormValidationAction, Tracker, events
+from rasa_sdk.events import AllSlotsReset, EventType, FollowupAction, SlotSet
+from rasa_sdk.executor import CollectingDispatcher
 
 logger = logging.getLogger(__name__)
 
@@ -331,7 +330,7 @@ class CheckAllOrders(Action):
         return "action_check_all_orders"
 
     @staticmethod
-    def respective_buttons(order_id,status, is_eligible):
+    def respective_buttons(order_id, status, is_eligible):
         required_buttons = []
         payload = "order status of {}".format(order_id)
         if status == ORDER_PENDING or status == SHIPPED:
@@ -495,19 +494,24 @@ class ActionOrderStatus(Action):
         tracker: Tracker,
         domain: "DomainDict",  # noqa: F821
     ) -> List[Dict[Text, Any]]:
-        order_id_to_show_order_status = tracker.latest_message['entities'][0]['value']
+        order_id_to_show_order_status = tracker.latest_message["entities"][0]["value"]
         logger.info(order_id_to_show_order_status)
         order_for_order_id = get_order_by_order_id(order_id_to_show_order_status)
         if order_for_order_id:
             status_for_order_id = order_for_order_id[ORDER_COLUMN_STATUS]
-            utter = {"template": "utter_order_status", "order_id": order_id_to_show_order_status,
-                     "small_order_id": order_id_to_show_order_status.lower(),
-                     "status": status_for_order_id}
+            utter = {
+                "template": "utter_order_status",
+                "order_id": order_id_to_show_order_status,
+                "small_order_id": order_id_to_show_order_status.lower(),
+                "status": status_for_order_id,
+            }
             dispatcher.utter_message(**utter)
         else:
-            utter = {"template": "utter_order_status_failed", "order_id": order_id_to_show_order_status}
+            utter = {
+                "template": "utter_order_status_failed",
+                "order_id": order_id_to_show_order_status,
+            }
             dispatcher.utter_message(**utter)
-
 
 
 class ShowValidReturnOrders(Action):

@@ -393,3 +393,51 @@ stories:
     - show_more_count: -1
   - slot_was_set:
     - is_show_more_triggered: false
+
+- story: Story from Conversation ID 7fe8936fb676484a9d9cd3bfdc956002
+  steps:
+    - slot_was_set:
+        - session_started_metadata:
+            user_token: dishant@neuralspace.ai
+    - slot_was_set:
+        - session_started_metadata:
+            user_token: dishant@neuralspace.ai
+    - intent: greet
+      user: |-
+        hi
+    - action: personal_greet
+    - slot_was_set:
+        - user_email: dishant@neuralspace.ai
+    - slot_was_set:
+        - user_first_name: Dishant
+    - slot_was_set:
+        - user_last_name: Gandhi
+    - slot_was_set:
+        - is_logged_in: true
+    - slot_was_set:
+        - user_otp: '1234'
+    - intent: check_all_orders
+      user: |-
+        /check_all_orders
+    - action: action_check_all_orders
+    - slot_was_set:
+        - action_that_triggered_show_more: action_check_all_orders
+    - slot_was_set:
+        - show_more_count: 2
+    - slot_was_set:
+        - is_show_more_triggered: false
+    - intent: order_status
+      user: |-
+        order status of [DASH123458](order_id)[123458]{"entity": "number", "value": 123458}
+    - action: action_order_status
+    - intent: order_status
+      user: |-
+        order status of [DASH123459](order_id)[123459]{"entity": "number", "value": 123459}
+    - action: action_order_status
+    - intent: order_status
+      user: |-
+        order status of [DASH123460](order_id)[123460]{"entity": "number", "value": 123460}
+    - action: action_order_status
+    - intent: order_status
+      user: |-
+        order status of [DASH123460](order_id)[123460]{"entity": "number", "value": 123460}

@@ -3,7 +3,6 @@ from dataclasses import dataclass
 from typing import Any, Dict, List, Text
 
 import yaml
-
 from dash_ecomm.constants import (
     DB_FILE,
     DB_USER_COLUMN,
