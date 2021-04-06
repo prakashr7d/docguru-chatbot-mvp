@@ -75,8 +75,8 @@ rules:
     - login_blocked: true
   - active_loop: null
   steps:
-  - intent: order_status
-  - action: utter_order_status_for_blocked_user
+  - intent: check_all_orders
+  - action: utter_check_all_orders_for_blocked_user
   - action: action_login_form
 
 - rule: order status + valid login
@@ -85,8 +85,8 @@ rules:
     - is_logged_in: true
   - active_loop: null
   steps:
-  - intent: order_status
-  - action: action_order_status
+  - intent: check_all_orders
+  - action: action_check_all_orders
 
 - rule: logout
   steps:
@@ -148,7 +148,7 @@ rules:
   - active_loop: null
   steps:
   - intent: select_return_order
-  - action: utter_order_status_for_blocked_user
+  - action: utter_check_all_orders_for_blocked_user
   - action: action_login_form
   - action: utter_anything_else
 

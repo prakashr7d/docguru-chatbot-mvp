@@ -13,9 +13,6 @@ from dash_ecomm.constants import (
     ORDER_COLUMN_REFUNDED,
     ORDER_COLUMN_RETURNABLE,
     ORDER_COLUMN_STATUS,
-    ORDER_PENDING,
-    RETURNING,
-    SHIPPED,
     USER_PROFILE_COLUMN_EMAIL,
     USER_PROFILE_COLUMN_FIRSTNAME,
     USER_PROFILE_COLUMN_ID,
@@ -58,14 +55,18 @@ def get_all_orders_from_email(order_email: Text) -> List[Dict[Text, Any]]:
     for order in DATABASE[DB_USER_ORDERS]:
         if order[ORDER_COLUMN_EMAIL] == order_email:
             orders.append(order)
+
     return orders
 
 
 def is_valid_user(useremail: Text) -> bool:
     global DATABASE
+
     is_valid_user = False
+
     if useremail in DATABASE[DB_USER_COLUMN]:
         is_valid_user = True
+
     return is_valid_user
 
 
@@ -100,13 +101,7 @@ def get_valid_order_count(ordermail: Text) -> int:
     order_count = 0
     orders = get_all_orders_from_email(ordermail)
     for selected_order in orders:
-        if selected_order[ORDER_COLUMN_EMAIL] == ordermail and selected_order[
-            ORDER_COLUMN_STATUS
-        ] in [
-            SHIPPED,
-            RETURNING,
-            ORDER_PENDING,
-        ]:
+        if selected_order[ORDER_COLUMN_EMAIL] == ordermail:
             order_count += 1
     return order_count
 

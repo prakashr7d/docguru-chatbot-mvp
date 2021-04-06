@@ -86,7 +86,7 @@ orders:
   refunded: false
   returnable: true
   size: '11'
-  status: delivered
+  status: order pending
 - color: gray
   id: DASH123458
   image_url: https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTCytvY7-SDfxRIfcX4IuzzTdrq_15WV9d3Vw&usqp=CAU
@@ -138,10 +138,10 @@ orders:
   order_email: dishant@neuralspace.ai
   order_number: 123459
   product_name: Shoes
-  refunded: false
-  returnable: false
+  refunded: true
+  returnable: true
   size: '11'
-  status: shipped
+  status: delivered
 products:
 - color: blue
   product_name: Shoes

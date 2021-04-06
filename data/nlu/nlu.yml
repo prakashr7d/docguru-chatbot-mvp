@@ -1,6 +1,6 @@
 version: "2.0"
 nlu:
-- intent: order_status
+- intent: check_all_orders
   examples: |
     - check status of my order
     - when are my shoes coming in
@@ -20,7 +20,14 @@ nlu:
     - when will I receive my orders
     - are my orders on their way?
     - find my orders dash
-    - order status
+    - check all my order
+    - I want to check all my order
+    - actually can I check all my orders
+    - check all orders for example@rasa.com
+    - /check_all_orders
+    - I want to check on my orders
+    - i want to see my orders
+    - show my orders dash
 - intent: inform
   examples: |
     - example@rasa.com
@@ -59,7 +66,6 @@ nlu:
     - can I login here?
     - make me login in
     - can you login me
-    - hi login
 - intent: show_more
   examples: |
     - show more
@@ -81,7 +87,6 @@ nlu:
     - Start a return
     - Okay. I would like to return some shoes I bought
     - yeah I want to return something
-    - /return_order
 - intent: select_return_order
   examples: |
     - I want to return [DASH123450](order_id)
@@ -93,7 +98,7 @@ nlu:
     - I want to return [DASH123457](order_id)
     - [DASH123457](order_id)
     - return [DASH123457](order_id)
-- intent: ask_return_a_reason
+- intent: ask_reason_for_return
   examples: |
     - i want to return my product because I [don't want it]{"entity": "return_a_reason", "value": "Don't need the Product"}
     - i want to return my product because I [don't need it]{"entity": "return_a_reason", "value": "Don't need the Product"}
@@ -101,8 +106,8 @@ nlu:
     - [Quality problem]{"entity": "return_a_reason", "value": "Quality issues"}
     - [Quality issues](return_a_reason)
     - i got a [wrong product]{"entity": "return_a_reason", "value": "Incorrect Items"}
-    - [I didn't receive correct product]{"entity": "return_a_reason", "value": "Incorrect Items"}
-    - I received [incorrect product]{"entity": "return_a_reason", "value": "Incorrect Items"}
+    - [I didn't receive correct]{"entity": "return_a_reason", "value": "Incorrect Items"} product
+    - I received [incorrect]{"entity": "return_a_reason", "value": "Incorrect Items"} product
     - [Incorrect Items](return_a_reason)
     - [Don't need the Product](return_a_reason)
 - intent: ask_return_e_type
@@ -549,36 +554,3 @@ nlu:
     - wertyuiokjhgfdecvuytrfv
     - ertyuikjhgfdcvbhjhgfc
     - ertyuiolkjhgfdfghjk,
-- synonym: Don't need the Product
-  examples: |
-    - don't want it
-    - don't need it
-    - Don't need the product
-- synonym: Quality issues
-  examples: |
-    - Quality problem
-- synonym: Incorrect Items
-  examples: |
-    - wrong product
-    - I didn't receive correct product
-    - incorrect product
-- synonym: Return Product
-  examples: |
-    - refund
-    - Return product
-    - Refund
-    - Return
-- synonym: Replace Product
-  examples: |
-    - replace
-    - Replace product
-    - Replacement
-    - replacement
-- synonym: Primary Account
-  examples: |
-    - Default Account
-    - primary Account
-    - primary
-- synonym: Credit Points
-  examples: |
-    - Credit

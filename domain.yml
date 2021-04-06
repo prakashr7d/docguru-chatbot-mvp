@@ -5,7 +5,7 @@ session_config:
   session_expiration_time: 60
   carry_over_slots_to_new_session: true
 intents:
-- order_status:
+- check_all_orders:
     use_entities: true
 - order_cancel:
     use_entities: true
@@ -223,8 +223,8 @@ slots:
 responses:
   utter_generic_greet:
   - buttons:
-    - payload: /order_status
-      title: Check order status
+    - payload: /check_all_orders
+      title: check all orders
     - payload: /return_order
       title: Return an order
     - payload: product_enquiry
@@ -255,8 +255,8 @@ responses:
   - text: Hmm, seems like we don't have an order associated with that email
   utter_personalized_greet_new_session:
   - buttons:
-    - payload: /order_status
-      title: Check order status
+    - payload: /check_all_orders
+      title: check all orders
     - payload: /return_order
       title: Return an order
     - payload: product_enquiry
@@ -313,8 +313,8 @@ responses:
     text: Anything else you want help with?
   utter_anything_else_options:
   - buttons:
-    - payload: /order_status
-      title: Check order status
+    - payload: /check_all_orders
+      title: check all orders
     - payload: /return_order
       title: Return an order
     - payload: product_enquiry
@@ -329,7 +329,7 @@ responses:
       title: Looking for discounts and offers
     - payload: /service_request_enquiry
       title: Enquire about a service request
-    text: You can ask me about any product, order status, return order request, cancel order request.
+    text: You can ask me about any product, check all orders, return order request, cancel order request.
   utter_i_am_here_for_you:
   - text: No worries, I am here for you if you need anything
   utter_login_blocked:
@@ -346,7 +346,7 @@ responses:
   - text: Seems like you are not our registered user.
   utter_incorrect_otp:
   - text: Sorry, it seems like the OTP you gave me is incorrect.
-  utter_order_status_for_blocked_user:
+  utter_check_all_orders_for_blocked_user:
   - text: Sorry, I cannot show you your orders as login has been blocked temporairily
   utter_on_show_orders:
   - text: Here, are some more orders that are currently shipped, returning or in order pending mode
@@ -357,8 +357,8 @@ responses:
     text: Check for more orders by clicking the button below or say 'show more'
   utter_show_more_something:
   - buttons:
-    - payload: Check order status
-      title: Check order status
+    - payload: /check all orders
+      title: check all orders
     - payload: Product inquiry
       title: Product inquiry
     - payload: Return order
@@ -428,7 +428,7 @@ actions:
 - action_unblock_login
 - action_logout
 - action_login_form
-- action_order_status
+- action_check_all_orders
 - show_more_action
 - action_show_valid_return_order
 - action_return_order
