@@ -47,6 +47,12 @@ from dash_ecomm.constants import (
     RETURN_ORDER_FORM,
     RETURN_PRODUCT,
     SHIPPED,
+    CANCELED,
+    NOT_PICKED,
+    PICKED,
+    RECEIVED,
+    REFUNDED,
+    ORDER_CONFIRMED,
     SHOW_MORE_COUNT,
     STOP_SHOW_MORE_COUNT,
     TYPE_OF_RETURN,
@@ -58,6 +64,9 @@ from dash_ecomm.constants import (
     TITLE,
     PAYLOAD,
     TYPE,
+    BUTTONS,
+    SUBTITLE,
+    IMAGE_URL,
 )
 from dash_ecomm.database_utils import (
     get_all_orders_from_email,
@@ -389,9 +398,9 @@ class CheckAllOrders(Action):
             )
             carousel_element = {
                 TITLE: selected_order[ORDER_COLUMN_PRODUCT_NAME],
-                "subtitle": f"Status: {selected_order[ORDER_COLUMN_STATUS]}",
-                "image_url": selected_order[ORDER_COLUMN_IMAGE_URL],
-                "buttons": required_buttons,
+                SUBTITLE: f"Status: {selected_order[ORDER_COLUMN_STATUS]}",
+                IMAGE_URL: selected_order[ORDER_COLUMN_IMAGE_URL],
+                BUTTONS: required_buttons,
             }
             carousel[PAYLOAD]["elements"].append(carousel_element)
         return carousel
@@ -501,21 +510,65 @@ class ActionOrderStatus(Action):
     def name(self) -> Text:
         return "action_order_status"
 
+    def __create_order_carousel(self, selected_order: List[Dict[Text, Any]]) -> Dict[Text, Any]:
+        carousel = {
+            TYPE: "template",
+            PAYLOAD: {"template_type": "generic", "elements": []},
+        }
+        carousel_element = {
+            TITLE: selected_order[ORDER_COLUMN_PRODUCT_NAME],
+            SUBTITLE: f"Status: {selected_order[ORDER_COLUMN_STATUS]}",
+            BUTTONS: [],
+            IMAGE_URL: selected_order[ORDER_COLUMN_IMAGE_URL],
+        }
+        carousel[PAYLOAD]["elements"].append(carousel_element)
+        return carousel
+
     def run(
         self,
         dispatcher,
         tracker: Tracker,
         domain: "DomainDict",  # noqa: F821
     ) -> List[Dict[Text, Any]]:
-        order_id_to_show_order_status = tracker.latest_message["entities"][0]["value"]
+        try:
+            order_id_to_show_order_status = tracker.latest_message["entities"][0]["value"]
+        except:
+            dispatcher.utter_message(template="utter_ask_status_order_id")
+            return 0
         logger.info(order_id_to_show_order_status)
         order_for_order_id = get_order_by_order_id(order_id_to_show_order_status)
         if order_for_order_id:
+            valid_order = order_for_order_id
+            carousel_order = self.__create_order_carousel(valid_order)
+            logger.info(carousel_order)
+            dispatcher.utter_message(attachment=carousel_order)
             status_for_order_id = order_for_order_id[ORDER_COLUMN_STATUS]
+            if status_for_order_id == ORDER_PENDING:
+                template = "utter_order_status_order_pending"
+            elif status_for_order_id == ORDER_CONFIRMED:
+                template = "utter_order_status_order_confirmed"
+            elif status_for_order_id == SHIPPED:
+                template = "utter_order_status_order_shipped"
+            elif status_for_order_id == CANCELED:
+                template = "utter_order_status_cancelled"
+            elif status_for_order_id == DELIVERED:
+                template = "utter_order_status_delivered"
+            elif status_for_order_id == NOT_PICKED:
+                template = "utter_order_status_not_picked"
+            elif status_for_order_id == PICKED:
+                template = "utter_order_status_picked"
+            elif status_for_order_id == RECEIVED:
+                template = "utter_order_status_received"
+            elif status_for_order_id == REFUNDED:
+                template = "utter_order_status_refunded"
+            else:
+                template = "utter_order_status_failed"
             utter = {
-                "template": "utter_order_status",
+                "template": template,
                 "order_id": order_id_to_show_order_status,
                 "small_order_id": order_id_to_show_order_status.lower(),
+                "shipped_date": "04/04/2021",
+                "delivery_date": "10/05/2021",
                 "status": status_for_order_id,
             }
             dispatcher.utter_message(**utter)
@@ -541,9 +594,9 @@ class ShowValidReturnOrders(Action):
         for selected_order in delivered_orders:
             carousel_element = {
                 TITLE: selected_order[ORDER_COLUMN_PRODUCT_NAME],
-                "subtitle": f"Status: {selected_order[ORDER_COLUMN_STATUS]}",
-                "image_url": selected_order[ORDER_COLUMN_IMAGE_URL],
-                "buttons": [
+                SUBTITLE: f"Status: {selected_order[ORDER_COLUMN_STATUS]}",
+                IMAGE_URL: selected_order[ORDER_COLUMN_IMAGE_URL],
+                BUTTONS: [
                     {
                         TITLE: RETURN_ORDER,
                         PAYLOAD: f"please place a return for {selected_order[ORDER_COLUMN_ID]}",
@@ -783,3 +836,10 @@ class ActionAskSwitch(Action):
         slot_set.append(ActiveLoop(None))
         slot_set.append(SlotSet(REQUESTED_SLOT, None))
         return slot_set
+
+"""
+#TODO:
+1. different utter for each status
+2. Little tuning in the NLU( add some track order data in order status)
+3. ask about any help after displying the order status
+"""

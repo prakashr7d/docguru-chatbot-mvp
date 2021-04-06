@@ -98,6 +98,57 @@ stories:
   - intent: order_status
   - action: action_order_status
 
+- story: order status already logged in happy path + order status without show_more + anything else affirm
+  steps:
+  - intent: check_all_orders
+  - slot_was_set:
+    - is_logged_in: true
+  - active_loop: null
+  - action: action_check_all_orders
+  - intent: order_status
+  - action: action_order_status
+  - action: utter_anything_else
+  - intent: affirm
+  - action: utter_anything_else_options
+
+- story: order status already logged in happy path + order status without show_more + anything else deny
+  steps:
+  - intent: check_all_orders
+  - slot_was_set:
+    - is_logged_in: true
+  - active_loop: null
+  - action: action_check_all_orders
+  - intent: order_status
+  - action: action_order_status
+  - action: utter_anything_else
+  - intent: deny
+  - action: utter_i_am_here_for_you
+
+- story: order status already logged in happy path + multiple order status without show_more
+  steps:
+  - intent: check_all_orders
+  - slot_was_set:
+    - is_logged_in: true
+  - active_loop: null
+  - action: action_check_all_orders
+  - intent: order_status
+  - action: action_order_status
+  - intent: order_status
+  - action: action_order_status
+
+- story: order status already logged in happy path + multiple order status without show_more between anything else in order_status
+  steps:
+  - intent: check_all_orders
+  - slot_was_set:
+    - is_logged_in: true
+  - active_loop: null
+  - action: action_check_all_orders
+  - intent: order_status
+  - action: action_order_status
+  - action: utter_anything_else
+  - intent: order_status
+  - action: action_order_status
+
 - story: order status already logged in happy path
   steps:
   - intent: check_all_orders
@@ -107,6 +158,20 @@ stories:
   - action: action_check_all_orders
   - intent: show_more
   - action: show_more_action
+  - intent: order_status
+  - action: action_order_status
+
+- story: order status already logged in happy path
+  steps:
+  - intent: check_all_orders
+  - slot_was_set:
+    - is_logged_in: true
+  - active_loop: null
+  - action: action_check_all_orders
+  - intent: show_more
+  - action: show_more_action
+  - intent: order_status
+  - action: action_order_status
   - intent: order_status
   - action: action_order_status
 

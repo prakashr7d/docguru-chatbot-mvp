@@ -492,3 +492,45 @@ stories:
     user: |-
       No
   - action: utter_i_am_here_for_you
+
+- story: order_status
+  steps:
+  - slot_was_set:
+    - session_started_metadata:
+        user_token: dishant@neuralspace.ai
+  - slot_was_set:
+    - session_started_metadata:
+        user_token: dishant@neuralspace.ai
+  - intent: greet
+    user: |-
+      /greet
+  - action: personal_greet
+  - slot_was_set:
+    - user_email: dishant@neuralspace.ai
+  - slot_was_set:
+    - user_first_name: Dishant
+  - slot_was_set:
+    - user_last_name: Gandhi
+  - slot_was_set:
+    - is_logged_in: true
+  - slot_was_set:
+    - user_otp: '1234'
+  - intent: check_all_orders
+    user: |-
+      /check_all_orders
+  - action: action_check_all_orders
+  - slot_was_set:
+    - action_that_triggered_show_more: action_check_all_orders
+  - slot_was_set:
+    - show_more_count: 2
+  - slot_was_set:
+    - is_show_more_triggered: false
+  - intent: order_status
+    user: |-
+      order status of [DASH123458](order_id)[123458]{"entity": "number", "value": 123458}
+  - action: action_order_status
+  - action: utter_anything_else
+  - intent: deny
+    user: |-
+      No
+  - action: utter_i_am_here_for_you

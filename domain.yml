@@ -5,6 +5,8 @@ session_config:
   session_expiration_time: 60
   carry_over_slots_to_new_session: true
 intents:
+- ask_reason_for_return:
+    use_entities: true
 - check_all_orders:
     use_entities: true
 - order_cancel:
@@ -424,10 +426,28 @@ responses:
     - payload: No
       title: No
     text: Would you like to cancel this form and switch?
-  utter_order_status:
-  - text: Your order {order_id} has been {status}. [click here](https://sites.google.com/view/orderstatus-{small_order_id}/home) to track order
+  utter_order_status_order_pending:
+  - text: Your order {order_id} is waiting to be accepted by Neural Space. [click here](https://sites.google.com/view/orderstatus-{small_order_id}/home) to track order
+  utter_order_status_order_confirmed:
+  - text: Thanks for shopping! your {order_id} hasn't shipped yet. [click here](https://sites.google.com/view/orderstatus-{small_order_id}/home) to track order
+  utter_order_status_order_shipped:
+  - text: Your order {order_id} has been shipped on {shipped_date} and will be delivered by {delivery_date}. [click here](https://sites.google.com/view/orderstatus-{small_order_id}/home) to track order
+  utter_order_status_cancelled:
+  - text: We apologize that your order {order_id} has got cancelled. [click here](https://sites.google.com/view/orderstatus-{small_order_id}/home) to get more information.
+  utter_order_status_delivered:
+  - text: Your order {order_id} has delivered on {delivery_date}. [click here](https://sites.google.com/view/orderstatus-{small_order_id}/home) to track order
+  utter_order_status_not_picked:
+  - text: Your order {order_id} has been requested for return and it will be picked by our delivery executive on {delivery_date}. [click here](https://sites.google.com/view/orderstatus-{small_order_id}/home) to track order
+  utter_order_status_picked:
+  - text: Your order {order_id} has been requested for return and has picked by our delivery executive on {delivery_date} and you will get refund soon. [click here](https://sites.google.com/view/orderstatus-{small_order_id}/home) to track order
+  utter_order_status_received:
+  - text: Your product for the order {order_id} has been received in our end, You will get the refund soon once your product get verified. [click here](https://sites.google.com/view/orderstatus-{small_order_id}/home) to track order
+  utter_order_status_refunded:
+  - text: Your refund for {order_id}  has been successfully processed, If you did't get your refund in the account you have choosed, reach us out at neuralspace@neuralspace.ai. [click here](https://sites.google.com/view/orderstatus-{small_order_id}/home) for more information
+  utter_ask_status_order_id:
+  - text: please enter the order_id for the order you want to track or to see the order status
   utter_order_status_failed:
-  - text: Selected order is not available in the database please contact us about the querry at neuralspace@neuraspace.ai
+  - text: The Order you have mentioned is not available in your order history. Please reach us at neuralspace@neuralspace.ai
 
 actions:
 - personal_greet
