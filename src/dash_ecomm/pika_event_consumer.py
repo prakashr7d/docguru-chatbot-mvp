@@ -13,7 +13,6 @@ def _callback(channel, method, properties, body):
     event = json.loads(body)
     if event["event"] in ["user", "bot", "action", "followup"]:
         event["@timestamp"] = datetime.now()
-        print(event)
         es.index(index="rasa-index", body=event)
 
 
@@ -30,11 +29,9 @@ def run_consumer(
     global es
     es = Elasticsearch(es_host)
     credentials = pika.PlainCredentials(rmq_username, rmq_password)
-    print("*" * 100, rmq_host)
     connection = pika.BlockingConnection(
         pika.ConnectionParameters(host=rmq_host, port=rmq_port, credentials=credentials)
     )
-    print("*" * 100, "Heigala")
     # start consumption of channel
     channel = connection.channel()
     channel.basic_consume(rmq_queue_name, _callback, auto_ack=True)

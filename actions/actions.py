@@ -1,10 +1,6 @@
 import logging
 from typing import Any, Dict, List, Text, Tuple
 
-from rasa_sdk import Action, FormValidationAction, Tracker, events
-from rasa_sdk.events import AllSlotsReset, EventType, FollowupAction, SlotSet
-from rasa_sdk.executor import CollectingDispatcher
-
 from dash_ecomm import generic_utils
 from dash_ecomm.constants import (
     ACTION_CANCEL_ORDER,
@@ -16,6 +12,7 @@ from dash_ecomm.constants import (
     DELIVERED,
     DONT_NEED_THE_PRODUCT,
     EMAIL_TRIES,
+    FORM_SLOTS,
     INCORRECT_ITEMS,
     IS_LOGGED_IN,
     IS_SHOW_MORE_TRIGGERED,
@@ -47,6 +44,7 @@ from dash_ecomm.constants import (
     REPLACE_PRODUCT,
     REQUESTED_SLOT,
     RETURN_ORDER,
+    RETURN_ORDER_FORM,
     RETURN_PRODUCT,
     SHIPPED,
     SHOW_MORE_COUNT,
@@ -61,10 +59,20 @@ from dash_ecomm.database_utils import (
     get_all_orders_from_email,
     get_user_info_from_db,
     get_valid_order_count,
+    get_valid_order_return,
     is_valid_otp,
     is_valid_user,
     validate_order_id,
 )
+from rasa_sdk import Action, FormValidationAction, Tracker, events
+from rasa_sdk.events import (
+    ActiveLoop,
+    AllSlotsReset,
+    EventType,
+    FollowupAction,
+    SlotSet,
+)
+from rasa_sdk.executor import CollectingDispatcher
 
 logger = logging.getLogger(__name__)
 
@@ -494,6 +502,7 @@ class ShowValidReturnOrders(Action):
             "payload": {"template_type": "generic", "elements": []},
         }
         for selected_order in delivered_orders:
+            logger.info(selected_order[ORDER_COLUMN_ID])
             carousel_element = {
                 "title": selected_order[ORDER_COLUMN_PRODUCT_NAME],
                 "subtitle": f"Status: {selected_order[ORDER_COLUMN_STATUS]}",
@@ -570,7 +579,7 @@ class ShowValidReturnOrders(Action):
         user_mail = tracker.get_slot(USER_EMAIL)
         show_more_count = tracker.get_slot(SHOW_MORE_COUNT)
         is_show_more_triggered = tracker.get_slot(IS_SHOW_MORE_TRIGGERED)
-        valid_orders = get_all_orders_from_email(user_mail)
+        valid_orders = get_valid_order_return(user_mail)
         no_of_valid_orders = 0
         if not is_show_more_triggered:
             no_of_valid_orders = len(valid_orders)
@@ -610,7 +619,8 @@ class ReturnOrderAction(Action):
         return [
             SlotSet(ORDER_ID_FOR_RETURN, None),
             SlotSet(REASON_FOR_RETURN, None),
-            SlotSet(REASON_FOR_RETURN_DESCRIPTION),
+            SlotSet(REASON_FOR_RETURN_DESCRIPTION, None),
+            SlotSet(TYPE_OF_RETURN, None),
             SlotSet(PICKUP_ADDRESS_FOR_RETURN, None),
             SlotSet(REFUND_ACCOUNT, None),
         ]
@@ -639,7 +649,7 @@ class ValidateReturnOrder(FormValidationAction):
             slot_set = {REQUESTED_SLOT: ORDER_ID_FOR_RETURN}
         return slot_set
 
-    def validate_reason_for_return(
+    def validate_return_a_reason(
         self,
         value: Text,
         dispatcher: "CollectingDispatcher",
@@ -648,6 +658,7 @@ class ValidateReturnOrder(FormValidationAction):
     ) -> List[EventType]:
         slot_set = {}
         if value is not None:
+            logger.info(value)
             if value in [QUALITY_ISSUES, INCORRECT_ITEMS, DONT_NEED_THE_PRODUCT]:
                 slot_set = {
                     REASON_FOR_RETURN: value,
@@ -658,7 +669,7 @@ class ValidateReturnOrder(FormValidationAction):
             slot_set = {REQUESTED_SLOT: REASON_FOR_RETURN}
         return slot_set
 
-    def validate_type_of_return(
+    def validate_return_e_type(
         self,
         value: Text,
         dispatcher: "CollectingDispatcher",
@@ -676,7 +687,7 @@ class ValidateReturnOrder(FormValidationAction):
                 dispatcher.utter_message(template="utter_invalid_type_of_return")
         return slot_set
 
-    def validate_reason_for_return_description(
+    def validate_return_a_reason_description(
         self,
         value: Text,
         dispatcher: "CollectingDispatcher",
@@ -690,7 +701,7 @@ class ValidateReturnOrder(FormValidationAction):
             slot_set = {REQUESTED_SLOT: REASON_FOR_RETURN_DESCRIPTION}
         return slot_set
 
-    def validate_pickup_address_for_return(
+    def validate_return_pickup_address(
         self,
         value: Text,
         dispatcher: "CollectingDispatcher",
@@ -704,7 +715,7 @@ class ValidateReturnOrder(FormValidationAction):
             slot_set = {REQUESTED_SLOT: PICKUP_ADDRESS_FOR_RETURN}
         return slot_set
 
-    def validate_refund_account(
+    def validate_return_refund_account(
         self,
         value: Text,
         dispatcher: "CollectingDispatcher",
@@ -712,8 +723,28 @@ class ValidateReturnOrder(FormValidationAction):
         domain: "DomainDict",  # noqa: F821
     ) -> List[EventType]:
         slot_set = {}
-        if value is not None and value in [PRIMARY_ACCOUNT, CREDIT_POINTS]:
+        if value is not None and value.lower() in [PRIMARY_ACCOUNT, CREDIT_POINTS]:
             slot_set = {REFUND_ACCOUNT: value}
         else:
             slot_set = {REQUESTED_SLOT: REFUND_ACCOUNT}
+        return slot_set
+
+
+class ActionAskSwitch(Action):
+    def name(self) -> Text:
+        return "action_switch"
+
+    def run(
+        self,
+        dispatcher,
+        tracker: Tracker,
+        domain: "DomainDict",  # noqa: F821
+    ) -> List[Dict[Text, Any]]:
+        active_form = tracker.active_loop.get("name")
+        slot_set = []
+        if active_form in [RETURN_ORDER_FORM]:
+            for slot in FORM_SLOTS[active_form]:
+                slot_set.append(SlotSet(slot, None))
+        slot_set.append(ActiveLoop(None))
+        slot_set.append(SlotSet(REQUESTED_SLOT, None))
         return slot_set

@@ -3,7 +3,6 @@ from dataclasses import dataclass
 from typing import Any, Dict, List, Text
 
 import yaml
-
 from dash_ecomm.constants import (
     DB_FILE,
     DB_USER_COLUMN,
@@ -143,5 +142,5 @@ def update_order_status(status: Text, order_id: Text):
             selected_order[ORDER_COLUMN_STATUS] = status
             selected_order[ORDER_COLUMN_RETURNABLE] = False
             selected_order[ORDER_COLUMN_REFUNDED] = False
-    with open(DB_FILE, "w+") as dbfw:
-        yaml.dump(DATABASE, dbfw)
+    # with open(DB_FILE, "w+") as dbfw:
+    #     yaml.dump(DATABASE, dbfw)

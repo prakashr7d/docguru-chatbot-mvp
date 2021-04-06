@@ -14,7 +14,7 @@ stories:
     - is_logged_in: false
   - slot_was_set:
     - user_otp: null
-  - intent: check_all_orders
+  - intent: order_status
   - action: utter_not_logged_in_prompt
   - action: login_form
   - active_loop: login_form
@@ -39,7 +39,7 @@ stories:
   - action: utter_anything_else
   - intent: deny
   - action: utter_i_am_here_for_you
-  - intent: check_all_orders
+  - intent: order_status
   - action: utter_not_logged_in_prompt
   - action: login_form
   - active_loop: login_form
@@ -393,3 +393,102 @@ stories:
     - show_more_count: -1
   - slot_was_set:
     - is_show_more_triggered: false
+
+- story: return order
+  steps:
+  - intent: greet
+    user: |-
+      hi
+  - action: personal_greet
+  - slot_was_set:
+    - user_email: dishant@neuralspace.ai
+  - slot_was_set:
+    - user_first_name: Dishant
+  - slot_was_set:
+    - user_last_name: Gandhi
+  - slot_was_set:
+    - is_logged_in: true
+  - slot_was_set:
+    - user_otp: '1234'
+  - intent: return_order
+    user: |-
+      /return_order
+  - action: action_show_valid_return_order
+  - slot_was_set:
+    - action_that_triggered_show_more: null
+  - slot_was_set:
+    - show_more_count: -1
+  - slot_was_set:
+    - is_show_more_triggered: false
+  - intent: select_return_order
+    user: |-
+      I want to return [DASH123457](order_id)
+  - action: return_order_form
+  - active_loop: return_order_form
+  - slot_was_set:
+    - order_id_for_return: DASH123457
+  - slot_was_set:
+    - requested_slot: return_a_reason
+  - intent: ask_return_a_reason
+    user: |-
+      [Quality issues](return_a_reason)
+  - slot_was_set:
+    - return_a_reason: Quality issues
+  - action: return_order_form
+  - slot_was_set:
+    - return_a_reason: Quality issues
+  - slot_was_set:
+    - requested_slot: return_a_reason_description
+  - intent: ask_return_a_reason
+    user: |-
+      I got a damaged product
+  - action: return_order_form
+  - slot_was_set:
+    - return_a_reason_description: I got a damaged product
+  - slot_was_set:
+    - requested_slot: return_e_type
+  - intent: ask_return_e_type
+    user: |-
+      Get [refund]{"entity": "return_e_type", "value": "Return Product"} for my product
+  - slot_was_set:
+    - return_e_type: Return Product
+  - action: return_order_form
+  - slot_was_set:
+    - return_e_type: Return Product
+  - slot_was_set:
+    - requested_slot: return_pickup_address
+  - intent: inform
+    user: |-
+      my building, my country
+  - action: return_order_form
+  - slot_was_set:
+    - return_pickup_address: my building, my country
+  - slot_was_set:
+    - requested_slot: return_refund_account
+  - intent: ask_return_refund_account
+    user: |-
+      [Primary Account](return_refund_account)
+  - slot_was_set:
+    - return_refund_account: Primary Account
+  - action: return_order_form
+  - slot_was_set:
+    - return_refund_account: Primary Account
+  - slot_was_set:
+    - requested_slot: null
+  - active_loop: null
+  - action: action_return_order
+  - slot_was_set:
+    - order_id_for_return: null
+  - slot_was_set:
+    - return_a_reason: null
+  - slot_was_set:
+    - return_a_reason_description: null
+  - slot_was_set:
+    - return_pickup_address: null
+  - slot_was_set:
+    - return_refund_account: null
+  - action: utter_anything_else
+  - intent: deny
+    user: |-
+      No
+  - action: utter_i_am_here_for_you
