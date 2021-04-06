@@ -414,7 +414,7 @@ responses:
   utter_replace_order_inprogress:
   - text: Sorry for the inconvenience! We can only provide return order functionality now as we're still working on implementing replacement order functionality.
   utter_order_status:
-  - text: Your order {order_id} has been {status}. |Track order@ https://sites.google.com/view/orderstatus-{small_order_id}/home
+  - text: Your order {order_id} has been {status}. [click here](https://sites.google.com/view/orderstatus-{small_order_id}/home) to track order
   utter_order_status_failed:
   - text: Selected order is not available in the database please contact us about the querry at neuralspace@neuraspace.ai
 

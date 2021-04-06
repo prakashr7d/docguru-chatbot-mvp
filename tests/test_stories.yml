@@ -394,7 +394,7 @@ stories:
   - slot_was_set:
     - is_show_more_triggered: false
 
-- story: Story from Conversation ID 7fe8936fb676484a9d9cd3bfdc956002
+- story: order status with login happy + check order status
   steps:
     - slot_was_set:
         - session_started_metadata:

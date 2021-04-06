@@ -52,6 +52,7 @@ from dash_ecomm.constants import (
     USER_FIRST_NAME,
     USER_LAST_NAME,
     USER_OTP,
+    POSTBACK,
 )
 from dash_ecomm.database_utils import (
     get_all_orders_from_email,
@@ -335,30 +336,30 @@ class CheckAllOrders(Action):
         payload = "order status of {}".format(order_id)
         if status == ORDER_PENDING or status == SHIPPED:
             required_buttons.append(
-                {"title": ORDER_STATUS, "payload": payload, "type": "postback"}
+                {"title": ORDER_STATUS, "payload": payload, "type": POSTBACK}
             )
             required_buttons.append(
-                {"title": PRODUCT_DETAILS, "payload": "", "type": "postback"}
+                {"title": PRODUCT_DETAILS, "payload": "", "type": POSTBACK}
             )
             required_buttons.append(
-                {"title": CANCEL_ORDER, "payload": "", "type": "postback"}
+                {"title": CANCEL_ORDER, "payload": "", "type": POSTBACK}
             )
         elif status == DELIVERED and is_eligible:
             required_buttons.append(
-                {"title": ORDER_STATUS, "payload": payload, "type": "postback"}
+                {"title": ORDER_STATUS, "payload": payload, "type": POSTBACK}
             )
             required_buttons.append(
-                {"title": RETURN_ORDER, "payload": "", "type": "postback"}
+                {"title": RETURN_ORDER, "payload": "", "type": POSTBACK}
             )
             required_buttons.append(
-                {"title": REFUND_ORDER, "payload": "", "type": "postback"}
+                {"title": REFUND_ORDER, "payload": "", "type": POSTBACK}
             )
         else:
             required_buttons.append(
-                {"title": ORDER_STATUS, "payload": payload, "type": "postback"}
+                {"title": ORDER_STATUS, "payload": payload, "type": POSTBACK}
             )
             required_buttons.append(
-                {"title": PRODUCT_DETAILS, "payload": "", "type": "postback"}
+                {"title": PRODUCT_DETAILS, "payload": "", "type": POSTBACK}
             )
         return required_buttons
 
@@ -534,12 +535,12 @@ class ShowValidReturnOrders(Action):
                     {
                         "title": RETURN_ORDER,
                         "payload": f"please place a return for {selected_order[ORDER_COLUMN_ID]}",
-                        "type": "postback",
+                        "type": POSTBACK,
                     },
                     {
                         "title": REPLACE_ORDER,
                         "payload": "/replace_order",
-                        "type": "postback",
+                        "type": POSTBACK,
                     },
                 ],
             }

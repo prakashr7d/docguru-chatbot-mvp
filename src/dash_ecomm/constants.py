@@ -95,3 +95,7 @@ CREDIT_POINTS = "credit_points"
 # type of return
 RETURN_PRODUCT = "Return Product"
 REPLACE_PRODUCT = "Replace Product"
+
+# CAROSEL
+POSTBACK = "postback"
+
