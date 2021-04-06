@@ -45,14 +45,15 @@ intents:
     use_entities: []
 - return_order:
     use_entities: []
-- ask_refund_account:
+- ask_return_refund_account:
     use_entities: true
-- ask_reason_for_return:
+- ask_return_a_reason:
     use_entities: true
-- ask_type_of_return:
+- ask_return_e_type:
     use_entities: true
 - select_return_order:
-    use_entities: true
+    use_entities:
+      - order_id
 - order_status:
     use_entities: true
 - replace_order:
@@ -65,10 +66,13 @@ entities:
 - language
 - company
 - product
-- reason_for_return
-- type_of_return
-- refund_account
+- return_a_reason
+- return_e_type
+- return_refund_account
 - order_id
+- return_type
+- refund_account
+- reason_for_return
 slots:
   user_email:
     type: rasa.shared.core.slots.TextSlot
@@ -183,7 +187,7 @@ slots:
     influence_conversation: false
     max_value: 1.0
     min_value: 0.0
-  reason_for_return:
+  return_a_reason:
     type: rasa.shared.core.slots.CategoricalSlot
     initial_value: null
     auto_fill: true
@@ -192,17 +196,17 @@ slots:
     - don't need the product
     - quality issues
     - incorrect items
-  reason_for_return_description:
+  return_a_reason_description:
     type: rasa.shared.core.slots.TextSlot
     initial_value: null
     auto_fill: true
     influence_conversation: false
-  pickup_address_for_return:
+  return_pickup_address:
     type: rasa.shared.core.slots.TextSlot
     initial_value: null
     auto_fill: true
     influence_conversation: false
-  refund_account:
+  return_refund_account:
     type: rasa.shared.core.slots.CategoricalSlot
     initial_value: null
     auto_fill: true
@@ -210,7 +214,7 @@ slots:
     values:
     - primary account
     - credit points
-  type_of_return:
+  return_e_type:
     type: rasa.shared.core.slots.CategoricalSlot
     initial_value: null
     auto_fill: true
@@ -370,7 +374,7 @@ responses:
   - text: Sorry, there aren't any orders eligible for return
   utter_no_delivered_orders:
   - text: Sorry, it seems like there aren't any delivered orders. If any order is delivered today please wait for 24hrs for it to reflect on our end.
-  utter_ask_reason_for_return:
+  utter_ask_return_a_reason:
   - buttons:
     - payload: Don't need the Product
       title: Don't need the Product
@@ -381,22 +385,22 @@ responses:
     - payload: Hi
       title: Back to Main Menu
     text: Could you please share the reason for returning the order?
-  utter_ask_type_of_return:
+  utter_ask_return_e_type:
   - buttons:
     - payload: Get refund for my product
       title: Ask for Refund
     - payload: Get replacement for my product
       title: Ask for Replacement
     text: What would you like to do?
-  utter_invalid_type_of_return:
+  utter_invalid_return_e_type:
   - text: Sorry, I wasn't able to understand, it seems like you typed an invalid option. Try selecting one from buttons below.
-  utter_ask_reason_for_return_description:
+  utter_ask_return_a_reason_description:
   - text: Thank you for sharing reason for returning the order, could you please explain it in brief? Feel free to add comments that you have regarding the product.
-  utter_ask_pickup_address_for_return:
+  utter_ask_return_pickup_address:
   - text: Thank you for sharing the reason in detail, can you please provide a pickup address?
   utter_ask_order_id_for_return:
   - text: Can you please share order id of delivered order with us?
-  utter_ask_refund_account:
+  utter_ask_return_refund_account:
   - buttons:
     - payload: Primary Account
       title: Primary Account
@@ -413,6 +417,13 @@ responses:
   - text: "Your return order request for order no. \b{order_no}\b has been initiated and your order will be picked up from address: {address} within 2-3 days. Your refund request will be initiated within 7-10 business days once we receive your order and it passes quality check"
   utter_replace_order_inprogress:
   - text: Sorry for the inconvenience! We can only provide return order functionality now as we're still working on implementing replacement order functionality.
+  utter_ask_switch_form:
+  - buttons:
+    - payload: Yes
+      title: Yes
+    - payload: No
+      title: No
+    text: Would you like to cancel this form and switch?
   utter_order_status:
   - text: Your order {order_id} has been {status}. [click here](https://sites.google.com/view/orderstatus-{small_order_id}/home) to track order
   utter_order_status_failed:
@@ -430,6 +441,7 @@ actions:
 - action_show_valid_return_order
 - action_return_order
 - validate_return_order_form
+- action_switch
 forms:
   login_form:
     user_email:
@@ -442,17 +454,17 @@ forms:
     order_id_for_return:
     - entity: order_id
       type: from_entity
-    reason_for_return:
-    - entity: reason_for_return
+    return_a_reason:
+    - entity: return_a_reason
       type: from_entity
-    reason_for_return_description:
+    return_a_reason_description:
     - type: from_text
-    type_of_return:
-    - entity: type_of_return
+    return_e_type:
+    - entity: return_e_type
       type: from_entity
-    pickup_address_for_return:
+    return_pickup_address:
     - type: from_text
-    refund_account:
-    - entity: refund_account
+    return_refund_account:
+    - entity: return_refund_account
       type: from_entity
 e2e_actions: []

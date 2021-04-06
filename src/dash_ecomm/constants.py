@@ -46,11 +46,11 @@ SHOW_MORE_COUNT = "show_more_count"
 ACTION_THAT_TRIGGERED_SHOW_MORE = "action_that_triggered_show_more"
 IS_SHOW_MORE_TRIGGERED = "is_show_more_triggered"
 ORDER_ID_FOR_RETURN = "order_id_for_return"
-REASON_FOR_RETURN = "reason_for_return"
-TYPE_OF_RETURN = "type_of_return"
-REASON_FOR_RETURN_DESCRIPTION = "reason_for_return_description"
-PICKUP_ADDRESS_FOR_RETURN = "pickup_address_for_return"
-REFUND_ACCOUNT = "refund_account"
+REASON_FOR_RETURN = "return_a_reason"
+TYPE_OF_RETURN = "return_e_type"
+REASON_FOR_RETURN_DESCRIPTION = "return_a_reason_description"
+PICKUP_ADDRESS_FOR_RETURN = "return_pickup_address"
+REFUND_ACCOUNT = "return_refund_account"
 
 # slot counters
 EMAIL_TRIES = "email_tries"
@@ -89,12 +89,31 @@ QUALITY_ISSUES = "Quality issues"
 INCORRECT_ITEMS = "Incorrect Items"
 
 # type of payment account
-PRIMARY_ACCOUNT = "primary_account"
-CREDIT_POINTS = "credit_points"
+PRIMARY_ACCOUNT = "primary account"
+CREDIT_POINTS = "credit points"
 
 # type of return
 RETURN_PRODUCT = "Return Product"
 REPLACE_PRODUCT = "Replace Product"
+
+# form names
+LOGIN_FORM = "login_form"
+RETURN_ORDER_FORM = "return_order_form"
+
+# messages
+SWITCH_FORM_ASK = "Would you like to switch to {next_action} from {active_form}?"
+
+# form names with intents dictionary
+FORM_SLOTS = {
+    "return_order_form": [
+        ORDER_ID_FOR_RETURN,
+        REASON_FOR_RETURN,
+        REASON_FOR_RETURN_DESCRIPTION,
+        TYPE_OF_RETURN,
+        PICKUP_ADDRESS_FOR_RETURN,
+        REFUND_ACCOUNT,
+    ],
+}
 
 # CAROSEL
 POSTBACK = "postback"
