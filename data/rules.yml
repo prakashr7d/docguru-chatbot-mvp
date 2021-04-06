@@ -73,6 +73,7 @@ rules:
   condition:
   - slot_was_set:
     - login_blocked: true
+  - active_loop: null
   steps:
   - intent: check_all_orders
   - action: utter_check_all_orders_for_blocked_user
@@ -82,6 +83,7 @@ rules:
   condition:
   - slot_was_set:
     - is_logged_in: true
+  - active_loop: null
   steps:
   - intent: check_all_orders
   - action: action_check_all_orders
@@ -97,23 +99,58 @@ rules:
   - intent: show_more
   - action: show_more_action
 
+- rule: return order, show valid return orders, login
+  condition:
+  - slot_was_set:
+    - is_logged_in: true
+  steps:
+  - intent: return_order
+  - active_loop: null
+  - action: action_show_valid_return_order
+
+- rule: return order, show valid return orders, not login
+  condition:
+  - slot_was_set:
+    - is_logged_in: false
+  steps:
+  - intent: return_order
+  - action: utter_not_logged_in_prompt
+  - action: login_form
+  - active_loop: login_form
+
 - rule:  return form + valid login
   condition:
   - slot_was_set:
     - is_logged_in: true
+  - slot_was_set:
+    - login_blocked: false
+  - active_loop: null
   steps:
   - intent: select_return_order
   - action: return_order_form
   - active_loop: return_order_form
 
+- rule:  return form + not logged
+  condition:
+  - slot_was_set:
+    - is_logged_in: false
+  - active_loop: null
+  steps:
+  - intent: select_return_order
+  - action: utter_not_logged_in_prompt
+  - action: login_form
+  - active_loop: login_form
+
 - rule: return form + blocked login
   condition:
   - slot_was_set:
     - login_blocked: true
+  - active_loop: null
   steps:
   - intent: select_return_order
   - action: utter_check_all_orders_for_blocked_user
   - action: action_login_form
+  - action: utter_anything_else
 
 - rule: submit, return form
   condition:
