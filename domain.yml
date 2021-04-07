@@ -445,7 +445,7 @@ responses:
   utter_order_status_refunded:
   - text: Your refund for {order_id}  has been successfully processed, If you did't get your refund in the account you have choosed, reach us out at neuralspace@neuralspace.ai. [click here](https://sites.google.com/view/orderstatus-{small_order_id}/home) for more information
   utter_ask_status_order_id:
-  - text: please enter the order_id for the order you want to track or to see the order status
+  - text: please enter the order id for the order you want to track or to see the order status
   utter_order_status_failed:
   - text: The Order you have mentioned is not available in your order history. Please reach us at neuralspace@neuralspace.ai
 
