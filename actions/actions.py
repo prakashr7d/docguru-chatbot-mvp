@@ -748,3 +748,26 @@ class ActionAskSwitch(Action):
         slot_set.append(ActiveLoop(None))
         slot_set.append(SlotSet(REQUESTED_SLOT, None))
         return slot_set
+
+
+class ActionProductInquiry(Action):
+    def name(self) -> Text:
+        return "action_product_inquiry"
+
+    def run(
+        self,
+        dispatcher,
+        tracker: Tracker,
+        domain: "DomainDict",  # noqa: F821
+    ) -> List[Dict[Text, Any]]:
+        product_type = next(tracker.get_latest_entity_values("product"), None)
+        color = next(tracker.get_latest_entity_values("color"), None)
+        price_min = next(tracker.get_latest_entity_values("min"), None)
+        price_max = next(tracker.get_latest_entity_values("max"), None)
+        if product_type is not None:
+            dispatcher.utter_message(
+                text=f"You asked for {product_type}. With this specs:\n Color: {color}, "
+                f"Min-price: {price_min} and Max-price: {price_max}"
+            )
+        else:
+            dispatcher.utter_message(text="Please specify which product you want.")

@@ -88,12 +88,6 @@ rules:
   - intent: check_all_orders
   - action: action_check_all_orders
 
-- rule: logout
-  steps:
-  - intent: logout
-  - action: action_logout
-  - action: utter_logout
-
 - rule: show more
   steps:
   - intent: show_more

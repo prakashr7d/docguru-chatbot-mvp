@@ -142,6 +142,26 @@ nlu:
     - can you please change my product
     - hwo do I change my product
     - I got wrong product so can you raise replace it
+- intent: product_inquiry
+  examples: |
+    - I want a product
+    - show me [laptop](product)
+    - show me [smartphones](product)
+    - show me [shoes](product)
+    - show me [monitors](product)
+    - I want a 17 inch [laptop](product)
+    - [laptops](product) starting from [20000](min)
+    - [smartphones](product) starting from [20000](min)
+    - can you show me [black](color) [smartphones](product) starting from [5000](min)
+    - [pink](color) [shoes](product)
+    - [blue](color) [shoes](product) for men
+    - [green](color) [shoes](product) for sports
+    - [shoes](product) for running
+    - 19 inch [monitor](product)
+    - show me some [monitors](product)
+    - gaming [monitors](product) under [7000](max)
+    - sports [shoes](product) under [700](max)
+    - casual [shoes](product) under [400](max)
 - intent: affirm
   examples: |
     - Accept
@@ -554,3 +574,30 @@ nlu:
     - wertyuiokjhgfdecvuytrfv
     - ertyuikjhgfdcvbhjhgfc
     - ertyuiolkjhgfdfghjk,
+
+- lookup: product
+  examples: |
+    - laptop
+    - smartphones
+    - shoes
+    - monitors
+- lookup: gender
+  examples: |
+    - men
+    - women
+    - boys
+    - girls
+- lookup: color
+  examples: |
+    - blue
+    - pink
+    - orange
+    - rose gold
+    - black
+    - red
+    - light blue
+- lookup: brand
+  examples: |
+    - adidas
+    - spark
+    - nike

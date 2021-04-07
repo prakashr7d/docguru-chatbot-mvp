@@ -1,7 +1,10 @@
+import json
 import logging
 from dataclasses import dataclass
 from typing import Any, Dict, List, Text
 
+import numpy as np
+import pandas as pd
 import yaml
 from dash_ecomm.constants import (
     DB_FILE,
@@ -18,13 +21,17 @@ from dash_ecomm.constants import (
     USER_PROFILE_COLUMN_ID,
     USER_PROFILE_COLUMN_LASTNAME,
     USER_PROFILE_COLUMN_OTP,
+    this_path,
 )
 from dash_ecomm.generic_utils import is_valid_order_id
+from elasticsearch import Elasticsearch
 
 with open(DB_FILE, "r") as dbf:
     DATABASE = yaml.safe_load(dbf)
 
 logger = logging.getLogger(__name__)
+
+es = Elasticsearch([{"host": "localhost", "port": 9200}])
 
 
 @dataclass
@@ -144,3 +151,29 @@ def update_order_status(status: Text, order_id: Text):
             selected_order[ORDER_COLUMN_REFUNDED] = False
     # with open(DB_FILE, "w+") as dbfw:
     #     yaml.dump(DATABASE, dbfw)
+
+
+def upload_data_to_elastic(file_path: Text):
+    with open(this_path.parent / file_path) as products:
+        content = json.load(products)
+        for item in content["data"]:
+            es.index(index="e_comm", id=item["id"], doc_type="products", body=item)
+
+
+def get_products_to_json(excel_file_path: Text):
+    products = pd.read_excel(
+        this_path.parent / "e-comm-products.xlsx",
+        usecols="A:K",
+        dtype={
+            "ratings_count": np.int,
+            "price": np.int,
+            "color": np.str,
+            "gender": np.str,
+            "image": np.str,
+        },
+    )
+    products = products.replace(np.nan, "", regex=True)
+    products_list = []
+    for per_dict in products.to_dict(orient="records"):
+        products_list.append(per_dict)
+    json.dump(products_list)
