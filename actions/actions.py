@@ -515,12 +515,20 @@ class ActionOrderStatus(Action):
             TYPE: "template",
             PAYLOAD: {"template_type": "generic", "elements": []},
         }
-        carousel_element = {
-            TITLE: selected_order[ORDER_COLUMN_PRODUCT_NAME],
-            SUBTITLE: f"Status: {selected_order[ORDER_COLUMN_STATUS]}",
-            BUTTONS: [],
-            IMAGE_URL: selected_order[ORDER_COLUMN_IMAGE_URL],
-        }
+        if selected_order[ORDER_COLUMN_STATUS] in [NOT_PICKED, PICKED]:
+            carousel_element = {
+                TITLE: selected_order[ORDER_COLUMN_PRODUCT_NAME],
+                SUBTITLE: f"Status: returning - {selected_order[ORDER_COLUMN_STATUS]}",
+                BUTTONS: [],
+                IMAGE_URL: selected_order[ORDER_COLUMN_IMAGE_URL],
+            }
+        else:
+            carousel_element = {
+                TITLE: selected_order[ORDER_COLUMN_PRODUCT_NAME],
+                SUBTITLE: f"Status: {selected_order[ORDER_COLUMN_STATUS]}",
+                BUTTONS: [],
+                IMAGE_URL: selected_order[ORDER_COLUMN_IMAGE_URL],
+            }
         carousel[PAYLOAD]["elements"].append(carousel_element)
         return carousel
 
