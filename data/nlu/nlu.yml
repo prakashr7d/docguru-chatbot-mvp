@@ -98,7 +98,7 @@ nlu:
     - I want to return [DASH123457](order_id)
     - [DASH123457](order_id)
     - return [DASH123457](order_id)
-- intent: ask_reason_for_return
+- intent: ask_return_a_reason
   examples: |
     - i want to return my product because I [don't want it]{"entity": "return_a_reason", "value": "Don't need the Product"}
     - i want to return my product because I [don't need it]{"entity": "return_a_reason", "value": "Don't need the Product"}
@@ -145,23 +145,29 @@ nlu:
 - intent: product_inquiry
   examples: |
     - I want a product
-    - show me [laptop](product)
-    - show me [smartphones](product)
-    - show me [shoes](product)
-    - show me [monitors](product)
+    - show me [Laptop](product)
+    - show me [Mobiles](product)
+    - show me [Shoes](product)
+    - show me [Monitors](product)
     - I want a 17 inch [laptop](product)
     - [laptops](product) starting from [20000](min)
     - [smartphones](product) starting from [20000](min)
-    - can you show me [black](color) [smartphones](product) starting from [5000](min)
+    - can you show me [rose gold](color) [smartphones](product) starting from [5000](min)
     - [pink](color) [shoes](product)
-    - [blue](color) [shoes](product) for men
+    - [blue](color) [shoes](product) for [men](gender)
     - [green](color) [shoes](product) for sports
     - [shoes](product) for running
-    - 19 inch [monitor](product)
+    - Show me [Men's Clothing](product)
+    - i would like to see [Men's clothing](product)
+    - Show me [Women's Clothing](product)
+    - can you show me [Women's clothing](product)
+    - 19 inch [monitor](product) from [hp](brand)
     - show me some [monitors](product)
     - gaming [monitors](product) under [7000](max)
-    - sports [shoes](product) under [700](max)
-    - casual [shoes](product) under [400](max)
+    - [HP](brand) [Laptops](product) with [Black](color)
+    - [women](gender) sports [shoes](product) starting from [1000](min)
+    - [sports shoes](product) under [700](max)
+    - [casual shoes](product) under [800](max) and starting from [200](min)
 - intent: affirm
   examples: |
     - Accept
@@ -577,16 +583,95 @@ nlu:
 
 - lookup: product
   examples: |
-    - laptop
-    - smartphones
-    - shoes
-    - monitors
+    - Laptops
+    - Mobiles
+    - Computers
+    - Televisions
+    - Air Conditioners
+    - Refrigerators
+    - Washing Machines
+    - Microwaves
+    - Dishwashers
+    - Heating & Cooling Appliances
+    - Home Entertainment Systems
+    - Speakers & Headphones
+    - Cameras & Camera Accessories
+    - Monitors
+    - Sandals
+    - Heels
+    - Sports Shoes
+    - Casual Shoes
+    - Shoes
+    - Slippers
+    - Shirts
+    - T-shirts
+    - Trousers & Bottoms
+    - Jeans
+    - Skirts
+    - Shorts
+    - Kurta & Kurtis
+    - Sarees
+    - Swimwear
+    - Nightwear
+    - Decor
+    - Kitchen & Dining
+    - Bed
+    - Furnishing
+    - Storage & Organisers
+    - Bath
+    - Kids
+    - Action & Toy Figures
+    - Arts & craft
+    - Baby & Toddler Toys
+    - Building & Constructions Toys
+    - Dolls & Accessories
+    - Electronic Toys
+    - Games
+    - Party Supplies
+    - Pretend Play
+    - Soft Toys
+    - Sports & Outdoors
+    - Fiction Books
+    - School Books
+    - Children’s Books
+    - Exam Central
+    - Textbooks
+    - Indian Language Books
+    - Exercise & Fitness
+    - Cycling
+    - Badminton
+    - Cricket
+    - Football
+    - Backpacks
+    - Travel Luggage
+    - Travel Accessories
+    - Bags, Wallets & Luggage
+    - Action & Toy Figures
+    - Arts & craft
+    - Baby & Toddler Toys
+    - Building & Constructions Toys
+    - Dolls & Accessories
+    - Electronic Toys
+    - Games
+    - Party Supplies
+    - Pretend Play
+    - Soft Toys
+    - Beauty & Grooming
+    - Luxury Beauty
+    - Makeup
+    - Professional Beauty
+    - Women’s Styling Devices
+    - Men’s Grooming Devices
+    - Personal Care
+    - Sports Nutrition
+    - Health & Wellness
 - lookup: gender
   examples: |
     - men
     - women
     - boys
     - girls
+    - all
 - lookup: color
   examples: |
     - blue
@@ -596,8 +681,58 @@ nlu:
     - black
     - red
     - light blue
+    - Beige
+    - Black
+    - Blue
+    - Brown
+    - Charcoal
+    - Copper
+    - Coral
+    - Cream
+    - Gold
+    - Green
+    - Grey
+    - Maroon
+    - Peach
+    - Pink
+    - Red
+    - Silver
+    - Tan
+    - Teal
+    - White
+    - Yellow
+
 - lookup: brand
   examples: |
     - adidas
     - spark
     - nike
+    - Acer
+    - Apple
+    - Asus
+    - Dell
+    - HP
+    - Lenovo
+    - Xiaomi
+    - LG
+    - One Plus
+    - Xiaomi
+    - Samsung
+    - Vivo
+    - Realme
+    - Oppo
+    - Nokia
+    - Honor
+    - LG
+    - Lava
+    - Apple
+    - Samsung
+    - Whirlpool
+    - LG
+    - Xiaomi
+    - Phillips
+    - Havells
+    - Bajaj
+    - Voltas
+
+

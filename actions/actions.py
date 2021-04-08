@@ -12,6 +12,7 @@ from dash_ecomm.constants import (
     DELIVERED,
     DONT_NEED_THE_PRODUCT,
     EMAIL_TRIES,
+    ENTITY_NAMES,
     FORM_SLOTS,
     INCORRECT_ITEMS,
     IS_LOGGED_IN,
@@ -64,6 +65,7 @@ from dash_ecomm.database_utils import (
     is_valid_user,
     validate_order_id,
 )
+from dash_ecomm.es_query_builder import EsQueryBuilder
 from rasa_sdk import Action, FormValidationAction, Tracker, events
 from rasa_sdk.events import (
     ActiveLoop,
@@ -754,6 +756,73 @@ class ActionProductInquiry(Action):
     def name(self) -> Text:
         return "action_product_inquiry"
 
+    def __validate_entities(
+        self,
+        color: Text = None,
+        gender: Text = "all",
+        price_min: int = None,
+        price_max: int = None,
+        brand: Text = None,
+    ) -> Dict:
+        not_none_entities = {}
+        entities = [color, price_max, gender, price_min, brand]
+        for entity in range(0, len(entities)):
+            if entities[entity] is not None:
+                not_none_entities[ENTITY_NAMES[entity]] = entities[entity]
+
+        return not_none_entities
+
+    def __generate_query_to_elasticsearch(self, not_non_entities: Dict, message: Text):
+        query_builder = EsQueryBuilder()
+        entities_present = []
+        products = None
+        for entity_name in not_non_entities.keys():
+            if entity_name in ENTITY_NAMES:
+                entities_present.append(entity_name)
+
+        if entities_present == ENTITY_NAMES:
+            products = query_builder.product_search_with_all()
+        else:
+            if "price" in entities_present:
+                products = query_builder.product_search_with_price(
+                    message,
+                    not_non_entities["price_min"],
+                    not_non_entities["price_max"],
+                )
+            elif not entities_present:
+                products = query_builder.product_search_with_category(message)
+            elif "product_type" in entities_present:
+                products = query_builder.product_search_with_category(message)
+        return products
+
+    def __convert_response_to_carousel(self, products):
+        carousel = {
+            "type": "template",
+            "payload": {"template_type": "generic", "elements": []},
+        }
+        products = products["hits"]["hits"]
+        for selected_product in products:
+            product = selected_product["_source"]
+            carousel_element = {
+                "title": product["product_name"],
+                "subtitle": f"Status: {product['product_description ']}",
+                "image_url": product["image"],
+                "buttons": [
+                    {
+                        "title": "Buy Now",
+                        "payload": "",
+                        "type": "postback",
+                    },
+                    {
+                        "title": "Product Details",
+                        "payload": "",
+                        "type": "postback",
+                    },
+                ],
+            }
+            carousel["payload"]["elements"].append(carousel_element)
+        return carousel
+
     def run(
         self,
         dispatcher,
@@ -764,10 +833,19 @@ class ActionProductInquiry(Action):
         color = next(tracker.get_latest_entity_values("color"), None)
         price_min = next(tracker.get_latest_entity_values("min"), None)
         price_max = next(tracker.get_latest_entity_values("max"), None)
+        brand = next(tracker.get_latest_entity_values("brand"), None)
+        gender = next(tracker.get_latest_entity_values("gender"), "all")
+        latest_message = tracker.latest_message
         if product_type is not None:
-            dispatcher.utter_message(
-                text=f"You asked for {product_type}. With this specs:\n Color: {color}, "
-                f"Min-price: {price_min} and Max-price: {price_max}"
+            not_non_entities = self.__validate_entities(
+                color, gender, price_min, price_max, brand
             )
+            not_non_entities["product_type"] = product_type
+            products = self.__generate_query_to_elasticsearch(
+                not_non_entities, latest_message
+            )
+            caroursel = self.__convert_response_to_carousel(products)
+            dispatcher.utter_message(attachment=caroursel)
+            dispatcher.utter_message(template="utter_product_inquiry_info")
         else:
-            dispatcher.utter_message(text="Please specify which product you want.")
+            dispatcher.utter_message(template="utter_product_inquiry_options")

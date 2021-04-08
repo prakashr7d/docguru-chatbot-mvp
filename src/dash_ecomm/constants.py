@@ -114,3 +114,6 @@ FORM_SLOTS = {
         REFUND_ACCOUNT,
     ],
 }
+
+# entities:
+ENTITY_NAMES = ["product_type", "color", "price_max", "gender", "price_min", "brand"]

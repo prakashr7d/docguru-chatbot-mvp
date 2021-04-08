@@ -62,6 +62,8 @@ intents:
       - color
       - min
       - max
+      - gender
+      - brand
 entities:
 - email
 - number
@@ -79,6 +81,8 @@ entities:
 - max
 - product
 - color
+- brand
+- gender
 slots:
   user_email:
     type: rasa.shared.core.slots.TextSlot
@@ -410,6 +414,17 @@ responses:
     - payload: No
       title: No
     text: Would you like to cancel this form and switch?
+  utter_product_inquiry_options:
+  - buttons:
+    - payload: Show me some Laptops
+      title: Laptops
+    - payload: Show me some Mobiles
+      title: Mobiles
+    - payload: Show me [Men's Clothing](product)
+      title: Men's Clothing
+    text: You can try following options.
+  utter_product_inquiry_info:
+  - text: You can always ask me with different brand names, categories, product name, etc
 actions:
 - personal_greet
 - validate_login_form
