@@ -14,7 +14,7 @@ stories:
     - is_logged_in: false
   - slot_was_set:
     - user_otp: null
-  - intent: order_status
+  - intent: check_all_orders
   - action: utter_not_logged_in_prompt
   - action: login_form
   - active_loop: login_form
@@ -39,7 +39,7 @@ stories:
   - action: utter_anything_else
   - intent: deny
   - action: utter_i_am_here_for_you
-  - intent: order_status
+  - intent: check_all_orders
   - action: utter_not_logged_in_prompt
   - action: login_form
   - active_loop: login_form
@@ -493,18 +493,54 @@ stories:
       No
   - action: utter_i_am_here_for_you
 
-- story: order_status
+- story: order status
   steps:
   - slot_was_set:
     - session_started_metadata:
-        user_token: dishant@neuralspace.ai
+        user_token: null
   - slot_was_set:
     - session_started_metadata:
-        user_token: dishant@neuralspace.ai
+        user_token: null
   - intent: greet
     user: |-
-      /greet
+      hi
   - action: personal_greet
+  - slot_was_set:
+    - user_email: null
+  - slot_was_set:
+    - user_first_name: null
+  - slot_was_set:
+    - user_last_name: null
+  - slot_was_set:
+    - is_logged_in: false
+  - slot_was_set:
+    - user_otp: null
+  - intent: order_status
+    user: |-
+      order status
+  - action: utter_not_logged_in_prompt
+  - action: login_form
+  - active_loop: login_form
+  - slot_was_set:
+    - requested_slot: user_email
+  - intent: inform
+    user: |-
+      [dishant@neuralspace.ai](email)
+  - action: login_form
+  - slot_was_set:
+    - user_email: dishant@neuralspace.ai
+  - slot_was_set:
+    - requested_slot: user_otp
+  - intent: inform
+    user: |-
+      [1234]{"entity": "number", "value": 1234}
+  - action: login_form
+  - slot_was_set:
+    - user_otp: 1234
+  - slot_was_set:
+    - requested_slot: null
+  - active_loop: null
+  - action: action_login_form
   - slot_was_set:
     - user_email: dishant@neuralspace.ai
   - slot_was_set:
@@ -515,22 +551,16 @@ stories:
     - is_logged_in: true
   - slot_was_set:
     - user_otp: '1234'
-  - intent: check_all_orders
-    user: |-
-      /check_all_orders
-  - action: action_check_all_orders
-  - slot_was_set:
-    - action_that_triggered_show_more: action_check_all_orders
-  - slot_was_set:
-    - show_more_count: 2
-  - slot_was_set:
-    - is_show_more_triggered: false
   - intent: order_status
     user: |-
-      order status of [DASH123458](order_id)[123458]{"entity": "number", "value": 123458}
+      order status
+  - action: action_order_status
+  - intent: order_status
+    user: |-
+      [DASH123456](order_id)[123456]{"entity": "number", "value": 123456}
   - action: action_order_status
   - action: utter_anything_else
-  - intent: deny
+  - intent: affirm
     user: |-
-      No
-  - action: utter_i_am_here_for_you
+      Yes
+  - action: utter_anything_else_options

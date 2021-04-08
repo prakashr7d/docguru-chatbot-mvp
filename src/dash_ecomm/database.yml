@@ -141,7 +141,7 @@ orders:
   refunded: false
   returnable: false
   size: '11'
-  status: Shipped
+  status: shipped
 products:
 - color: blue
   product_name: Shoes

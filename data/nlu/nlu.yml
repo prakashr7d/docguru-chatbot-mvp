@@ -14,12 +14,20 @@ nlu:
   examples: |
     - track the order [DASH123461](order_id)
     - track [DASH123456](order_id)
+    - track the order
+    - order status
+    - [DASH123456](order_id)
+    - [DASH123457](order_id)
     - i want to track order [DASH123456](order_id)
     - show where is my order [DASH123460](order_id)
     - Check order status of [DASH123450](order_id)
     - order status of [DASH123621](order_id)
     - I want to check status of my order [DASH123420](order_id)
     - Show status of my order [DASH123430](order_id)
+    - [DASH1232425](order_id)
+    - [DASH123525](order_id)
+    - [DASH123461](order_id)
+    - [DASH242452](order_id)
 - intent: inform
   examples: |
     - example@rasa.com
@@ -134,6 +142,12 @@ nlu:
     - can you please change my product
     - hwo do I change my product
     - I got wrong product so can you raise replace it
+- intent: ask_for_menu
+  examples: |
+    - i want to go to menu
+    - can you show the menu
+    - i want to see menu
+    - menu
 - intent: affirm
   examples: |
     - Accept
@@ -546,4 +560,35 @@ nlu:
     - wertyuiokjhgfdecvuytrfv
     - ertyuikjhgfdcvbhjhgfc
     - ertyuiolkjhgfdfghjk,
-
+- synonym: Don't need the Product
+  examples: |
+    - don't want it
+    - don't need it
+    - Don't need the product
+- synonym: Quality issues
+  examples: |
+    - Quality problem
+- synonym: Incorrect Items
+  examples: |
+    - wrong product
+    - I didn't receive correct
+    - incorrect
+- synonym: Return Product
+  examples: |
+    - refund
+    - Return product
+    - Refund
+    - Return
+- synonym: Replace Product
+  examples: |
+    - replace
+    - Replace product
+    - Replacement
+- synonym: Primary Account
+  examples: |
+    - Default Account
+    - primary Account
+    - primary
+- synonym: Credit Points
+  examples: |
+    - Credit

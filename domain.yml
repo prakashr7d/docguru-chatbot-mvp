@@ -60,6 +60,7 @@ intents:
     use_entities: true
 - replace_order:
     use_entities: []
+
 entities:
 - email
 - color
@@ -448,6 +449,10 @@ responses:
   - text: please enter the order id for the order you want to track or to see the order status
   utter_order_status_failed:
   - text: The Order you have mentioned is not available in your order history. Please reach us at neuralspace@neuralspace.ai
+  utter_try_after_logged_in:
+  - text: Try after getting logged in you will continue with the login procedure.
+
+
 
 actions:
 - personal_greet
