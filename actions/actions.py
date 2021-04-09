@@ -403,6 +403,13 @@ class CheckAllOrders(Action):
                     BUTTONS: required_buttons,
                     IMAGE_URL: selected_order[ORDER_COLUMN_IMAGE_URL],
                 }
+            elif selected_order[ORDER_COLUMN_STATUS] in [RECEIVED, REFUNDED]:
+                carousel_element = {
+                    TITLE: selected_order[ORDER_COLUMN_PRODUCT_NAME],
+                    SUBTITLE: f"Status: returned",
+                    BUTTONS: required_buttons,
+                    IMAGE_URL: selected_order[ORDER_COLUMN_IMAGE_URL],
+                }
             else:
                 carousel_element = {
                     TITLE: selected_order[ORDER_COLUMN_PRODUCT_NAME],
@@ -527,6 +534,13 @@ class ActionOrderStatus(Action):
             carousel_element = {
                 TITLE: selected_order[ORDER_COLUMN_PRODUCT_NAME],
                 SUBTITLE: f"Status: returning - {selected_order[ORDER_COLUMN_STATUS]}",
+                BUTTONS: [],
+                IMAGE_URL: selected_order[ORDER_COLUMN_IMAGE_URL],
+            }
+        elif selected_order[ORDER_COLUMN_STATUS] in [RECEIVED, REFUNDED]:
+            carousel_element = {
+                TITLE: selected_order[ORDER_COLUMN_PRODUCT_NAME],
+                SUBTITLE: f"Status: returned - {selected_order[ORDER_COLUMN_STATUS]}",
                 BUTTONS: [],
                 IMAGE_URL: selected_order[ORDER_COLUMN_IMAGE_URL],
             }
