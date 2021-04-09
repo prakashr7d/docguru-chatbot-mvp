@@ -1,12 +1,16 @@
+from dash_ecomm.database_utils import get_products_to_json, upload_data_to_elastic
 from elasticsearch import Elasticsearch
 
-# upload_data_to_elastic("products.json")
+get_products_to_json("e-comm-products.xlsx")
+upload_data_to_elastic("products.json")
 es = Elasticsearch("http://localhost:9200")
 query = {
     "_source": [],
     "query": {
         "bool": {
-            "filter": [{"multi_match": {"query": "laptops", "fields": ["category"]}}]
+            "filter": [
+                {"multi_match": {"query": "laptops", "fields": ["sub_category"]}}
+            ]
         }
     },
 }

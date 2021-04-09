@@ -58,7 +58,8 @@ intents:
     use_entities: []
 - product_inquiry:
     use_entities:
-      - product
+      - category
+      - sub_category
       - color
       - min
       - max
@@ -79,7 +80,8 @@ entities:
 - reason_for_return
 - min
 - max
-- product
+- category
+- sub_category
 - color
 - brand
 - gender
@@ -219,8 +221,8 @@ responses:
       title: check all orders
     - payload: /return_order
       title: Return an order
-    - payload: product_enquiry
-      title: product_enquiry
+    - payload: I want to buy something
+      title: product enquiry
     - payload: /buy_items_in_cart
       title: Buy items in cart
     - payload: /mood_based_search
@@ -251,8 +253,8 @@ responses:
       title: check all orders
     - payload: /return_order
       title: Return an order
-    - payload: product_enquiry
-      title: product_enquiry
+    - payload: I want to buy something
+      title: Product Inquiry
     - payload: /buy_items_in_cart
       title: Buy items in cart
     - payload: /mood_based_search
@@ -289,7 +291,7 @@ responses:
       title: Check all orders
     - payload: Return an order
       title: Return an order
-    - payload: Product Inquiry
+    - payload: I want to buy something
       title: Product Inquiry
     text: You are logged, you can try out these few options.
   utter_not_signed_up_response:
@@ -309,8 +311,8 @@ responses:
       title: check all orders
     - payload: /return_order
       title: Return an order
-    - payload: product_enquiry
-      title: product_enquiry
+    - payload: I want a product
+      title: product enquiry
     - payload: /buy_items_in_cart
       title: Buy items in cart
     - payload: /mood_based_search
@@ -351,7 +353,7 @@ responses:
   - buttons:
     - payload: /check all orders
       title: check all orders
-    - payload: Product inquiry
+    - payload: I want to buy something
       title: Product inquiry
     - payload: Return order
       title: Return order
@@ -420,11 +422,18 @@ responses:
       title: Laptops
     - payload: Show me some Mobiles
       title: Mobiles
-    - payload: Show me [Men's Clothing](product)
+    - payload: Show me [Men's Clothing](sub_category)
       title: Men's Clothing
-    text: You can try following options.
+    - payload: /mood_based_search
+      title: 🆕 Mood based search 🔥
+    text: Sure, you can try by telling me "Show me Hp Laptops under 30000" or you can try following options.
   utter_product_inquiry_info:
   - text: You can always ask me with different brand names, categories, product name, etc
+  utter_show_more_products:
+  - buttons:
+    - payload: show more
+      title: Show more
+    text: You can check more products by clicking on show more button below.
 actions:
 - personal_greet
 - validate_login_form

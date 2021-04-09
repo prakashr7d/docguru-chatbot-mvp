@@ -145,29 +145,30 @@ nlu:
 - intent: product_inquiry
   examples: |
     - I want a product
-    - show me [Laptop](product)
-    - show me [Mobiles](product)
-    - show me [Shoes](product)
-    - show me [Monitors](product)
-    - I want a 17 inch [laptop](product)
-    - [laptops](product) starting from [20000](min)
-    - [smartphones](product) starting from [20000](min)
-    - can you show me [rose gold](color) [smartphones](product) starting from [5000](min)
-    - [pink](color) [shoes](product)
-    - [blue](color) [shoes](product) for [men](gender)
-    - [green](color) [shoes](product) for sports
-    - [shoes](product) for running
-    - Show me [Men's Clothing](product)
-    - i would like to see [Men's clothing](product)
-    - Show me [Women's Clothing](product)
-    - can you show me [Women's clothing](product)
-    - 19 inch [monitor](product) from [hp](brand)
-    - show me some [monitors](product)
-    - gaming [monitors](product) under [7000](max)
-    - [HP](brand) [Laptops](product) with [Black](color)
-    - [women](gender) sports [shoes](product) starting from [1000](min)
-    - [sports shoes](product) under [700](max)
-    - [casual shoes](product) under [800](max) and starting from [200](min)
+    - I want to buy something
+    - show me [Laptop](sub_category)
+    - show me [Mobiles](sub_category)
+    - show me [Shoes](sub_category)
+    - show me [Monitors](sub_category)
+    - I want a 17 inch [laptop](sub_category)
+    - [laptops](sub_category) starting from [20000](min)
+    - [smartphones](sub_category) starting from [20000](min)
+    - can you show me [rose gold](color) [smartphones](sub_category) starting from [5000](min)
+    - [pink](color) [shoes](sub_category)
+    - [blue](color) [shoes](sub_category) for [men](gender)
+    - [green](color) [shoes](sub_category) for sports
+    - [shoes](sub_category) for running
+    - Show me [Men's Clothing](sub_category)
+    - i would like to see [Men's clothing](sub_category)
+    - Show me [Women's Clothing](sub_category)
+    - can you show me [Women's clothing](sub_category)
+    - 19 inch [monitor](sub_category) from [hp](brand)
+    - show me some [monitors](sub_category)
+    - gaming [monitors](sub_category) under [7000](max)
+    - [HP](brand) [Laptops](sub_category) with [Black](color)
+    - [women](gender) sports [shoes](sub_category) starting from [1000](min)
+    - [sports shoes](sub_category) under [700](max)
+    - [casual shoes](sub_category) under [800](max) and starting from [200](min)
 - intent: affirm
   examples: |
     - Accept
@@ -581,7 +582,17 @@ nlu:
     - ertyuikjhgfdcvbhjhgfc
     - ertyuiolkjhgfdfghjk,
 
-- lookup: product
+- lookup: category
+  examples: |
+    - Electronics
+    - Fashion
+    - Books
+    - Home
+    - Sports, Fitness, Bags & Luggage
+    - Toys and Games
+    - Beauty & Health
+
+- lookup: sub_category
   examples: |
     - Laptops
     - Mobiles

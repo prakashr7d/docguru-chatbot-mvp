@@ -162,8 +162,8 @@ def upload_data_to_elastic(file_path: Text):
 
 def get_products_to_json(excel_file_path: Text):
     products = pd.read_excel(
-        this_path.parent / "e-comm-products.xlsx",
-        usecols="A:K",
+        this_path.parent / excel_file_path,
+        usecols="A:L",
         dtype={
             "ratings_count": np.int,
             "price": np.int,
@@ -173,7 +173,10 @@ def get_products_to_json(excel_file_path: Text):
         },
     )
     products = products.replace(np.nan, "", regex=True)
+    products_json = {}
     products_list = []
     for per_dict in products.to_dict(orient="records"):
         products_list.append(per_dict)
-    json.dump(products_list)
+    products_json["data"] = products_list
+    with open(this_path.parent / "products.json", "w+") as products_json_file:
+        json.dump(products_json, products_json_file)
