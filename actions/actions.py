@@ -880,5 +880,6 @@ class ActionAskSwitch(Action):
                 slot_set.append(SlotSet(slot, None))
         slot_set.append(ActiveLoop(None))
         slot_set.append(SlotSet(REQUESTED_SLOT, None))
+        slot_set.append(FollowupAction('utter_ask_switch_form'))
         return slot_set
 

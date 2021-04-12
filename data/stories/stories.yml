@@ -6,6 +6,13 @@ stories:
   - intent: greet
   - action: personal_greet
 
+- story: intro + ask for menu
+  steps:
+  - intent: greet
+  - action: personal_greet
+  - intent: ask_for_menu
+  - intent: utter_anything_else_option
+
 - story: anything else deny
   steps:
   - action: utter_anything_else
@@ -484,6 +491,21 @@ stories:
   - intent: affirm
   - action: utter_anything_else_options
 
+- story: switch return order form + menu
+  steps:
+  - intent: return_order
+  - slot_was_set:
+    - is_logged_in: true
+  - active_loop: null
+  - action: action_show_valid_return_order
+  - intent: select_return_order
+  - action: return_order_form
+  - active_loop: return_order_form
+  - intent: ask_for_menu
+  - action: action_switch
+  - intent: affirm
+  - action: utter_anything_else_options
+
 - story: return order with carousel, logged in
   steps:
   - intent: return_order
@@ -499,6 +521,31 @@ stories:
   - action: utter_anything_else
   - intent: deny
   - action: utter_i_am_here_for_you
+
+- story: Switch return form 1 + menu
+  steps:
+  - intent: return_order
+  - slot_was_set:
+    - is_logged_in: true
+  - active_loop: null
+  - action: action_show_valid_return_order
+  - intent: select_return_order
+  - action: return_order_form
+  - active_loop: return_order_form
+  - intent: ask_for_menu
+  - action: action_switch
+  - intent: affirm
+  - action: utter_anything_else_options
+
+- story: Switch return form in select return order 1
+  steps:
+  - intent: return_order
+  - slot_was_set:
+    - is_logged_in: true
+  - active_loop: null
+  - action: action_show_valid_return_order
+  - intent: ask_for_menu
+  - action: utter_anything_else_options
 
 - story: return order with carousel, not logged in
   steps:
@@ -523,6 +570,48 @@ stories:
   - action: utter_anything_else
   - intent: deny
   - action: utter_i_am_here_for_you
+
+- story: switch return form 2
+  steps:
+  - intent: return_order
+  - slot_was_set:
+    - is_logged_in: false
+  - slot_was_set:
+    - login_blocked: false
+  - action: utter_not_logged_in_prompt
+  - action: login_form
+  - active_loop: login_form
+  - active_loop: null
+  - action: action_login_form
+  - slot_was_set:
+    - is_logged_in: true
+  - action: action_show_valid_return_order
+  - intent: select_return_order
+  - action: return_order_form
+  - active_loop: return_order_form
+  - intent: ask_for_menu
+  - action: action_switch
+  - intent: affirm
+  - action: utter_anything_else_options
+
+- story: Switch return form in select return order 2
+  steps:
+  - intent: return_order
+  - slot_was_set:
+    - is_logged_in: false
+  - slot_was_set:
+    - login_blocked: false
+  - action: utter_not_logged_in_prompt
+  - action: login_form
+  - active_loop: login_form
+  - active_loop: null
+  - action: action_login_form
+  - slot_was_set:
+    - is_logged_in: true
+  - action: action_show_valid_return_order
+  - intent: ask_for_menu
+  - action: utter_anything_else_options
+
 
 - story: return order with carousel, not logged in
   steps:
@@ -548,3 +637,43 @@ stories:
   - intent: affirm
   - action: utter_anything_else_options
 
+- story: switch return form 3
+  steps:
+  - intent: return_order
+  - slot_was_set:
+    - is_logged_in: false
+  - slot_was_set:
+    - login_blocked: false
+  - action: utter_not_logged_in_prompt
+  - action: login_form
+  - active_loop: login_form
+  - active_loop: null
+  - action: action_login_form
+  - slot_was_set:
+    - is_logged_in: true
+  - action: action_show_valid_return_order
+  - intent: select_return_order
+  - action: return_order_form
+  - active_loop: return_order_form
+  - intent: ask_for_menu
+  - action: action_switch
+  - intent: affirm
+  - action: utter_anything_else_options
+
+- story: Switch return form in select return order 3
+  steps:
+  - intent: return_order
+  - slot_was_set:
+    - is_logged_in: false
+  - slot_was_set:
+    - login_blocked: false
+  - action: utter_not_logged_in_prompt
+  - action: login_form
+  - active_loop: login_form
+  - active_loop: null
+  - action: action_login_form
+  - slot_was_set:
+    - is_logged_in: true
+  - action: action_show_valid_return_order
+  - intent: ask_for_menu
+  - action: utter_anything_else_options
