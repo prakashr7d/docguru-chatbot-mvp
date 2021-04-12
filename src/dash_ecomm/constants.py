@@ -68,11 +68,16 @@ SELECT_ORDER = "Select this order"
 REPLACE_ORDER = "Replace Item"
 
 # order status
-SHIPPED = "shipped"
-DELIVERED = "delivered"
 ORDER_PENDING = "order pending"
-RETURNING = "returning"
+ORDER_CONFIRMED = "order confirmed"
+SHIPPED = "shipped"
 CANCELED = "canceled"
+DELIVERED = "delivered"
+NOT_PICKED = "not picked"
+PICKED = "picked"
+RECEIVED = "received"
+REFUNDED = "refunded"
+
 
 # Slot counters limits
 MAX_OTP_TRIES = 1
@@ -114,3 +119,13 @@ FORM_SLOTS = {
         REFUND_ACCOUNT,
     ],
 }
+
+# CAROUSEL
+POSTBACK = "postback"
+TITLE = "title"
+PAYLOAD = "payload"
+TYPE = "type"
+SUBTITLE = "subtitle"
+IMAGE_URL = "image_url"
+BUTTONS = "buttons"
+

@@ -47,6 +47,12 @@ from dash_ecomm.constants import (
     RETURN_ORDER_FORM,
     RETURN_PRODUCT,
     SHIPPED,
+    CANCELED,
+    NOT_PICKED,
+    PICKED,
+    RECEIVED,
+    REFUNDED,
+    ORDER_CONFIRMED,
     SHOW_MORE_COUNT,
     STOP_SHOW_MORE_COUNT,
     TYPE_OF_RETURN,
@@ -54,9 +60,17 @@ from dash_ecomm.constants import (
     USER_FIRST_NAME,
     USER_LAST_NAME,
     USER_OTP,
+    POSTBACK,
+    TITLE,
+    PAYLOAD,
+    TYPE,
+    BUTTONS,
+    SUBTITLE,
+    IMAGE_URL,
 )
 from dash_ecomm.database_utils import (
     get_all_orders_from_email,
+    get_order_by_order_id,
     get_user_info_from_db,
     get_valid_order_count,
     get_valid_order_return,
@@ -65,6 +79,7 @@ from dash_ecomm.database_utils import (
     validate_order_id,
 )
 from rasa_sdk import Action, FormValidationAction, Tracker, events
+from rasa_sdk.executor import CollectingDispatcher
 from rasa_sdk.events import (
     ActiveLoop,
     AllSlotsReset,
@@ -72,7 +87,6 @@ from rasa_sdk.events import (
     FollowupAction,
     SlotSet,
 )
-from rasa_sdk.executor import CollectingDispatcher
 
 logger = logging.getLogger(__name__)
 
@@ -338,55 +352,72 @@ class CheckAllOrders(Action):
         return "action_check_all_orders"
 
     @staticmethod
-    def respective_buttons(status, is_eligible):
+    def respective_buttons(order_id, status, is_eligible):
         required_buttons = []
+        payload = "order status of {}".format(order_id)
         if status == ORDER_PENDING or status == SHIPPED:
             required_buttons.append(
-                {"title": ORDER_STATUS, "payload": "", "type": "postback"}
+                {TITLE: ORDER_STATUS, PAYLOAD: payload, TYPE: POSTBACK}
             )
             required_buttons.append(
-                {"title": PRODUCT_DETAILS, "payload": "", "type": "postback"}
+                {TITLE: PRODUCT_DETAILS, PAYLOAD: "", TYPE: POSTBACK}
             )
             required_buttons.append(
-                {"title": CANCEL_ORDER, "payload": "", "type": "postback"}
+                {TITLE: CANCEL_ORDER, PAYLOAD: "", TYPE: POSTBACK}
             )
         elif status == DELIVERED and is_eligible:
             required_buttons.append(
-                {"title": ORDER_STATUS, "payload": "", "type": "postback"}
+                {TITLE: ORDER_STATUS, PAYLOAD: payload, TYPE: POSTBACK}
             )
             required_buttons.append(
-                {"title": RETURN_ORDER, "payload": "", "type": "postback"}
+                {TITLE: RETURN_ORDER, PAYLOAD: "", TYPE: POSTBACK}
             )
             required_buttons.append(
-                {"title": REFUND_ORDER, "payload": "", "type": "postback"}
+                {TITLE: REFUND_ORDER, PAYLOAD: "", TYPE: POSTBACK}
             )
         else:
             required_buttons.append(
-                {"title": ORDER_STATUS, "payload": "", "type": "postback"}
+                {TITLE: ORDER_STATUS, PAYLOAD: payload, TYPE: POSTBACK}
             )
             required_buttons.append(
-                {"title": PRODUCT_DETAILS, "payload": "", "type": "postback"}
+                {TITLE: PRODUCT_DETAILS, PAYLOAD: "", TYPE: POSTBACK}
             )
         return required_buttons
 
     def __create_order_carousel(self, orders: List[Dict[Text, Any]]) -> Dict[Text, Any]:
         carousel = {
-            "type": "template",
-            "payload": {"template_type": "generic", "elements": []},
+            TYPE: "template",
+            PAYLOAD: {"template_type": "generic", "elements": []},
         }
 
         for selected_order in orders:
             required_buttons = self.respective_buttons(
+                selected_order[ORDER_COLUMN_ID],
                 selected_order[ORDER_COLUMN_STATUS],
                 selected_order[ORDER_COLUMN_RETURNABLE],
             )
-            carousel_element = {
-                "title": selected_order[ORDER_COLUMN_PRODUCT_NAME],
-                "subtitle": f"Status: {selected_order[ORDER_COLUMN_STATUS]}",
-                "image_url": selected_order[ORDER_COLUMN_IMAGE_URL],
-                "buttons": required_buttons,
-            }
-            carousel["payload"]["elements"].append(carousel_element)
+            if selected_order[ORDER_COLUMN_STATUS] in [NOT_PICKED, PICKED]:
+                carousel_element = {
+                    TITLE: selected_order[ORDER_COLUMN_PRODUCT_NAME],
+                    SUBTITLE: f"Status: returning",
+                    BUTTONS: required_buttons,
+                    IMAGE_URL: selected_order[ORDER_COLUMN_IMAGE_URL],
+                }
+            elif selected_order[ORDER_COLUMN_STATUS] in [RECEIVED, REFUNDED]:
+                carousel_element = {
+                    TITLE: selected_order[ORDER_COLUMN_PRODUCT_NAME],
+                    SUBTITLE: f"Status: returned",
+                    BUTTONS: required_buttons,
+                    IMAGE_URL: selected_order[ORDER_COLUMN_IMAGE_URL],
+                }
+            else:
+                carousel_element = {
+                    TITLE: selected_order[ORDER_COLUMN_PRODUCT_NAME],
+                    SUBTITLE: f"Status: {selected_order[ORDER_COLUMN_STATUS]}",
+                    IMAGE_URL: selected_order[ORDER_COLUMN_IMAGE_URL],
+                    BUTTONS: required_buttons,
+                }
+            carousel[PAYLOAD]["elements"].append(carousel_element)
         return carousel
 
     def __get_current_orders(
@@ -490,6 +521,110 @@ class ShowMoreAction(Action):
         return followup_action
 
 
+class ActionOrderStatus(Action):
+    def name(self) -> Text:
+        return "action_order_status"
+
+    def __create_order_carousel(self, selected_order: List[Dict[Text, Any]]) -> Dict[Text, Any]:
+        carousel = {
+            TYPE: "template",
+            PAYLOAD: {"template_type": "generic", "elements": []},
+        }
+        if selected_order[ORDER_COLUMN_STATUS] in [NOT_PICKED, PICKED]:
+            carousel_element = {
+                TITLE: selected_order[ORDER_COLUMN_PRODUCT_NAME],
+                SUBTITLE: f"Status: returning - {selected_order[ORDER_COLUMN_STATUS]}",
+                BUTTONS: [],
+                IMAGE_URL: selected_order[ORDER_COLUMN_IMAGE_URL],
+            }
+        elif selected_order[ORDER_COLUMN_STATUS] in [RECEIVED, REFUNDED]:
+            carousel_element = {
+                TITLE: selected_order[ORDER_COLUMN_PRODUCT_NAME],
+                SUBTITLE: f"Status: returned - {selected_order[ORDER_COLUMN_STATUS]}",
+                BUTTONS: [],
+                IMAGE_URL: selected_order[ORDER_COLUMN_IMAGE_URL],
+            }
+        else:
+            carousel_element = {
+                TITLE: selected_order[ORDER_COLUMN_PRODUCT_NAME],
+                SUBTITLE: f"Status: {selected_order[ORDER_COLUMN_STATUS]}",
+                BUTTONS: [],
+                IMAGE_URL: selected_order[ORDER_COLUMN_IMAGE_URL],
+            }
+        carousel[PAYLOAD]["elements"].append(carousel_element)
+        return carousel
+
+    def run(
+        self,
+        dispatcher,
+        tracker: Tracker,
+        domain: "DomainDict",  # noqa: F821
+    ) -> List[Dict[Text, Any]]:
+
+        follow_up_action = []
+        order_email = tracker.get_slot(USER_EMAIL)
+        is_logged_in = tracker.get_slot(IS_LOGGED_IN)
+        if is_logged_in:
+            try:
+                order_id_to_show_order_status = tracker.latest_message["entities"][0]["value"]
+            except:
+                dispatcher.utter_message(template="utter_ask_status_order_id")
+                follow_up_action.append(FollowupAction("action_listen"))
+                return follow_up_action
+            follow_up_action.append(FollowupAction("utter_anything_else"))
+            logger.info(order_id_to_show_order_status)
+            order_for_order_id = get_order_by_order_id(order_id_to_show_order_status, order_email)
+            if order_for_order_id:
+                valid_order = order_for_order_id
+                carousel_order = self.__create_order_carousel(valid_order)
+                status_for_order_id = order_for_order_id[ORDER_COLUMN_STATUS]
+                if status_for_order_id == ORDER_PENDING:
+                    template = "utter_order_status_order_pending"
+                elif status_for_order_id == ORDER_CONFIRMED:
+                    template = "utter_order_status_order_confirmed"
+                elif status_for_order_id == SHIPPED:
+                    template = "utter_order_status_order_shipped"
+                elif status_for_order_id == CANCELED:
+                    template = "utter_order_status_cancelled"
+                elif status_for_order_id == DELIVERED:
+                    template = "utter_order_status_delivered"
+                elif status_for_order_id == NOT_PICKED:
+                    template = "utter_order_status_not_picked"
+                elif status_for_order_id == PICKED:
+                    template = "utter_order_status_picked"
+                elif status_for_order_id == RECEIVED:
+                    template = "utter_order_status_received"
+                elif status_for_order_id == REFUNDED:
+                    template = "utter_order_status_refunded"
+                else:
+                    template = "utter_order_status_failed"
+
+                if template != "utter_order_status_failed":
+                    dispatcher.utter_message(attachment=carousel_order)
+
+                utter = {
+                    "template": template,
+                    "order_id": order_id_to_show_order_status,
+                    "small_order_id": order_id_to_show_order_status.lower(),
+                    "shipped_date": "04/04/2021",
+                    "delivery_date": "10/05/2021",
+                    "status": status_for_order_id,
+                }
+                dispatcher.utter_message(**utter)
+
+            else:
+                utter = {
+                    "template": "utter_order_status_failed",
+                    "order_id": order_id_to_show_order_status,
+                }
+                dispatcher.utter_message(**utter)
+
+            return follow_up_action
+        else:
+            dispatcher.utter_message(template="utter_try_after_logged_in")
+            return []
+
+
 class ShowValidReturnOrders(Action):
     def name(self) -> Text:
         return "action_show_valid_return_order"
@@ -498,29 +633,28 @@ class ShowValidReturnOrders(Action):
         self, delivered_orders: List[Dict[Text, Any]]
     ) -> Dict[Text, Any]:
         carousel = {
-            "type": "template",
-            "payload": {"template_type": "generic", "elements": []},
+            TYPE: "template",
+            PAYLOAD: {"template_type": "generic", "elements": []},
         }
         for selected_order in delivered_orders:
-            logger.info(selected_order[ORDER_COLUMN_ID])
             carousel_element = {
-                "title": selected_order[ORDER_COLUMN_PRODUCT_NAME],
-                "subtitle": f"Status: {selected_order[ORDER_COLUMN_STATUS]}",
-                "image_url": selected_order[ORDER_COLUMN_IMAGE_URL],
-                "buttons": [
+                TITLE: selected_order[ORDER_COLUMN_PRODUCT_NAME],
+                SUBTITLE: f"Status: {selected_order[ORDER_COLUMN_STATUS]}",
+                IMAGE_URL: selected_order[ORDER_COLUMN_IMAGE_URL],
+                BUTTONS: [
                     {
-                        "title": RETURN_ORDER,
-                        "payload": f"please place a return for {selected_order[ORDER_COLUMN_ID]}",
-                        "type": "postback",
+                        TITLE: RETURN_ORDER,
+                        PAYLOAD: f"please place a return for {selected_order[ORDER_COLUMN_ID]}",
+                        TYPE: POSTBACK,
                     },
                     {
-                        "title": REPLACE_ORDER,
-                        "payload": "/replace_order",
-                        "type": "postback",
+                        TITLE: REPLACE_ORDER,
+                        PAYLOAD: "/replace_order",
+                        TYPE: POSTBACK,
                     },
                 ],
             }
-            carousel["payload"]["elements"].append(carousel_element)
+            carousel[PAYLOAD]["elements"].append(carousel_element)
         return carousel
 
     def __get_current_order(
@@ -658,7 +792,6 @@ class ValidateReturnOrder(FormValidationAction):
     ) -> List[EventType]:
         slot_set = {}
         if value is not None:
-            logger.info(value)
             if value in [QUALITY_ISSUES, INCORRECT_ITEMS, DONT_NEED_THE_PRODUCT]:
                 slot_set = {
                     REASON_FOR_RETURN: value,
@@ -748,3 +881,4 @@ class ActionAskSwitch(Action):
         slot_set.append(ActiveLoop(None))
         slot_set.append(SlotSet(REQUESTED_SLOT, None))
         return slot_set
+

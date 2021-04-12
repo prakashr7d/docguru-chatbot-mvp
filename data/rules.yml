@@ -69,7 +69,7 @@ rules:
   - intent: login
   - action: utter_already_logged_in
 
-- rule: order status + login blocked
+- rule: check all orders + login blocked
   condition:
   - slot_was_set:
     - login_blocked: true
@@ -79,7 +79,17 @@ rules:
   - action: utter_check_all_orders_for_blocked_user
   - action: action_login_form
 
-- rule: order status + valid login
+- rule: order status + login blocked
+  condition:
+  - slot_was_set:
+    - login_blocked: true
+  - active_loop: null
+  steps:
+  - intent: order_status
+  - action: utter_check_all_orders_for_blocked_user
+  - action: action_login_form
+
+- rule: check all orders + valid login
   condition:
   - slot_was_set:
     - is_logged_in: true
@@ -87,6 +97,15 @@ rules:
   steps:
   - intent: check_all_orders
   - action: action_check_all_orders
+
+- rule: order status + valid login
+  condition:
+  - slot_was_set:
+    - is_logged_in: true
+  - active_loop: null
+  steps:
+  - intent: order_status
+  - action: action_order_status
 
 - rule: logout
   steps:

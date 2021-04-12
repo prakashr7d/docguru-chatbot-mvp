@@ -2,24 +2,6 @@ version: "2.0"
 nlu:
 - intent: check_all_orders
   examples: |
-    - check status of my order
-    - when are my shoes coming in
-    - when will they get here
-    - I'd like to check the status of my order pls
-    - check status
-    - I'd like an update on my order
-    - Check status of my order
-    - I haven't received my order yet, can we check that?
-    - where is my order?
-    - I want to check the status of my order
-    - actually can I check the status of my order
-    - order status for example@rasa.com
-    - /order_status
-    - I want to track my orders
-    - where are my orders
-    - when will I receive my orders
-    - are my orders on their way?
-    - find my orders dash
     - check all my order
     - I want to check all my order
     - actually can I check all my orders
@@ -28,6 +10,24 @@ nlu:
     - I want to check on my orders
     - i want to see my orders
     - show my orders dash
+- intent: order_status
+  examples: |
+    - track the order [DASH123461](order_id)
+    - track [DASH123456](order_id)
+    - track the order
+    - order status
+    - [DASH123456](order_id)
+    - [DASH123457](order_id)
+    - i want to track order [DASH123456](order_id)
+    - show where is my order [DASH123460](order_id)
+    - Check order status of [DASH123450](order_id)
+    - order status of [DASH123621](order_id)
+    - I want to check status of my order [DASH123420](order_id)
+    - Show status of my order [DASH123430](order_id)
+    - [DASH1232425](order_id)
+    - [DASH123525](order_id)
+    - [DASH123461](order_id)
+    - [DASH242452](order_id)
 - intent: inform
   examples: |
     - example@rasa.com
@@ -142,6 +142,12 @@ nlu:
     - can you please change my product
     - hwo do I change my product
     - I got wrong product so can you raise replace it
+- intent: ask_for_menu
+  examples: |
+    - i want to go to menu
+    - can you show the menu
+    - i want to see menu
+    - menu
 - intent: affirm
   examples: |
     - Accept
@@ -554,3 +560,35 @@ nlu:
     - wertyuiokjhgfdecvuytrfv
     - ertyuikjhgfdcvbhjhgfc
     - ertyuiolkjhgfdfghjk,
+- synonym: Don't need the Product
+  examples: |
+    - don't want it
+    - don't need it
+    - Don't need the product
+- synonym: Quality issues
+  examples: |
+    - Quality problem
+- synonym: Incorrect Items
+  examples: |
+    - wrong product
+    - I didn't receive correct
+    - incorrect
+- synonym: Return Product
+  examples: |
+    - refund
+    - Return product
+    - Refund
+    - Return
+- synonym: Replace Product
+  examples: |
+    - replace
+    - Replace product
+    - Replacement
+- synonym: Primary Account
+  examples: |
+    - Default Account
+    - primary Account
+    - primary
+- synonym: Credit Points
+  examples: |
+    - Credit
