@@ -60,6 +60,21 @@ Use the following command
   make lint
   ```
 
+# How to upload data in elastic search
+After running docker-compose up and initialize elastic search first time..
+Make sure to upload data. To do that:
+Run following command
+```commandline
+python src/dash_ecomm/elastic_search_data_upload.py
+```
+This command will run the script to upload data onto elasticsearch node
+
+# Instructions on where to check kibana
+When you run docker-compose up, kibana will start within 5mins
+You can check it on:
+```
+http://localhost:5601
+```
 
 # How to run the bot with docker
 
