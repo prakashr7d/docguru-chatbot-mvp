@@ -63,7 +63,10 @@ def get_order_by_order_id(order_id: int, order_email: Text):
     global DATABASE
 
     for order in DATABASE[DB_USER_ORDERS]:
-        if order[ORDER_COLUMN_ID] == order_id and order[ORDER_COLUMN_EMAIL] == order_email:
+        if (
+            order[ORDER_COLUMN_ID] == order_id
+            and order[ORDER_COLUMN_EMAIL] == order_email
+        ):
             return order
     return False
 

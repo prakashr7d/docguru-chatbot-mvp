@@ -7,12 +7,15 @@ from dash_ecomm.constants import (
     ACTION_CHECK_ALL_ORDERS,
     ACTION_RETURN_ORDER,
     ACTION_THAT_TRIGGERED_SHOW_MORE,
+    BUTTONS,
     CANCEL_ORDER,
+    CANCELED,
     CREDIT_POINTS,
     DELIVERED,
     DONT_NEED_THE_PRODUCT,
     EMAIL_TRIES,
     FORM_SLOTS,
+    IMAGE_URL,
     INCORRECT_ITEMS,
     IS_LOGGED_IN,
     IS_SHOW_MORE_TRIGGERED,
@@ -22,24 +25,31 @@ from dash_ecomm.constants import (
     MAX_OTP_TRIES,
     MIN_ITEM_IN_CAROUSEL,
     MIN_NUMBER_ZERO,
+    NOT_PICKED,
     ORDER_COLUMN_EMAIL,
     ORDER_COLUMN_ID,
     ORDER_COLUMN_IMAGE_URL,
     ORDER_COLUMN_PRODUCT_NAME,
     ORDER_COLUMN_RETURNABLE,
     ORDER_COLUMN_STATUS,
+    ORDER_CONFIRMED,
     ORDER_ID_FOR_RETURN,
     ORDER_PENDING,
     ORDER_STATUS,
     OTP_TRIES,
+    PAYLOAD,
+    PICKED,
     PICKUP_ADDRESS_FOR_RETURN,
+    POSTBACK,
     PRIMARY_ACCOUNT,
     PRODUCT_DETAILS,
     QUALITY_ISSUES,
     REASON_FOR_RETURN,
     REASON_FOR_RETURN_DESCRIPTION,
+    RECEIVED,
     REFUND_ACCOUNT,
     REFUND_ORDER,
+    REFUNDED,
     REPLACE_ORDER,
     REPLACE_PRODUCT,
     REQUESTED_SLOT,
@@ -47,26 +57,16 @@ from dash_ecomm.constants import (
     RETURN_ORDER_FORM,
     RETURN_PRODUCT,
     SHIPPED,
-    CANCELED,
-    NOT_PICKED,
-    PICKED,
-    RECEIVED,
-    REFUNDED,
-    ORDER_CONFIRMED,
     SHOW_MORE_COUNT,
     STOP_SHOW_MORE_COUNT,
+    SUBTITLE,
+    TITLE,
+    TYPE,
     TYPE_OF_RETURN,
     USER_EMAIL,
     USER_FIRST_NAME,
     USER_LAST_NAME,
     USER_OTP,
-    POSTBACK,
-    TITLE,
-    PAYLOAD,
-    TYPE,
-    BUTTONS,
-    SUBTITLE,
-    IMAGE_URL,
 )
 from dash_ecomm.database_utils import (
     get_all_orders_from_email,
@@ -79,7 +79,6 @@ from dash_ecomm.database_utils import (
     validate_order_id,
 )
 from rasa_sdk import Action, FormValidationAction, Tracker, events
-from rasa_sdk.executor import CollectingDispatcher
 from rasa_sdk.events import (
     ActiveLoop,
     AllSlotsReset,
@@ -87,6 +86,7 @@ from rasa_sdk.events import (
     FollowupAction,
     SlotSet,
 )
+from rasa_sdk.executor import CollectingDispatcher
 
 logger = logging.getLogger(__name__)
 
@@ -362,19 +362,13 @@ class CheckAllOrders(Action):
             required_buttons.append(
                 {TITLE: PRODUCT_DETAILS, PAYLOAD: "", TYPE: POSTBACK}
             )
-            required_buttons.append(
-                {TITLE: CANCEL_ORDER, PAYLOAD: "", TYPE: POSTBACK}
-            )
+            required_buttons.append({TITLE: CANCEL_ORDER, PAYLOAD: "", TYPE: POSTBACK})
         elif status == DELIVERED and is_eligible:
             required_buttons.append(
                 {TITLE: ORDER_STATUS, PAYLOAD: payload, TYPE: POSTBACK}
             )
-            required_buttons.append(
-                {TITLE: RETURN_ORDER, PAYLOAD: "", TYPE: POSTBACK}
-            )
-            required_buttons.append(
-                {TITLE: REFUND_ORDER, PAYLOAD: "", TYPE: POSTBACK}
-            )
+            required_buttons.append({TITLE: RETURN_ORDER, PAYLOAD: "", TYPE: POSTBACK})
+            required_buttons.append({TITLE: REFUND_ORDER, PAYLOAD: "", TYPE: POSTBACK})
         else:
             required_buttons.append(
                 {TITLE: ORDER_STATUS, PAYLOAD: payload, TYPE: POSTBACK}
@@ -399,14 +393,14 @@ class CheckAllOrders(Action):
             if selected_order[ORDER_COLUMN_STATUS] in [NOT_PICKED, PICKED]:
                 carousel_element = {
                     TITLE: selected_order[ORDER_COLUMN_PRODUCT_NAME],
-                    SUBTITLE: f"Status: returning",
+                    SUBTITLE: "Status: returning",
                     BUTTONS: required_buttons,
                     IMAGE_URL: selected_order[ORDER_COLUMN_IMAGE_URL],
                 }
             elif selected_order[ORDER_COLUMN_STATUS] in [RECEIVED, REFUNDED]:
                 carousel_element = {
                     TITLE: selected_order[ORDER_COLUMN_PRODUCT_NAME],
-                    SUBTITLE: f"Status: returned",
+                    SUBTITLE: "Status: returned",
                     BUTTONS: required_buttons,
                     IMAGE_URL: selected_order[ORDER_COLUMN_IMAGE_URL],
                 }
@@ -525,7 +519,9 @@ class ActionOrderStatus(Action):
     def name(self) -> Text:
         return "action_order_status"
 
-    def __create_order_carousel(self, selected_order: List[Dict[Text, Any]]) -> Dict[Text, Any]:
+    def __create_order_carousel(
+        self, selected_order: List[Dict[Text, Any]]
+    ) -> Dict[Text, Any]:
         carousel = {
             TYPE: "template",
             PAYLOAD: {"template_type": "generic", "elements": []},
@@ -554,6 +550,29 @@ class ActionOrderStatus(Action):
         carousel[PAYLOAD]["elements"].append(carousel_element)
         return carousel
 
+    def template_for_order_status(self, status_for_order_id):
+        if status_for_order_id == ORDER_PENDING:
+            template = "utter_order_status_order_pending"
+        elif status_for_order_id == ORDER_CONFIRMED:
+            template = "utter_order_status_order_confirmed"
+        elif status_for_order_id == SHIPPED:
+            template = "utter_order_status_order_shipped"
+        elif status_for_order_id == CANCELED:
+            template = "utter_order_status_cancelled"
+        elif status_for_order_id == DELIVERED:
+            template = "utter_order_status_delivered"
+        elif status_for_order_id == NOT_PICKED:
+            template = "utter_order_status_not_picked"
+        elif status_for_order_id == PICKED:
+            template = "utter_order_status_picked"
+        elif status_for_order_id == RECEIVED:
+            template = "utter_order_status_received"
+        elif status_for_order_id == REFUNDED:
+            template = "utter_order_status_refunded"
+        else:
+            template = "utter_order_status_failed"
+        return template
+
     def run(
         self,
         dispatcher,
@@ -566,42 +585,25 @@ class ActionOrderStatus(Action):
         is_logged_in = tracker.get_slot(IS_LOGGED_IN)
         if is_logged_in:
             try:
-                order_id_to_show_order_status = tracker.latest_message["entities"][0]["value"]
-            except:
+                order_id_to_show_order_status = tracker.latest_message["entities"][0][
+                    "value"
+                ]
+            except IndexError:
                 dispatcher.utter_message(template="utter_ask_status_order_id")
                 follow_up_action.append(FollowupAction("action_listen"))
                 return follow_up_action
             follow_up_action.append(FollowupAction("utter_anything_else"))
             logger.info(order_id_to_show_order_status)
-            order_for_order_id = get_order_by_order_id(order_id_to_show_order_status, order_email)
+            order_for_order_id = get_order_by_order_id(
+                order_id_to_show_order_status, order_email
+            )
             if order_for_order_id:
                 valid_order = order_for_order_id
                 carousel_order = self.__create_order_carousel(valid_order)
                 status_for_order_id = order_for_order_id[ORDER_COLUMN_STATUS]
-                if status_for_order_id == ORDER_PENDING:
-                    template = "utter_order_status_order_pending"
-                elif status_for_order_id == ORDER_CONFIRMED:
-                    template = "utter_order_status_order_confirmed"
-                elif status_for_order_id == SHIPPED:
-                    template = "utter_order_status_order_shipped"
-                elif status_for_order_id == CANCELED:
-                    template = "utter_order_status_cancelled"
-                elif status_for_order_id == DELIVERED:
-                    template = "utter_order_status_delivered"
-                elif status_for_order_id == NOT_PICKED:
-                    template = "utter_order_status_not_picked"
-                elif status_for_order_id == PICKED:
-                    template = "utter_order_status_picked"
-                elif status_for_order_id == RECEIVED:
-                    template = "utter_order_status_received"
-                elif status_for_order_id == REFUNDED:
-                    template = "utter_order_status_refunded"
-                else:
-                    template = "utter_order_status_failed"
-
+                template = self.template_for_order_status(status_for_order_id)
                 if template != "utter_order_status_failed":
                     dispatcher.utter_message(attachment=carousel_order)
-
                 utter = {
                     "template": template,
                     "order_id": order_id_to_show_order_status,
@@ -611,7 +613,6 @@ class ActionOrderStatus(Action):
                     "status": status_for_order_id,
                 }
                 dispatcher.utter_message(**utter)
-
             else:
                 utter = {
                     "template": "utter_order_status_failed",
@@ -880,5 +881,5 @@ class ActionAskSwitch(Action):
                 slot_set.append(SlotSet(slot, None))
         slot_set.append(ActiveLoop(None))
         slot_set.append(SlotSet(REQUESTED_SLOT, None))
-        return slot_set
 
+        return slot_set

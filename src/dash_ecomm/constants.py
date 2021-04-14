@@ -128,4 +128,3 @@ TYPE = "type"
 SUBTITLE = "subtitle"
 IMAGE_URL = "image_url"
 BUTTONS = "buttons"
-
