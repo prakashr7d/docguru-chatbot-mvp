@@ -61,10 +61,10 @@ intents:
       - category
       - sub_category
       - color
-      - min
-      - max
       - gender
       - brand
+      - min
+      - max
 entities:
 - email
 - number
@@ -214,6 +214,41 @@ slots:
     values:
     - return product
     - replace product
+  price_min:
+    type: float
+    initial_value: null
+    auto_fill: true
+    influence_conversation: false
+  price_max:
+    type: float
+    initial_value: null
+    auto_fill: true
+    influence_conversation: false
+  category:
+    type: rasa.shared.core.slots.TextSlot
+    initial_value: null
+    auto_fill: true
+    influence_conversation: false
+  sub_category:
+    type: rasa.shared.core.slots.TextSlot
+    initial_value: null
+    auto_fill: true
+    influence_conversation: false
+  color:
+    type: rasa.shared.core.slots.TextSlot
+    initial_value: null
+    auto_fill: true
+    influence_conversation: false
+  brand:
+    type: rasa.shared.core.slots.TextSlot
+    initial_value: null
+    auto_fill: true
+    influence_conversation: false
+  gender:
+    type: rasa.shared.core.slots.TextSlot
+    initial_value: null
+    auto_fill: true
+    influence_conversation: false
 responses:
   utter_generic_greet:
   - buttons:

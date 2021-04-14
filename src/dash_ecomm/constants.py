@@ -129,7 +129,7 @@ MIN = "min"
 MAX = "max"
 BRAND = "brand"
 GENDER = "gender"
-ENTITY_NAMES = ["sub_category", COLOR, GENDER, PRICE_MAX, PRICE_MIN, BRAND]
+ENTITY_NAMES = [COLOR, PRICE_MAX, GENDER, PRICE_MIN, BRAND]
 
 # gender values
 MEN = "men"
@@ -162,6 +162,7 @@ _SOURCE = "_source"
 IMAGE = "image"
 PRICE = "price"
 RATINGS_COUNT = "ratings_count"
+RATINGS = "ratings"
 CATEGORY = "category"
 SUB_CATEGORY = "sub_category"
 AUTHOR = "author"

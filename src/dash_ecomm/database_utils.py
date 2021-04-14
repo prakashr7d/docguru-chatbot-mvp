@@ -163,7 +163,7 @@ def upload_data_to_elastic(file_path: Text):
 def get_products_to_json(excel_file_path: Text):
     products = pd.read_excel(
         this_path.parent / excel_file_path,
-        usecols="A:L",
+        usecols="A:M",
         dtype={
             "ratings_count": np.int,
             "price": np.int,

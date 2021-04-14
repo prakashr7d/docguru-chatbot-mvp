@@ -144,31 +144,36 @@ nlu:
     - I got wrong product so can you raise replace it
 - intent: product_inquiry
   examples: |
-    - I want a product
-    - I want to buy something
-    - show me [Laptop](sub_category)
-    - show me [Mobiles](sub_category)
-    - show me [Shoes](sub_category)
-    - show me [Monitors](sub_category)
-    - I want a 17 inch [laptop](sub_category)
-    - [laptops](sub_category) starting from [20000](min)
-    - [smartphones](sub_category) starting from [20000](min)
-    - can you show me [rose gold](color) [smartphones](sub_category) starting from [5000](min)
-    - [pink](color) [shoes](sub_category)
-    - [blue](color) [shoes](sub_category) for [men](gender)
-    - [green](color) [shoes](sub_category) for sports
-    - [shoes](sub_category) for running
-    - Show me [Men's Clothing](sub_category)
-    - i would like to see [Men's clothing](sub_category)
-    - Show me [Women's Clothing](sub_category)
-    - can you show me [Women's clothing](sub_category)
-    - 19 inch [monitor](sub_category) from [hp](brand)
-    - show me some [monitors](sub_category)
-    - gaming [monitors](sub_category) under [7000](max)
-    - [HP](brand) [Laptops](sub_category) with [Black](color)
-    - [women](gender) sports [shoes](sub_category) starting from [1000](min)
-    - [sports shoes](sub_category) under [700](max)
-    - [casual shoes](sub_category) under [800](max) and starting from [200](min)
+    - I want to buy a product
+    - Can you suggest me some products
+    - show me [Electronic](category) products
+    - [Lenovo]{"entity": "brand", "value": "Lenovo"} [laptops](sub_category)
+    - do you have [white](color) [shoes](sub_category)
+    - what about [men's clothing](sub_category)
+    - I want [mobiles](sub_category) of brand realme under [40000](max)
+    - [Laptops](sub_category) under [20000](max)
+    - Show me [shoes](sub_category) for [Men](gender)
+    - Show me [Men's Shirts](sub_category) between [1000](min) - [1500](max)
+    - I want [Mobile](sub_category) Phones between [10000](min) - [15000](max)
+    - [Men's Shirt](sub_category)
+    - Show me [women's]{"entity": "gender", "value": "women"} [sports shoes](sub_category)
+    - [Jeans](sub_category) for [Men](gender)
+    - Show me [laptops](sub_category) of 14inch
+    - can you show me [Hp]{"entity": "brand", "value": "Hp"} [laptops](sub_category) under [30000](min) starting from [10000](max)
+    - [Lenovo]{"entity": "brand", "value": "Lenovo"} [laptops](sub_category)
+    - can you show me [Oneplus]{"entity": "brand", "value": "Oneplus"} [mobiles](sub_category)
+    - I want to buy [nike]{"entity": "brand", "value": "nike"} [shoes](sub_category)
+    - I am looking for [redmi]{"entity": "brand", "value": "redmi"} [mobiles](sub_category)
+    - I want [mobiles](sub_category) of brand [realme]{"entity": "brand", "value": "realme"} under 40000
+    - Show me [Adidas]{"entity": "brand", "value": "Adidas"} [shoes](sub_category)
+    - I want to buy [Silver](color) [Lenovo]{"entity": "brand", "value": "Lenovo"} [Laptops](sub_category)
+    - I want to buy [LG]{"entity": "brand", "value": "LG"} [Washing Machine](sub_category)
+    - [Xiaomi]{"entity": "brand", "value": "Xiaomi"} Phones below [25000](max)
+    - Can you show me [Adidas]{"entity": "brand", "value": "Adidas"} [Tshirts](sub_category) for [Women](gender) ?
+    - I want to [US Polo]{"entity": "brand", "value": "US Polo"} products
+    - Show me [women's]{"entity": "gender", "value": "women"} [sports shoes](sub_category)
+    - I want to check out [Samsung]{"entity": "brand", "value": "Samsung"} LED [TV]{"entity": "sub_category", "value": "Television"}
+
 - intent: affirm
   examples: |
     - Accept
@@ -726,7 +731,7 @@ nlu:
     - Lenovo
     - Xiaomi
     - LG
-    - One Plus
+    - OnePlus
     - Xiaomi
     - Samsung
     - Vivo
