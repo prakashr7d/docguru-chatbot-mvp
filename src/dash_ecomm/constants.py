@@ -70,10 +70,16 @@ BUY_NOW = "Buy Now"
 
 # order status
 SHIPPED = "shipped"
-DELIVERED = "delivered"
 ORDER_PENDING = "order pending"
-RETURNING = "returning"
+ORDER_CONFIRMED = "order confirmed"
+SHIPPED = "shipped"
 CANCELED = "canceled"
+DELIVERED = "delivered"
+NOT_PICKED = "not picked"
+PICKED = "picked"
+RECEIVED = "received"
+REFUNDED = "refunded"
+
 
 # Slot counters limits
 MAX_OTP_TRIES = 1

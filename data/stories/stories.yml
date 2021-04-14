@@ -26,6 +26,27 @@ stories:
   - intent: affirm
   - action: utter_anything_else_options
 
+- story: order status + login from chat
+  steps:
+  - intent: order_status
+  - slot_was_set:
+      - is_logged_in: true
+  - active_loop: null
+  - action: action_order_status
+
+- story: order status without entity
+  steps:
+  - intent: order_status
+  - slot_was_set:
+    - is_logged_in: true
+  - active_loop: null
+  - action: action_order_status
+  - intent: order_status
+  - slot_was_set:
+      - is_logged_in: true
+  - active_loop: null
+  - action: action_order_status
+
 - story: order status already logged in happy path + anything else with affirm
   steps:
   - intent: check_all_orders
@@ -64,7 +85,7 @@ stories:
   - intent: deny
   - action: utter_i_am_here_for_you
 
-- story: order status already logged in happy path + anything else with affirm after show more
+- story: check all order already logged in happy path + anything else with affirm after show more
   steps:
   - intent: check_all_orders
   - slot_was_set:
@@ -78,7 +99,7 @@ stories:
   - intent: affirm
   - action: utter_anything_else_options
 
-- story: order status already logged in happy path + anything else deny
+- story: order status already logged in happy path
   steps:
   - intent: check_all_orders
   - slot_was_set:
@@ -88,7 +109,129 @@ stories:
   - intent: show_more
   - action: show_more_action
 
-- story: order status with login happy path + anything else affirm
+- story: order status already logged in happy path + order status without show_more
+  steps:
+  - intent: check_all_orders
+  - slot_was_set:
+    - is_logged_in: true
+  - active_loop: null
+  - action: action_check_all_orders
+  - intent: order_status
+  - slot_was_set:
+      - is_logged_in: true
+  - active_loop: null
+  - action: action_order_status
+
+- story: order status already logged in happy path + order status without show_more + login repair
+  steps:
+  - intent: check_all_orders
+  - slot_was_set:
+    - is_logged_in: true
+  - active_loop: null
+  - action: action_check_all_orders
+
+- story: order status + login failed
+  steps:
+  - intent: order_status
+  - slot_was_set:
+    - is_logged_in: true
+  - active_loop: null
+  - action: action_order_status
+  - slot_was_set:
+    - is_logged_in: false
+  - slot_was_set:
+    - login_blocked: false
+  - action: utter_not_logged_in_prompt
+  - action: login_form
+  - active_loop: login_form
+  - active_loop: null
+  - action: action_login_form
+  - slot_was_set:
+      - is_logged_in: false
+  - slot_was_set:
+      - login_blocked: false
+  - intent: affirm
+  - action: utter_signed_up_user_failed_login_response
+
+- story: order status already logged in happy path + order status without show_more + anything else affirm
+  steps:
+  - intent: order_status
+  - slot_was_set:
+      - is_logged_in: true
+  - active_loop: null
+  - action: action_order_status
+
+- story: order status already logged in happy path + order status without show_more + anything else affirm + login happy path
+  steps:
+  - intent: check_all_orders
+  - slot_was_set:
+    - is_logged_in: true
+  - active_loop: null
+  - action: action_check_all_orders
+
+- story: order status
+  steps:
+  - intent: order_status
+  - slot_was_set:
+      - is_logged_in: false
+  - slot_was_set:
+      - login_blocked: false
+  - action: utter_not_logged_in_prompt
+  - action: login_form
+  - active_loop: login_form
+  - active_loop: null
+  - action: action_login_form
+  - slot_was_set:
+      - is_logged_in: true
+  - action: action_listen
+
+- story: order status already logged in happy path + order status without show_more + anything else deny
+  steps:
+  - intent: check_all_orders
+  - slot_was_set:
+    - is_logged_in: true
+  - active_loop: null
+  - action: action_check_all_orders
+
+- story: order status + login passed
+  steps:
+  - intent: order_status
+  - slot_was_set:
+    - is_logged_in: true
+  - active_loop: null
+  - action: action_order_status
+
+
+- story: order status already logged in happy path + multiple order status without show_more
+  steps:
+  - intent: check_all_orders
+  - slot_was_set:
+    - is_logged_in: true
+  - active_loop: null
+  - action: action_check_all_orders
+
+- story: order status repeated + login passed
+  steps:
+  - intent: order_status
+  - slot_was_set:
+    - is_logged_in: true
+  - active_loop: null
+  - action: action_order_status
+  - intent: order_status
+  - slot_was_set:
+    - is_logged_in: true
+  - active_loop: null
+  - action: action_order_status
+
+- story: order status already logged in happy path
+  steps:
+  - intent: order_status
+  - slot_was_set:
+    - is_logged_in: true
+  - active_loop: null
+  - action: action_order_status
+
+- story: order status with login happy path
   steps:
   - intent: check_all_orders
   - slot_was_set:
@@ -105,6 +248,26 @@ stories:
   - action: action_check_all_orders
   - intent: show_more
   - action: show_more_action
+
+- story: order status with login happy path
+  steps:
+  - intent: order_status
+  - slot_was_set:
+    - is_logged_in: true
+  - active_loop: null
+  - action: action_order_status
+  - slot_was_set:
+    - is_logged_in: false
+  - slot_was_set:
+    - login_blocked: false
+  - action: utter_not_logged_in_prompt
+  - action: login_form
+  - active_loop: login_form
+  - active_loop: null
+  - action: action_login_form
+  - slot_was_set:
+    - is_logged_in: true
+  - action: action_listen
 
 - story: Order status - Unregistered user - repair path - anything else affirm
   steps:
@@ -128,7 +291,33 @@ stories:
   - intent: affirm
   - action: utter_anything_else_options
 
-- story: Order status - registered user - repair path - anything else deny
+- story: Order status - Unregistered user - repair path - anything else affirm
+  steps:
+  - intent: order_status
+  - slot_was_set:
+      - is_logged_in: true
+  - active_loop: null
+  - action: action_order_status
+  - slot_was_set:
+    - is_logged_in: false
+  - slot_was_set:
+    - login_blocked: false
+  - action: utter_not_logged_in_prompt
+  - action: login_form
+  - active_loop: login_form
+  - active_loop: null
+  - action: action_login_form
+  - slot_was_set:
+    - is_logged_in: false
+  - slot_was_set:
+    - login_blocked: false
+  - intent: affirm
+  - action: utter_signed_up_user_failed_login_response
+  - action: utter_anything_else
+  - intent: affirm
+  - action: utter_anything_else_options
+
+- story: check all orders - registered user - repair path - anything else deny
   steps:
   - intent: check_all_orders
   - slot_was_set:
@@ -150,8 +339,29 @@ stories:
   - intent: deny
   - action: utter_i_am_here_for_you
 
+- story: Order status - registered user - repair path - anything else deny
+  steps:
+  - intent: order_status
+  - slot_was_set:
+    - is_logged_in: false
+  - slot_was_set:
+    - login_blocked: false
+  - action: utter_not_logged_in_prompt
+  - action: login_form
+  - active_loop: login_form
+  - active_loop: null
+  - action: action_login_form
+  - slot_was_set:
+    - is_logged_in: false
+  - slot_was_set:
+    - login_blocked: false
+  - intent: affirm
+  - action: utter_signed_up_user_failed_login_response
+  - action: utter_anything_else
+  - intent: deny
+  - action: utter_i_am_here_for_you
 
-- story: Order status - Unregistered user - repair path - anything else deny
+- story: check all orders - Unregistered user - repair path - anything else deny
   steps:
   - intent: check_all_orders
   - slot_was_set:
@@ -174,6 +384,27 @@ stories:
 
 - story: Order status - Unregistered user - repair path - anything else deny
   steps:
+  - intent: order_status
+  - slot_was_set:
+    - is_logged_in: false
+  - slot_was_set:
+    - login_blocked: false
+  - action: utter_not_logged_in_prompt
+  - action: login_form
+  - active_loop: login_form
+  - active_loop: null
+  - action: action_login_form
+  - slot_was_set:
+    - is_logged_in: false
+  - slot_was_set:
+    - login_blocked: false
+  - intent: deny
+  - action: utter_anything_else
+  - intent: deny
+  - action: utter_i_am_here_for_you
+
+- story: check all orders - Unregistered user - repair path - anything else deny
+  steps:
   - intent: check_all_orders
   - slot_was_set:
     - is_logged_in: false
@@ -192,6 +423,29 @@ stories:
   - action: utter_anything_else
   - intent: affirm
   - action: utter_anything_else_options
+
+- story: Order status - Unregistered user - repair path - anything else deny
+  steps:
+  - intent: order_status
+  - action: action_order_status
+  - slot_was_set:
+    - is_logged_in: false
+  - slot_was_set:
+    - login_blocked: false
+  - action: utter_not_logged_in_prompt
+  - action: login_form
+  - active_loop: login_form
+  - active_loop: null
+  - action: action_login_form
+  - slot_was_set:
+    - is_logged_in: false
+  - slot_was_set:
+    - login_blocked: false
+  - intent: deny
+  - action: utter_anything_else
+  - intent: affirm
+  - action: utter_anything_else_options
+
 
 - story: Unblock login
   steps:
