@@ -180,6 +180,61 @@ rules:
     - is_logged_in: true
   steps:
   - intent: check_all_orders
+  - action: action_switch
+  - active_loop: null
+  - action: action_check_all_orders
+- rule: switch form+ order status
+  condition:
+  - active_loop: return_order_form
+  - slot_was_set:
+    - is_logged_in: true
+  steps:
+  - intent: order_status
+  - action: action_switch
+  - active_loop: null
+  - action: action_order_status
+- rule: return form switch + chitchat
+  condition:
+  - active_loop: return_order_form
+  steps:
+  - intent: chitchat
+  - action: utter_chitchat
+  - action: restaurant_form
+  - active_loop: restaurant_form
+- rule: form switch + show more
+  condition:
+  - active_loop: return_order_form
+  steps:
+  - intent: show_more
+  - action: action_switch
+  - active_loop: null
+  - action: action_show_more
+- rule: switch form + select return order
+  condition:
+  - active_loop: return_order_form
+  - slot_was_set:
+    - is_logged_in: true
+  steps:
+  - intent: select_return_order
+  - action: action_switch
+  - active_loop: null
+  - action: return_order_form
+  - active_loop: return_order_form
+- rule: switch menu
+  condition:
+  - active_loop: return_order_form
+  steps:
+  - intent: ask_for_menu
+  - action: action_deactivate_loop
+  - active_loop: null
+  - action: utter_anything_else_options
+- rule: switch with check all orders
+  condition:
+  - active_loop: return_order_form
+  - slot_was_set:
+    - is_logged_in: true
+  steps:
+  - intent: check_all_orders
   - action: action_deactivate_loop
   - active_loop: null
   - action: action_check_all_orders
