@@ -8,60 +8,49 @@ from dash_ecomm.constants import (
     ACTION_PRODUCT_INQUIRY,
     ACTION_RETURN_ORDER,
     ACTION_THAT_TRIGGERED_SHOW_MORE,
-    ALL,
-    BRAND,
     BUTTONS,
-    BUY_NOW,
     CANCEL_ORDER,
-    CAROUSEL,
-    CATEGORY,
-    COLOR,
+    CANCELED,
     CREDIT_POINTS,
     DELIVERED,
     DONT_NEED_THE_PRODUCT,
-    ELEMENTS,
     EMAIL_TRIES,
-    ENTITY_NAMES,
     FORM_SLOTS,
-    GENDER,
-    IMAGE,
     IMAGE_URL,
     INCORRECT_ITEMS,
     IS_LOGGED_IN,
     IS_SHOW_MORE_TRIGGERED,
     LOGIN_BLOCKED,
-    MAX,
     MAX_EMAIL_TRIES,
     MAX_ITEM_IN_CAROUSEL,
     MAX_OTP_TRIES,
-    MIN,
     MIN_ITEM_IN_CAROUSEL,
     MIN_NUMBER_ZERO,
+    NOT_PICKED,
     ORDER_COLUMN_EMAIL,
     ORDER_COLUMN_ID,
     ORDER_COLUMN_IMAGE_URL,
     ORDER_COLUMN_PRODUCT_NAME,
     ORDER_COLUMN_RETURNABLE,
     ORDER_COLUMN_STATUS,
+    ORDER_CONFIRMED,
     ORDER_ID_FOR_RETURN,
     ORDER_PENDING,
     ORDER_STATUS,
     OTP_TRIES,
     PAYLOAD,
+    PICKED,
     PICKUP_ADDRESS_FOR_RETURN,
     POSTBACK,
-    PRICE,
-    PRICE_MAX,
-    PRICE_MIN,
     PRIMARY_ACCOUNT,
     PRODUCT_DETAILS,
-    PRODUCT_NAME,
     QUALITY_ISSUES,
-    RATINGS,
     REASON_FOR_RETURN,
     REASON_FOR_RETURN_DESCRIPTION,
+    RECEIVED,
     REFUND_ACCOUNT,
     REFUND_ORDER,
+    REFUNDED,
     REPLACE_ORDER,
     REPLACE_PRODUCT,
     REQUESTED_SLOT,
@@ -71,7 +60,6 @@ from dash_ecomm.constants import (
     SHIPPED,
     SHOW_MORE_COUNT,
     STOP_SHOW_MORE_COUNT,
-    SUB_CATEGORY,
     SUBTITLE,
     TITLE,
     TYPE,
@@ -83,6 +71,7 @@ from dash_ecomm.constants import (
 )
 from dash_ecomm.database_utils import (
     get_all_orders_from_email,
+    get_order_by_order_id,
     get_user_info_from_db,
     get_valid_order_count,
     get_valid_order_return,
@@ -90,7 +79,6 @@ from dash_ecomm.database_utils import (
     is_valid_user,
     validate_order_id,
 )
-from dash_ecomm.es_query_builder import EsQueryBuilder
 from rasa_sdk import Action, FormValidationAction, Tracker, events
 from rasa_sdk.events import (
     ActiveLoop,
@@ -374,19 +362,13 @@ class CheckAllOrders(Action):
             required_buttons.append(
                 {"title": PRODUCT_DETAILS, "payload": "", "type": "postback"}
             )
-            required_buttons.append(
-                {"title": CANCEL_ORDER, "payload": "", "type": "postback"}
-            )
+            required_buttons.append({TITLE: CANCEL_ORDER, PAYLOAD: "", TYPE: POSTBACK})
         elif status == DELIVERED and is_eligible:
             required_buttons.append(
                 {"title": ORDER_STATUS, "payload": "", "type": "postback"}
             )
-            required_buttons.append(
-                {"title": RETURN_ORDER, "payload": "", "type": "postback"}
-            )
-            required_buttons.append(
-                {"title": REFUND_ORDER, "payload": "", "type": "postback"}
-            )
+            required_buttons.append({TITLE: RETURN_ORDER, PAYLOAD: "", TYPE: POSTBACK})
+            required_buttons.append({TITLE: REFUND_ORDER, PAYLOAD: "", TYPE: POSTBACK})
         else:
             required_buttons.append(
                 {"title": ORDER_STATUS, "payload": "", "type": "postback"}
@@ -404,16 +386,32 @@ class CheckAllOrders(Action):
 
         for selected_order in orders:
             required_buttons = self.respective_buttons(
+                selected_order[ORDER_COLUMN_ID],
                 selected_order[ORDER_COLUMN_STATUS],
                 selected_order[ORDER_COLUMN_RETURNABLE],
             )
-            carousel_element = {
-                "title": selected_order[ORDER_COLUMN_PRODUCT_NAME],
-                "subtitle": f"Status: {selected_order[ORDER_COLUMN_STATUS]}",
-                "image_url": selected_order[ORDER_COLUMN_IMAGE_URL],
-                "buttons": required_buttons,
-            }
-            carousel["payload"]["elements"].append(carousel_element)
+            if selected_order[ORDER_COLUMN_STATUS] in [NOT_PICKED, PICKED]:
+                carousel_element = {
+                    TITLE: selected_order[ORDER_COLUMN_PRODUCT_NAME],
+                    SUBTITLE: "Status: returning",
+                    BUTTONS: required_buttons,
+                    IMAGE_URL: selected_order[ORDER_COLUMN_IMAGE_URL],
+                }
+            elif selected_order[ORDER_COLUMN_STATUS] in [RECEIVED, REFUNDED]:
+                carousel_element = {
+                    TITLE: selected_order[ORDER_COLUMN_PRODUCT_NAME],
+                    SUBTITLE: "Status: returned",
+                    BUTTONS: required_buttons,
+                    IMAGE_URL: selected_order[ORDER_COLUMN_IMAGE_URL],
+                }
+            else:
+                carousel_element = {
+                    TITLE: selected_order[ORDER_COLUMN_PRODUCT_NAME],
+                    SUBTITLE: f"Status: {selected_order[ORDER_COLUMN_STATUS]}",
+                    IMAGE_URL: selected_order[ORDER_COLUMN_IMAGE_URL],
+                    BUTTONS: required_buttons,
+                }
+            carousel[PAYLOAD]["elements"].append(carousel_element)
         return carousel
 
     def __get_current_orders(
@@ -511,12 +509,122 @@ class ShowMoreAction(Action):
             ACTION_PRODUCT_INQUIRY,
         ]:
             followup_action.append(FollowupAction(action_triggered))
-            logger.info(f"followup actions: {action_triggered}")
             followup_action.append(SlotSet(IS_SHOW_MORE_TRIGGERED, True))
         else:
             dispatcher.utter_message(template="utter_show_more_something")
             followup_action.append(SlotSet(IS_SHOW_MORE_TRIGGERED, False))
         return followup_action
+
+
+class ActionOrderStatus(Action):
+    def name(self) -> Text:
+        return "action_order_status"
+
+    def __create_order_carousel(
+        self, selected_order: List[Dict[Text, Any]]
+    ) -> Dict[Text, Any]:
+        carousel = {
+            TYPE: "template",
+            PAYLOAD: {"template_type": "generic", "elements": []},
+        }
+        if selected_order[ORDER_COLUMN_STATUS] in [NOT_PICKED, PICKED]:
+            carousel_element = {
+                TITLE: selected_order[ORDER_COLUMN_PRODUCT_NAME],
+                SUBTITLE: f"Status: returning - {selected_order[ORDER_COLUMN_STATUS]}",
+                BUTTONS: [],
+                IMAGE_URL: selected_order[ORDER_COLUMN_IMAGE_URL],
+            }
+        elif selected_order[ORDER_COLUMN_STATUS] in [RECEIVED, REFUNDED]:
+            carousel_element = {
+                TITLE: selected_order[ORDER_COLUMN_PRODUCT_NAME],
+                SUBTITLE: f"Status: returned - {selected_order[ORDER_COLUMN_STATUS]}",
+                BUTTONS: [],
+                IMAGE_URL: selected_order[ORDER_COLUMN_IMAGE_URL],
+            }
+        else:
+            carousel_element = {
+                TITLE: selected_order[ORDER_COLUMN_PRODUCT_NAME],
+                SUBTITLE: f"Status: {selected_order[ORDER_COLUMN_STATUS]}",
+                BUTTONS: [],
+                IMAGE_URL: selected_order[ORDER_COLUMN_IMAGE_URL],
+            }
+        carousel[PAYLOAD]["elements"].append(carousel_element)
+        return carousel
+
+    def template_for_order_status(self, status_for_order_id):
+        if status_for_order_id == ORDER_PENDING:
+            template = "utter_order_status_order_pending"
+        elif status_for_order_id == ORDER_CONFIRMED:
+            template = "utter_order_status_order_confirmed"
+        elif status_for_order_id == SHIPPED:
+            template = "utter_order_status_order_shipped"
+        elif status_for_order_id == CANCELED:
+            template = "utter_order_status_cancelled"
+        elif status_for_order_id == DELIVERED:
+            template = "utter_order_status_delivered"
+        elif status_for_order_id == NOT_PICKED:
+            template = "utter_order_status_not_picked"
+        elif status_for_order_id == PICKED:
+            template = "utter_order_status_picked"
+        elif status_for_order_id == RECEIVED:
+            template = "utter_order_status_received"
+        elif status_for_order_id == REFUNDED:
+            template = "utter_order_status_refunded"
+        else:
+            template = "utter_order_status_failed"
+        return template
+
+    def run(
+        self,
+        dispatcher,
+        tracker: Tracker,
+        domain: "DomainDict",  # noqa: F821
+    ) -> List[Dict[Text, Any]]:
+
+        follow_up_action = []
+        order_email = tracker.get_slot(USER_EMAIL)
+        is_logged_in = tracker.get_slot(IS_LOGGED_IN)
+        if is_logged_in:
+            try:
+                order_id_to_show_order_status = tracker.latest_message["entities"][0][
+                    "value"
+                ]
+            except IndexError:
+                dispatcher.utter_message(template="utter_ask_status_order_id")
+                follow_up_action.append(FollowupAction("action_listen"))
+                return follow_up_action
+            follow_up_action.append(FollowupAction("utter_anything_else"))
+            logger.info(order_id_to_show_order_status)
+            order_for_order_id = get_order_by_order_id(
+                order_id_to_show_order_status, order_email
+            )
+            if order_for_order_id:
+                valid_order = order_for_order_id
+                carousel_order = self.__create_order_carousel(valid_order)
+                status_for_order_id = order_for_order_id[ORDER_COLUMN_STATUS]
+                template = self.template_for_order_status(status_for_order_id)
+                if template != "utter_order_status_failed":
+                    dispatcher.utter_message(attachment=carousel_order)
+                utter = {
+                    "template": template,
+                    "order_id": order_id_to_show_order_status,
+                    "small_order_id": order_id_to_show_order_status.lower(),
+                    "shipped_date": "04/04/2021",
+                    "delivery_date": "10/05/2021",
+                    "status": status_for_order_id,
+                }
+                dispatcher.utter_message(**utter)
+            else:
+                utter = {
+                    "template": "utter_order_status_failed",
+                    "order_id": order_id_to_show_order_status,
+                }
+                dispatcher.utter_message(**utter)
+
+            return follow_up_action
+        else:
+            dispatcher.utter_message(template="utter_try_after_logged_in")
+            return []
 
 
 class ShowValidReturnOrders(Action):
@@ -527,29 +635,28 @@ class ShowValidReturnOrders(Action):
         self, delivered_orders: List[Dict[Text, Any]]
     ) -> Dict[Text, Any]:
         carousel = {
-            "type": "template",
-            "payload": {"template_type": "generic", "elements": []},
+            TYPE: "template",
+            PAYLOAD: {"template_type": "generic", "elements": []},
         }
         for selected_order in delivered_orders:
-            logger.info(selected_order[ORDER_COLUMN_ID])
             carousel_element = {
-                "title": selected_order[ORDER_COLUMN_PRODUCT_NAME],
-                "subtitle": f"Status: {selected_order[ORDER_COLUMN_STATUS]}",
-                "image_url": selected_order[ORDER_COLUMN_IMAGE_URL],
-                "buttons": [
+                TITLE: selected_order[ORDER_COLUMN_PRODUCT_NAME],
+                SUBTITLE: f"Status: {selected_order[ORDER_COLUMN_STATUS]}",
+                IMAGE_URL: selected_order[ORDER_COLUMN_IMAGE_URL],
+                BUTTONS: [
                     {
-                        "title": RETURN_ORDER,
-                        "payload": f"please place a return for {selected_order[ORDER_COLUMN_ID]}",
-                        "type": "postback",
+                        TITLE: RETURN_ORDER,
+                        PAYLOAD: f"please place a return for {selected_order[ORDER_COLUMN_ID]}",
+                        TYPE: POSTBACK,
                     },
                     {
-                        "title": REPLACE_ORDER,
-                        "payload": "/replace_order",
-                        "type": "postback",
+                        TITLE: REPLACE_ORDER,
+                        PAYLOAD: "/replace_order",
+                        TYPE: POSTBACK,
                     },
                 ],
             }
-            carousel["payload"]["elements"].append(carousel_element)
+            carousel[PAYLOAD]["elements"].append(carousel_element)
         return carousel
 
     def __get_current_order(
@@ -687,7 +794,6 @@ class ValidateReturnOrder(FormValidationAction):
     ) -> List[EventType]:
         slot_set = {}
         if value is not None:
-            logger.info(value)
             if value in [QUALITY_ISSUES, INCORRECT_ITEMS, DONT_NEED_THE_PRODUCT]:
                 slot_set = {
                     REASON_FOR_RETURN: value,
@@ -776,269 +882,4 @@ class ActionAskSwitch(Action):
                 slot_set.append(SlotSet(slot, None))
         slot_set.append(ActiveLoop(None))
         slot_set.append(SlotSet(REQUESTED_SLOT, None))
-        return slot_set
-
-
-"""
-TODO:
-4. fix show more problem
-"""
-
-
-class ActionProductInquiry(Action):
-    def name(self) -> Text:
-        return "action_product_inquiry"
-
-    def __validate_entities(
-        self,
-        color: Text = None,
-        gender: Text = "all",
-        price_min: int = None,
-        price_max: int = None,
-        brand: Text = None,
-    ) -> Dict:
-        not_none_entities = {}
-        entities = [color, price_max, gender, price_min, brand]
-        for entity in range(0, len(entities)):
-            if entities[entity] is not None:
-                not_none_entities[ENTITY_NAMES[entity]] = entities[entity]
-                logger.info(not_none_entities)
-        return not_none_entities
-
-    def __price_queries(
-        self, not_non_entities: Dict, entities_present: list, message: Text
-    ) -> (Dict, int):
-        products = None
-        query_builder = EsQueryBuilder()
-        if PRICE_MIN in entities_present and PRICE_MAX in entities_present:
-            products = query_builder.product_search_with_price(
-                message,
-                not_non_entities[PRICE_MIN],
-                not_non_entities[PRICE_MAX],
-            )
-        elif PRICE_MIN in entities_present:
-            products = query_builder.product_search_with_price_min(
-                message, not_non_entities[PRICE_MIN]
-            )
-        elif PRICE_MAX in entities_present:
-            products = query_builder.product_search_with_price_max(
-                message, not_non_entities[PRICE_MAX]
-            )
-        return products
-
-    def __generate_query_to_elasticsearch(
-        self, not_non_entities: Dict, message: Text
-    ) -> (Dict, int):
-        query_builder = EsQueryBuilder()
-        entities_present = []
-        products = None
-        for entity_name in not_non_entities.keys():
-            if entity_name in ENTITY_NAMES:
-                entities_present.append(entity_name)
-
-        if entities_present == ENTITY_NAMES:
-            products = query_builder.product_search_with_all(
-                message,
-                not_non_entities[PRICE_MIN],
-                not_non_entities[PRICE_MAX],
-            )
-        else:
-            if (
-                PRICE_MIN in entities_present
-                or PRICE_MAX in entities_present
-                and entities_present[GENDER] == "all"
-            ):
-                products = self.__price_queries(
-                    not_non_entities, entities_present, message
-                )
-            elif (
-                SUB_CATEGORY in entities_present
-                and BRAND not in entities_present
-                and entities_present[GENDER] == "all"
-            ):
-                products = query_builder.product_search_with_category(
-                    message, not_non_entities[SUB_CATEGORY]
-                )
-                logger.info("inside sub")
-            elif (
-                CATEGORY in entities_present
-                and BRAND not in entities_present
-                and entities_present[GENDER] == "all"
-            ):
-                products = query_builder.product_search_with_category(
-                    message, not_non_entities[CATEGORY]
-                )
-            elif (
-                GENDER in entities_present
-                and BRAND not in entities_present
-                and entities_present[GENDER] != "all"
-            ):
-                products = query_builder.product_search_with_gender(message)
-            elif BRAND in entities_present and entities_present[GENDER] == "all":
-                products = query_builder.product_search_with_brand(
-                    not_non_entities[BRAND]
-                )
-            elif not entities_present:
-                products = query_builder.product_search_with_category(
-                    message, not_non_entities[SUB_CATEGORY]
-                )
-        return products
-
-    def __get_five_products(
-        self, products, is_show_more_triggered: bool, show_more_count: int
-    ):
-        min_count = MIN_ITEM_IN_CAROUSEL
-        max_count = MIN_ITEM_IN_CAROUSEL
-        products = products["hits"]["hits"]
-        count = 0
-        if is_show_more_triggered:
-            count = show_more_count
-        else:
-            count = len(products)
-        logger.info(f"Count of items: {count}")
-        carousel_products = []
-        if count < MAX_ITEM_IN_CAROUSEL:
-            min_count = MIN_ITEM_IN_CAROUSEL
-            max_count = count
-            count = STOP_SHOW_MORE_COUNT
-        else:
-            min_count = count - MAX_ITEM_IN_CAROUSEL
-            max_count = count
-            count -= MAX_ITEM_IN_CAROUSEL
-        for selected_product in products[min_count:max_count]:
-            carousel_products.append(selected_product)
-        return carousel_products, count
-
-    def __convert_response_to_carousel(self, products):
-        carousel = CAROUSEL
-        for selected_product in products:
-            product = selected_product["_source"]
-            logger.info(f"product image:{product[IMAGE]}")
-            logger.info(f"product ratings:{product[RATINGS]}")
-            carousel_element = {
-                TITLE: product[PRODUCT_NAME],
-                SUBTITLE: f"Price: {product[PRICE]}; Ratings: {product[RATINGS]}",
-                IMAGE_URL: product[IMAGE],
-                BUTTONS: [
-                    {
-                        TITLE: BUY_NOW,
-                        PAYLOAD: "",
-                        TYPE: POSTBACK,
-                    },
-                    {
-                        TITLE: PRODUCT_DETAILS,
-                        PAYLOAD: "",
-                        TYPE: POSTBACK,
-                    },
-                ],
-            }
-            carousel[PAYLOAD][ELEMENTS].append(carousel_element)
-        return carousel
-
-    def __get_entities(self, tracker):
-        is_show_more_triggered = tracker.get_slot(IS_SHOW_MORE_TRIGGERED)
-        category = None
-        sub_category = None
-        color = None
-        price_min = None
-        price_max = None
-        brand = None
-        gender = None
-        latest_message = ""
-        show_more_count = 0
-        if is_show_more_triggered:
-            category = tracker.get_slot(CATEGORY)
-            sub_category = tracker.get_slot(SUB_CATEGORY)
-            color = tracker.get_slot(COLOR)
-            price_min = tracker.get_slot(PRICE_MIN)
-            price_max = tracker.get_slot(PRICE_MAX)
-            brand = tracker.get_slot(BRAND)
-            gender = tracker.get_slot(GENDER)
-            show_more_count = tracker.get_slot(SHOW_MORE_COUNT)
-        else:
-            category = next(tracker.get_latest_entity_values(CATEGORY), None)
-            sub_category = next(tracker.get_latest_entity_values(SUB_CATEGORY), None)
-            color = next(tracker.get_latest_entity_values(COLOR), None)
-            price_min = next(tracker.get_latest_entity_values(MIN), None)
-            price_max = next(tracker.get_latest_entity_values(MAX), None)
-            brand = next(tracker.get_latest_entity_values(BRAND), None)
-            gender = next(tracker.get_latest_entity_values(GENDER), ALL)
-            latest_message = tracker.latest_message
-        logger.info(f"category: {category},sub_category: {sub_category}")
-        return (
-            category,
-            sub_category,
-            color,
-            price_min,
-            price_max,
-            brand,
-            gender,
-            show_more_count,
-            latest_message,
-            is_show_more_triggered,
-        )
-
-    def __get_returnable_slots(self, count, dispatcher, not_non_entities):
-        slot_set = []
-        if count > STOP_SHOW_MORE_COUNT:
-            dispatcher.utter_message(template="utter_show_more_products")
-            slot_set.append(
-                SlotSet(ACTION_THAT_TRIGGERED_SHOW_MORE, ACTION_PRODUCT_INQUIRY)
-            )
-            logger.info(not_non_entities)
-            for key, value in not_non_entities.items():
-                slot_set.append(SlotSet(key, value))
-        else:
-            slot_set.append(SlotSet(ACTION_THAT_TRIGGERED_SHOW_MORE, None))
-            slot_set.append(SlotSet(CATEGORY, None))
-            slot_set.append(SlotSet(SUB_CATEGORY, None))
-            slot_set.append(SlotSet(BRAND, None))
-            slot_set.append(SlotSet(PRICE_MIN, None))
-            slot_set.append(SlotSet(PRICE_MAX, None))
-            slot_set.append(SlotSet(COLOR, None))
-            slot_set.append(SlotSet(GENDER, None))
-        return slot_set
-
-    def run(
-        self,
-        dispatcher,
-        tracker: Tracker,
-        domain: "DomainDict",  # noqa: F821
-    ) -> List[Dict[Text, Any]]:
-        slot_set = []
-        count = MIN_ITEM_IN_CAROUSEL
-        (
-            category,
-            sub_category,
-            color,
-            price_min,
-            price_max,
-            brand,
-            gender,
-            show_more_count,
-            latest_message,
-            is_show_more_triggered,
-        ) = self.__get_entities(tracker)
-        if sub_category is not None:
-            not_non_entities = self.__validate_entities(
-                color, gender, price_min, price_max, brand
-            )
-            not_non_entities[SUB_CATEGORY] = sub_category
-            not_non_entities[CATEGORY] = category
-            logger.info(not_non_entities)
-            products = self.__generate_query_to_elasticsearch(
-                not_non_entities, latest_message
-            )
-            five_products, count = self.__get_five_products(
-                products, is_show_more_triggered, show_more_count
-            )
-            carousel = self.__convert_response_to_carousel(five_products)
-            dispatcher.utter_message(attachment=carousel)
-            dispatcher.utter_message(template="utter_product_inquiry_info")
-            slot_set = self.__get_returnable_slots(count, dispatcher, not_non_entities)
-        else:
-            dispatcher.utter_message(template="utter_product_inquiry_options")
-
-        slot_set.append(SlotSet(SHOW_MORE_COUNT, count))
-        slot_set.append(SlotSet(IS_SHOW_MORE_TRIGGERED, False))
         return slot_set

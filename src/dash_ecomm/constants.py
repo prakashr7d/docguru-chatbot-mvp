@@ -69,7 +69,6 @@ REPLACE_ORDER = "Replace Item"
 BUY_NOW = "Buy Now"
 
 # order status
-SHIPPED = "shipped"
 ORDER_PENDING = "order pending"
 ORDER_CONFIRMED = "order confirmed"
 SHIPPED = "shipped"

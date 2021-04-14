@@ -8,11 +8,8 @@ from dash_ecomm.constants import (
     ORDER_COLUMN_IMAGE_URL,
     ORDER_COLUMN_PRODUCT_NAME,
     ORDER_COLUMN_STATUS,
-    ORDER_PENDING,
     ORDER_STATUS,
     PRODUCT_DETAILS,
-    RETURNING,
-    SHIPPED,
 )
 
 
@@ -26,10 +23,9 @@ def get_unblock_timestamp(after_n_minutes: int = 2) -> datetime:
 def add_track_item_button(
     order: Dict[Text, Any], carousel: Dict[Text, Any]
 ) -> Dict[Text, Any]:
-    if order[ORDER_COLUMN_STATUS] in [SHIPPED, RETURNING, ORDER_PENDING]:
-        carousel["buttons"].append(
-            {"title": ORDER_STATUS, "payload": "", "type": "postback"}
-        )
+    carousel["buttons"].append(
+        {"title": ORDER_STATUS, "payload": "", "type": "postback"}
+    )
 
 
 def create_order_carousel(orders: List[Dict[Text, Any]]) -> Dict[Text, Any]:
