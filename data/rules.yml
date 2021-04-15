@@ -199,8 +199,8 @@ rules:
   steps:
   - intent: chitchat
   - action: utter_chitchat
-  - action: restaurant_form
-  - active_loop: restaurant_form
+  - action: return_order_form
+  - active_loop: return_order_form
 - rule: form switch + show more
   condition:
   - active_loop: return_order_form
