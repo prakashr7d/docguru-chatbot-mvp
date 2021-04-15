@@ -10,9 +10,14 @@ class EsQueryBuilder:
     def __init__(self):
         self.es = Elasticsearch("http://elasticsearch:9200")
 
-    def product_search_with_category(self, message: Text, category: Text):
+    def product_search_with_scroll(self, scroll_id):
+        products = self.es.scroll(scroll_id=scroll_id, scroll="1m")
+        return products
+
+    def product_search_with_category(self, category: Text):
         product_search = {
             "_source": [],
+            "size": 5,
             "query": {
                 "bool": {
                     "filter": [
@@ -28,8 +33,8 @@ class EsQueryBuilder:
                 }
             },
         }
-        products = self.es.search(index="e_comm", body=product_search)
-        # count = self.es.count(index="e_comm", body=product_search)
+        products = self.es.search(index="e_comm", body=product_search, scroll="1m")
+        logger.info(f"scroll: {products}")
         return products
 
     def product_search_with_price(
@@ -37,6 +42,7 @@ class EsQueryBuilder:
     ) -> (Dict, int):
         product_search = {
             "_source": [],
+            "size": 5,
             "query": {
                 "bool": {
                     "filter": [
@@ -53,7 +59,7 @@ class EsQueryBuilder:
                 }
             },
         }
-        products = self.es.search(index="e_comm", body=product_search)
+        products = self.es.search(index="e_comm", body=product_search, scroll="1m")
         # count = self.es.count(index="e_comm", body=product_search)
         return products
 
@@ -62,6 +68,7 @@ class EsQueryBuilder:
     ) -> (Dict, int):
         product_search = {
             "_source": [],
+            "size": 5,
             "query": {
                 "bool": {
                     "filter": [
@@ -77,7 +84,7 @@ class EsQueryBuilder:
                 }
             },
         }
-        products = self.es.search(index="e_comm", body=product_search)
+        products = self.es.search(index="e_comm", body=product_search, scroll="1m")
         # count = self.es.count(index="e_comm", body=product_search)
         return products
 
@@ -86,6 +93,7 @@ class EsQueryBuilder:
     ) -> (Dict, int):
         product_search = {
             "_source": [],
+            "size": 5,
             "query": {
                 "bool": {
                     "filter": [
@@ -102,12 +110,13 @@ class EsQueryBuilder:
                 }
             },
         }
-        products = self.es.search(index="e_comm", body=product_search)
+        products = self.es.search(index="e_comm", body=product_search, scroll="1m")
         return products
 
     def product_search_with_colors(self, message: Text) -> Dict:
         product_search = {
             "_source": [],
+            "size": 5,
             "query": {
                 "bool": {
                     "filter": [
@@ -122,12 +131,13 @@ class EsQueryBuilder:
                 }
             },
         }
-        products = self.es.search(index="e_comm", body=product_search)
+        products = self.es.search(index="e_comm", body=product_search, scroll="1m")
         return products
 
     def product_search_with_brand(self, brand: Text) -> (Dict, int):
         product_search = {
             "_source": [],
+            "size": 5,
             "query": {
                 "bool": {
                     "filter": [
@@ -142,12 +152,13 @@ class EsQueryBuilder:
                 }
             },
         }
-        products = self.es.search(index="e_comm", body=product_search)
+        products = self.es.search(index="e_comm", body=product_search, scroll="1m")
         return products
 
     def product_search_with_gender(self, message: Text) -> Dict:
         product_search = {
             "_source": [],
+            "size": 5,
             "query": {
                 "bool": {
                     "filter": [
@@ -162,7 +173,7 @@ class EsQueryBuilder:
                 }
             },
         }
-        products = self.es.search(index="e_comm", body=product_search)
+        products = self.es.search(index="e_comm", body=product_search, scroll="1m")
         return products
 
     def product_search_with_all(
@@ -170,6 +181,7 @@ class EsQueryBuilder:
     ) -> Dict:
         product_search = {
             "_source": [],
+            "size": 5,
             "query": {
                 "bool": {
                     "filter": [
@@ -191,5 +203,5 @@ class EsQueryBuilder:
                 }
             },
         }
-        products = self.es.search(index="e_comm", body=product_search)
+        products = self.es.search(index="e_comm", body=product_search, scroll="1m")
         return products

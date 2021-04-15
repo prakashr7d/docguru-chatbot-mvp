@@ -251,6 +251,11 @@ slots:
     initial_value: null
     auto_fill: true
     influence_conversation: false
+  scroll_id:
+    type: text
+    initial_value: null
+    auto_fill: true
+    influence_conversation: false
 responses:
   utter_generic_greet:
   - buttons:

@@ -51,6 +51,7 @@ TYPE_OF_RETURN = "return_e_type"
 REASON_FOR_RETURN_DESCRIPTION = "return_a_reason_description"
 PICKUP_ADDRESS_FOR_RETURN = "return_pickup_address"
 REFUND_ACCOUNT = "return_refund_account"
+SCROLL_ID = "scroll_id"
 
 # slot counters
 EMAIL_TRIES = "email_tries"
@@ -134,7 +135,16 @@ MIN = "min"
 MAX = "max"
 BRAND = "brand"
 GENDER = "gender"
-ENTITY_NAMES = [COLOR, PRICE_MAX, GENDER, PRICE_MIN, BRAND]
+ENTITY_NAMES = [
+    "category",
+    "sub_category",
+    COLOR,
+    PRICE_MAX,
+    GENDER,
+    PRICE_MIN,
+    BRAND,
+    "scroll_id",
+]
 
 # gender values
 MEN = "men"

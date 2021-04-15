@@ -6,6 +6,7 @@ upload_data_to_elastic("products.json")
 es = Elasticsearch("http://localhost:9200")
 query = {
     "_source": [],
+    "size": 5,
     "query": {
         "bool": {
             "filter": [
@@ -15,7 +16,7 @@ query = {
     },
 }
 
-products = es.search(index="e_comm", body=query)
+products = es.search(index="e_comm", body=query, scroll="1m")
 print(products)
 for i in products["hits"]["hits"]:
     print(i["_source"]["brand"])
