@@ -883,3 +883,42 @@ class ActionAskSwitch(Action):
         slot_set.append(SlotSet(REQUESTED_SLOT, None))
 
         return slot_set
+
+
+class ActionFeedbackReminder(Action):
+    def name(self) -> Text:
+        return "action_feedback_reminder"
+
+    def run(
+        self,
+        dispatcher,
+        tracker: Tracker,
+        domain: "DomainDict",  # noqa: F821
+    ) -> List[Dict[Text, Any]]:
+        reminder_events = []
+        timestamp = generic_utils.get_feedback_timestamp()
+        feedback_event = events.ReminderScheduled(
+            intent_name="EXTERNAL_feedback_form",
+            trigger_date_time=timestamp,
+            name="feedback_reminder",
+            kill_on_user_message=True,
+        )
+        reminder_events.append(feedback_event)
+        return reminder_events
+
+
+class ActionStartFeedbackForm(Action):
+    def name(self) -> Text:
+        return "action_start_feedback_form"
+
+    def run(
+        self,
+        dispatcher,
+        tracker: Tracker,
+        domain: "DomainDict",  # noqa: F821
+    ) -> List[Dict[Text, Any]]:
+        return_elements = []
+        return_elements.append(events.ReminderCancelled(name="feedback_reminder"))
+        return_elements.append(ActiveLoop("feedback_form"))
+        return_elements.append(FollowupAction("feedback_form"))
+        return return_elements

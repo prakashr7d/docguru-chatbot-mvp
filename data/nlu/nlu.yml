@@ -148,6 +148,28 @@ nlu:
     - can you show the menu
     - i want to see menu
     - menu
+- intent: ask_feedback
+  examples: |
+    - [Awesome]{"entity":"feedback","value":"Awesome"}
+    - [better]{"entity":"feedback","value":"Awesome"}
+    - [Best]{"entity":"feedback","value":"Awesome"}
+    - [okish]{"entity":"feedback","value":"Meh"}
+    - [not likely]{"entity":"feedback","value":"Meh"}
+    - [not bad]{"entity":"feedback","value":"Meh"}
+    - [Meh]{"entity":"feedback","value":"Meh"}
+    - [worst]{"entity":"feedback","value":"Poor"}
+    - [Poor]{"entity":"feedback","value":"Poor"}
+    - [pretty bad]{"entity":"feedback","value":"Poor"}
+    - [not likely]{"entity":"feedback","value":"Poor"}
+    - [I didn't like]{"entity":"feedback","value":"Poor"}
+    - [Good]{"entity":"feedback","value":"Awesome"}
+- intent: feedback
+  examples: |
+    - I want to give feedback
+    - feedback
+    - can you capture my feedback
+    - I want to add feedback
+    - feedback for you!
 - intent: affirm
   examples: |
     - Accept

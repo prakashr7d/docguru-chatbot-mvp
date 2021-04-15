@@ -20,6 +20,13 @@ def get_unblock_timestamp(after_n_minutes: int = 2) -> datetime:
     return unblock_timestamp
 
 
+def get_feedback_timestamp(after_n_minutes: int = 1) -> datetime:
+    now = datetime.now()
+    delta = timedelta(minutes=after_n_minutes)
+    feedback_timestamp = now + delta
+    return feedback_timestamp
+
+
 def add_track_item_button(
     order: Dict[Text, Any], carousel: Dict[Text, Any]
 ) -> Dict[Text, Any]:
