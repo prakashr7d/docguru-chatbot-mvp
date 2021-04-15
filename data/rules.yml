@@ -215,6 +215,8 @@ rules:
 - rule: switch menu
   condition:
   - active_loop: return_order_form
+  - slot_was_set:
+    - is_logged_in: true
   steps:
   - intent: ask_for_menu
   - action: action_switch
