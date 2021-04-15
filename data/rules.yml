@@ -165,14 +165,6 @@ rules:
   - intent: replace_order
   - action: utter_replace_order_inprogress
   - action: utter_anything_else_options
-- rule: switch menu
-  condition:
-  - active_loop: return_order_form
-  steps:
-  - intent: ask_for_menu
-  - action: action_deactivate_loop
-  - active_loop: null
-  - action: utter_anything_else_options
 - rule: switch with check all orders
   condition:
   - active_loop: return_order_form
