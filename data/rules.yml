@@ -208,7 +208,7 @@ rules:
   - intent: show_more
   - action: action_switch
   - active_loop: null
-  - action: action_show_more
+  - action: show_more_action
 - rule: switch form + select return order
   condition:
   - active_loop: return_order_form
