@@ -225,7 +225,7 @@ rules:
   - active_loop: return_order_form
   steps:
   - intent: ask_for_menu
-  - action: action_deactivate_loop
+  - action: action_switch
   - active_loop: null
   - action: utter_anything_else_options
 - rule: switch with check all orders
@@ -235,7 +235,7 @@ rules:
     - is_logged_in: true
   steps:
   - intent: check_all_orders
-  - action: action_deactivate_loop
+  - action: action_switch
   - active_loop: null
   - action: action_check_all_orders
 - rule: switch form+ order status
@@ -245,6 +245,6 @@ rules:
     - is_logged_in: true
   steps:
   - intent: order_status
-  - action: action_deactivate_loop
+  - action: action_switch
   - active_loop: null
   - action: action_order_status
