@@ -61,7 +61,13 @@ Use the following command
   ```
 
 # How to upload data in elastic search
-After running docker-compose up and initialize elastic search first time..
+First do:
+```commandline
+make install
+```
+To update packages
+After that build docker image,
+Run docker-compose up and initialize elastic search first time..
 Make sure to upload data. To do that:
 Run following command
 ```commandline
