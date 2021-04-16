@@ -13,16 +13,17 @@ from dash_ecomm.constants import (
     BUY_NOW,
     CANCEL_ORDER,
     CANCELED,
-    CAROUSEL,
     CATEGORY,
     COLOR,
     CREDIT_POINTS,
     DELIVERED,
     DONT_NEED_THE_PRODUCT,
+    ELEMENTS,
     EMAIL_TRIES,
     ENTITY_NAMES,
     FORM_SLOTS,
     GENDER,
+    GENERIC,
     IMAGE_URL,
     INCORRECT_ITEMS,
     IS_LOGGED_IN,
@@ -75,6 +76,8 @@ from dash_ecomm.constants import (
     STOP_SHOW_MORE_COUNT,
     SUB_CATEGORY,
     SUBTITLE,
+    TEMPLATE,
+    TEMPLATE_TYPE,
     TITLE,
     TYPE,
     TYPE_OF_RETURN,
@@ -975,7 +978,7 @@ class ActionProductInquiry(Action):
             )
         elif GENDER in entities_present and BRAND not in entities_present:
             products = query_builder.product_search_with_gender(message)
-        elif BRAND in entities_present and entities_present[GENDER] == "all":
+        elif BRAND in entities_present:
             products = query_builder.product_search_with_brand(not_non_entities[BRAND])
         elif not entities_present:
             products = query_builder.product_search_with_category(
@@ -1014,7 +1017,6 @@ class ActionProductInquiry(Action):
             count = products["hits"]["total"]["value"]
         scroll_id = products["_scroll_id"]
         products = products["hits"]["hits"]
-        logger.info(f"Count of items: {count}")
         carousel_products = []
         if count <= MAX_ITEM_IN_CAROUSEL:
             count = STOP_SHOW_MORE_COUNT
@@ -1025,11 +1027,12 @@ class ActionProductInquiry(Action):
         return carousel_products, count, scroll_id
 
     def __convert_response_to_carousel(self, products):
-        carousel = CAROUSEL
+        carousel = {
+            TYPE: TEMPLATE,
+            PAYLOAD: {TEMPLATE_TYPE: GENERIC, ELEMENTS: []},
+        }
         for selected_product in products:
             product = selected_product["_source"]
-            logger.info(f"product image:{product['image']}")
-            logger.info(f"product ratings:{product['ratings']}")
             carousel_element = {
                 TITLE: product[PRODUCT_NAME],
                 SUBTITLE: f"Price: {product['price']}; Ratings: {product['ratings']}",
@@ -1074,9 +1077,6 @@ class ActionProductInquiry(Action):
             brand = next(tracker.get_latest_entity_values(BRAND), None)
             gender = next(tracker.get_latest_entity_values(GENDER), None)
             latest_message = tracker.latest_message
-        logger.info(
-            f"category: {category},sub_category: {sub_category}, scroll_id: {scroll_id}"
-        )
         return (
             category,
             sub_category,
@@ -1145,7 +1145,6 @@ class ActionProductInquiry(Action):
             brand,
             scroll_id,
         )
-        logger.info(f"not none: {not_non_entities}")
         if not_non_entities != {}:
             products = self.__generate_query_to_elasticsearch(
                 not_non_entities, latest_message
