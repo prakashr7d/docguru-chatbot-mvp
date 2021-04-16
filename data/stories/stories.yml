@@ -12,8 +12,6 @@ stories:
   - action: utter_anything_else
   - intent: deny
   - action: utter_i_am_here_for_you
-  - action: action_feedback_reminder
-
 - story: order status already logged in happy path + anything else affirm
   steps:
   - intent: check_all_orders
@@ -49,6 +47,7 @@ stories:
       - is_logged_in: true
   - active_loop: null
   - action: action_order_status
+
 
 - story: order status already logged in happy path + anything else with affirm
   steps:
@@ -89,7 +88,7 @@ stories:
   - action: utter_anything_else
   - intent: deny
   - action: utter_i_am_here_for_you
-  - action: action_feedback_reminder
+
 
 - story: check all order already logged in happy path + anything else with affirm after show more
   steps:
@@ -104,9 +103,8 @@ stories:
   - action: utter_anything_else
   - intent: affirm
   - action: utter_anything_else_options
-  - action: action_feedback_reminder
 
-- story: order status already logged in happy path
+- story: order status already logged in happy path with show more
   steps:
   - intent: check_all_orders
   - slot_was_set:
@@ -190,7 +188,6 @@ stories:
   - action: action_login_form
   - slot_was_set:
       - is_logged_in: true
-  - action: action_feedback_reminder
 
 - story: order status already logged in happy path + order status without show_more + anything else deny
   steps:
@@ -216,7 +213,6 @@ stories:
     - is_logged_in: true
   - active_loop: null
   - action: action_check_all_orders
-  - action: action_feedback_reminder
 
 - story: order status repeated + login passed
   steps:
@@ -230,16 +226,14 @@ stories:
     - is_logged_in: true
   - active_loop: null
   - action: action_order_status
-  - action: action_feedback_reminder
 
-- story: order status already logged in happy path
+- story: order status already logged in happy path without show more
   steps:
   - intent: order_status
   - slot_was_set:
     - is_logged_in: true
   - active_loop: null
   - action: action_order_status
-  - action: action_feedback_reminder
 
 - story: order status with login happy path
   steps:
@@ -258,6 +252,7 @@ stories:
   - action: action_check_all_orders
   - intent: show_more
   - action: show_more_action
+  - action: action_feedback_reminder
 
 - story: order status with login happy path
   steps:
@@ -277,6 +272,7 @@ stories:
   - action: action_login_form
   - slot_was_set:
     - is_logged_in: true
+  - action: action_order_status
   - action: action_feedback_reminder
 
 - story: Order status - Unregistered user - repair path - anything else affirm
@@ -300,7 +296,6 @@ stories:
   - action: utter_anything_else
   - intent: affirm
   - action: utter_anything_else_options
-  - action: action_feedback_reminder
 
 - story: Order status - Unregistered user - repair path - anything else affirm
   steps:
@@ -327,7 +322,7 @@ stories:
   - action: utter_anything_else
   - intent: affirm
   - action: utter_anything_else_options
-  - action: action_feedback_reminder
+
 
 - story: check all orders - registered user - repair path - anything else deny
   steps:
@@ -350,7 +345,6 @@ stories:
   - action: utter_anything_else
   - intent: deny
   - action: utter_i_am_here_for_you
-  - action: action_feedback_reminder
 
 - story: Order status - registered user - repair path - anything else deny
   steps:
@@ -373,7 +367,6 @@ stories:
   - action: utter_anything_else
   - intent: deny
   - action: utter_i_am_here_for_you
-  - action: action_feedback_reminder
 
 - story: check all orders - Unregistered user - repair path - anything else deny
   steps:
@@ -418,6 +411,7 @@ stories:
   - intent: deny
   - action: utter_i_am_here_for_you
   - action: action_feedback_reminder
+
 
 - story: check all orders - Unregistered user - repair path - anything else deny
   steps:
