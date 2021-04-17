@@ -169,6 +169,8 @@ nlu:
     - can you capture my feedback
     - I want to add feedback
     - feedback for you!
+    - I want to fill feedback form
+    - is there any feedback form?
 - intent: affirm
   examples: |
     - Accept
