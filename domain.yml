@@ -64,6 +64,8 @@ intents:
     use_entities: true
 - feedback:
     use_entities: []
+- EXTERNAL_feedback:
+    use_entities: []
 entities:
 - email
 - color
@@ -490,6 +492,7 @@ actions:
 - action_switch
 - action_feedback_reminder
 - action_start_feedback_form
+- action_feedback_submit
 forms:
   login_form:
     user_email:

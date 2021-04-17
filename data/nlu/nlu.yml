@@ -160,7 +160,6 @@ nlu:
     - [worst]{"entity":"feedback","value":"Poor"}
     - [Poor]{"entity":"feedback","value":"Poor"}
     - [pretty bad]{"entity":"feedback","value":"Poor"}
-    - [not likely]{"entity":"feedback","value":"Poor"}
     - [I didn't like]{"entity":"feedback","value":"Poor"}
     - [Good]{"entity":"feedback","value":"Awesome"}
 - intent: feedback

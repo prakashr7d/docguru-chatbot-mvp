@@ -5,13 +5,7 @@ stories:
   steps:
   - intent: greet
   - action: personal_greet
-  - action: action_feedback_reminder
 
-- story: anything else deny
-  steps:
-  - action: utter_anything_else
-  - intent: deny
-  - action: utter_i_am_here_for_you
 - story: order status already logged in happy path + anything else affirm
   steps:
   - intent: check_all_orders
@@ -296,6 +290,7 @@ stories:
   - action: utter_anything_else
   - intent: affirm
   - action: utter_anything_else_options
+  - action: action_feedback_reminder
 
 - story: Order status - Unregistered user - repair path - anything else affirm
   steps:
@@ -322,7 +317,7 @@ stories:
   - action: utter_anything_else
   - intent: affirm
   - action: utter_anything_else_options
-
+  - action: action_feedback_reminder
 
 - story: check all orders - registered user - repair path - anything else deny
   steps:
@@ -345,6 +340,7 @@ stories:
   - action: utter_anything_else
   - intent: deny
   - action: utter_i_am_here_for_you
+  - action: action_feedback_reminder
 
 - story: Order status - registered user - repair path - anything else deny
   steps:
@@ -367,6 +363,7 @@ stories:
   - action: utter_anything_else
   - intent: deny
   - action: utter_i_am_here_for_you
+  - action: action_feedback_reminder
 
 - story: check all orders - Unregistered user - repair path - anything else deny
   steps:
@@ -465,6 +462,11 @@ stories:
   - intent: EXTERNAL_unblock_login
   - action: action_unblock_login
 
+- story: cancel feedback reminder
+  steps:
+  - intent: EXTERNAL_feedback
+  - action: action_start_feedback_form
+
 - story: order status + show more
   steps:
   - intent: check_all_orders
@@ -562,3 +564,9 @@ stories:
   - intent: affirm
   - action: utter_anything_else_options
   - action: action_feedback_reminder
+
+- story: submit, feedback form
+  steps:
+  - action: feedback_form
+  - active_loop: null
+  - action: action_feedback_submit
