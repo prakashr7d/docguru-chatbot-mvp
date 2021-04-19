@@ -181,3 +181,8 @@ rules:
   - intent: replace_order
   - action: utter_replace_order_inprogress
   - action: utter_anything_else_options
+
+- rule: product details
+  steps:
+  - intent: product_details
+  - action: action_product_details

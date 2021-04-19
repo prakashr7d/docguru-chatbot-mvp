@@ -10,6 +10,20 @@ class EsQueryBuilder:
     def __init__(self):
         self.es = Elasticsearch("http://elasticsearch:9200")
 
+    def product_search_with_id(self, product_id):
+        query = {
+            "_source": [],
+            "query": {
+                "bool": {
+                    "filter": [
+                        {"multi_match": {"query": product_id, "fields": ["_id"]}}
+                    ]
+                }
+            },
+        }
+        products = self.es.search(index="e_comm", body=query)
+        return products
+
     def product_search_with_scroll(self, scroll_id):
         products = self.es.scroll(scroll_id=scroll_id, scroll="1m")
         return products
@@ -34,7 +48,6 @@ class EsQueryBuilder:
             },
         }
         products = self.es.search(index="e_comm", body=product_search, scroll="1m")
-        logger.info(f"scroll: {products}")
         return products
 
     def product_search_with_price(

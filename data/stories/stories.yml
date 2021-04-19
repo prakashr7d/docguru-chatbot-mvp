@@ -552,3 +552,8 @@ stories:
   steps:
   - intent: product_inquiry
   - action: action_product_inquiry
+
+- story: product details
+  steps:
+  - intent: product_details
+  - action: action_product_details

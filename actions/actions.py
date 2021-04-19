@@ -1,4 +1,5 @@
 import logging
+import re
 from typing import Any, Dict, List, Text, Tuple
 
 from dash_ecomm import generic_utils
@@ -8,6 +9,7 @@ from dash_ecomm.constants import (
     ACTION_PRODUCT_INQUIRY,
     ACTION_RETURN_ORDER,
     ACTION_THAT_TRIGGERED_SHOW_MORE,
+    ADD_TO_CART,
     BRAND,
     BUTTONS,
     BUY_NOW,
@@ -1010,7 +1012,6 @@ class ActionProductInquiry(Action):
         self, products, is_show_more_triggered: bool, show_more_count: int
     ):
         count = MIN_NUMBER_ZERO
-        logger.info(products)
         if is_show_more_triggered:
             count = show_more_count
         else:
@@ -1039,12 +1040,17 @@ class ActionProductInquiry(Action):
                 IMAGE_URL: product["image"],
                 BUTTONS: [
                     {
+                        TITLE: PRODUCT_DETAILS,
+                        PAYLOAD: f"I want to know more about {product['_id']}",
+                        TYPE: POSTBACK,
+                    },
+                    {
                         TITLE: BUY_NOW,
                         PAYLOAD: "",
                         TYPE: POSTBACK,
                     },
                     {
-                        TITLE: PRODUCT_DETAILS,
+                        TITLE: ADD_TO_CART,
                         PAYLOAD: "",
                         TYPE: POSTBACK,
                     },
@@ -1164,3 +1170,45 @@ class ActionProductInquiry(Action):
         slot_set.append(SlotSet(SHOW_MORE_COUNT, count))
         slot_set.append(SlotSet(IS_SHOW_MORE_TRIGGERED, False))
         return slot_set
+
+
+class ActionProductDetails(Action):
+    def name(self) -> Text:
+        return "action_product_details"
+
+    def __make_utter_message(self, product, dispatcher):
+        product = product["hits"]["hits"]
+        price_utter = (
+            f"Brand:{product['brand']} \nPrice: {product['price']}"
+            f"\nColor: {product['color']}\nRatings: {product['ratings']} "
+            f"- by {product['ratings_count']}"
+        )
+        dispatcher.utter_message(text=product["name"])
+        dispatcher.utter_message(image=product["image"])
+
+        dispatcher.utter_message(text=price_utter)
+        dispatcher.utter_message(text=product["description"])
+
+    def run(
+        self,
+        dispatcher,
+        tracker: Tracker,
+        domain: "DomainDict",  # noqa: F821
+    ) -> List[Dict[Text, Any]]:
+        product_id = tracker.get_slot("es_product_id")
+        logger.info(product_id)
+        product_id_regex = "^([A-Z]{2})+[0-9]{5}$"
+        if product_id is not None:
+            if re.search(product_id_regex, product_id):
+                query_builder = EsQueryBuilder()
+                product = query_builder.product_search_with_id(product_id)
+                self.__make_utter_message(product, dispatcher)
+            else:
+                dispatcher.utter_message(
+                    text="I think you gave me wrong product id. Please check and try giving me again"
+                )
+        else:
+            dispatcher.utter_message(
+                text="Sorry, I wasn't able to find the product id you gave me. Try to check the product id again"
+            )
+        return []

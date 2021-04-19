@@ -53,9 +53,12 @@ intents:
     use_entities:
       - order_id
     ignore_entities:
-      - number
+      - es_product_id
 - order_status:
-    use_entities: true
+    use_entities:
+      - order_id
+    ignore_entities:
+      - es_product_id
 - replace_order:
     use_entities: []
 - product_inquiry:
@@ -67,6 +70,11 @@ intents:
       - brand
       - min
       - max
+- product_details:
+    use_entities:
+      - es_product_id
+    ignore_entities:
+      - order_id
 entities:
 - email
 - number
@@ -87,6 +95,7 @@ entities:
 - color
 - brand
 - gender
+- es_product_id
 slots:
   user_email:
     type: rasa.shared.core.slots.TextSlot
@@ -252,6 +261,11 @@ slots:
     auto_fill: true
     influence_conversation: false
   scroll_id:
+    type: text
+    initial_value: null
+    auto_fill: true
+    influence_conversation: false
+  es_product_id:
     type: text
     initial_value: null
     auto_fill: true
@@ -514,6 +528,7 @@ actions:
 - validate_return_order_form
 - action_switch
 - action_product_inquiry
+- action_product_details
 forms:
   login_form:
     user_email:
