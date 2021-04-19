@@ -1,10 +1,20 @@
 version: "2.0"
 stories:
-
 - story: intro
   steps:
   - intent: greet
   - action: personal_greet
+- story: intro + ask for menu
+  steps:
+  - intent: greet
+  - action: personal_greet
+  - intent: ask_for_menu
+  - intent: utter_anything_else_options
+- story: anything else deny
+  steps:
+  - action: utter_anything_else
+  - intent: deny
+  - action: utter_i_am_here_for_you
 
 - story: order status already logged in happy path + anything else affirm
   steps:
@@ -25,10 +35,9 @@ stories:
   steps:
   - intent: order_status
   - slot_was_set:
-      - is_logged_in: true
+    - is_logged_in: true
   - active_loop: null
   - action: action_order_status
-
 - story: order status without entity
   steps:
   - intent: order_status
@@ -38,7 +47,7 @@ stories:
   - action: action_order_status
   - intent: order_status
   - slot_was_set:
-      - is_logged_in: true
+    - is_logged_in: true
   - active_loop: null
   - action: action_order_status
 
@@ -107,7 +116,6 @@ stories:
   - action: action_check_all_orders
   - intent: show_more
   - action: show_more_action
-
 - story: order status already logged in happy path + order status without show_more
   steps:
   - intent: check_all_orders
@@ -117,10 +125,9 @@ stories:
   - action: action_check_all_orders
   - intent: order_status
   - slot_was_set:
-      - is_logged_in: true
+    - is_logged_in: true
   - active_loop: null
   - action: action_order_status
-
 - story: order status already logged in happy path + order status without show_more + login repair
   steps:
   - intent: check_all_orders
@@ -128,7 +135,6 @@ stories:
     - is_logged_in: true
   - active_loop: null
   - action: action_check_all_orders
-
 - story: order status + login failed
   steps:
   - intent: order_status
@@ -146,20 +152,18 @@ stories:
   - active_loop: null
   - action: action_login_form
   - slot_was_set:
-      - is_logged_in: false
+    - is_logged_in: false
   - slot_was_set:
-      - login_blocked: false
+    - login_blocked: false
   - intent: affirm
   - action: utter_signed_up_user_failed_login_response
-
 - story: order status already logged in happy path + order status without show_more + anything else affirm
   steps:
   - intent: order_status
   - slot_was_set:
-      - is_logged_in: true
+    - is_logged_in: true
   - active_loop: null
   - action: action_order_status
-
 - story: order status already logged in happy path + order status without show_more + anything else affirm + login happy path
   steps:
   - intent: check_all_orders
@@ -167,22 +171,20 @@ stories:
     - is_logged_in: true
   - active_loop: null
   - action: action_check_all_orders
-
 - story: order status
   steps:
   - intent: order_status
   - slot_was_set:
-      - is_logged_in: false
+    - is_logged_in: false
   - slot_was_set:
-      - login_blocked: false
+    - login_blocked: false
   - action: utter_not_logged_in_prompt
   - action: login_form
   - active_loop: login_form
   - active_loop: null
   - action: action_login_form
   - slot_was_set:
-      - is_logged_in: true
-
+    - is_logged_in: true
 - story: order status already logged in happy path + order status without show_more + anything else deny
   steps:
   - intent: check_all_orders
@@ -190,7 +192,6 @@ stories:
     - is_logged_in: true
   - active_loop: null
   - action: action_check_all_orders
-
 - story: order status + login passed
   steps:
   - intent: order_status
@@ -198,8 +199,6 @@ stories:
     - is_logged_in: true
   - active_loop: null
   - action: action_order_status
-
-
 - story: order status already logged in happy path + multiple order status without show_more
   steps:
   - intent: check_all_orders
@@ -207,7 +206,6 @@ stories:
     - is_logged_in: true
   - active_loop: null
   - action: action_check_all_orders
-
 - story: order status repeated + login passed
   steps:
   - intent: order_status
@@ -220,15 +218,13 @@ stories:
     - is_logged_in: true
   - active_loop: null
   - action: action_order_status
-
-- story: order status already logged in happy path without show more
+- story: order status already logged in happy path
   steps:
   - intent: order_status
   - slot_was_set:
     - is_logged_in: true
   - active_loop: null
   - action: action_order_status
-
 - story: order status with login happy path
   steps:
   - intent: check_all_orders
@@ -296,7 +292,7 @@ stories:
   steps:
   - intent: order_status
   - slot_was_set:
-      - is_logged_in: true
+    - is_logged_in: true
   - active_loop: null
   - action: action_order_status
   - slot_was_set:
@@ -458,7 +454,7 @@ stories:
 - story: Unblock login
   steps:
   - slot_was_set:
-      - login_blocked: true
+    - login_blocked: true
   - intent: EXTERNAL_unblock_login
   - action: action_unblock_login
 
@@ -475,12 +471,10 @@ stories:
   - action: action_check_all_orders
   - intent: show_more
   - action: show_more_action
-
 - story: show more
   steps:
   - intent: show_more
   - action: show_more_action
-
 - story: return order with carousel, logged in
   steps:
   - intent: return_order
@@ -515,6 +509,15 @@ stories:
   - action: utter_i_am_here_for_you
   - action: action_feedback_reminder
 
+- story: Switch return form in select return order 1
+  steps:
+  - intent: return_order
+  - slot_was_set:
+    - is_logged_in: true
+  - active_loop: null
+  - action: action_show_valid_return_order
+  - intent: ask_for_menu
+  - action: utter_anything_else_options
 - story: return order with carousel, not logged in
   steps:
   - intent: return_order
@@ -540,6 +543,23 @@ stories:
   - action: utter_i_am_here_for_you
   - action: action_feedback_reminder
 
+- story: Switch return form in select return order 2
+  steps:
+  - intent: return_order
+  - slot_was_set:
+    - is_logged_in: false
+  - slot_was_set:
+    - login_blocked: false
+  - action: utter_not_logged_in_prompt
+  - action: login_form
+  - active_loop: login_form
+  - active_loop: null
+  - action: action_login_form
+  - slot_was_set:
+    - is_logged_in: true
+  - action: action_show_valid_return_order
+  - intent: ask_for_menu
+  - action: utter_anything_else_options
 - story: return order with carousel, not logged in
   steps:
   - intent: return_order
@@ -565,6 +585,27 @@ stories:
   - action: utter_anything_else_options
   - action: action_feedback_reminder
 
+- story: product inquiry
+  steps:
+  - intent: product_inquiry
+  - action: action_product_inquiry
+- story: Switch return form in select return order 3
+  steps:
+  - intent: return_order
+  - slot_was_set:
+    - is_logged_in: false
+  - slot_was_set:
+    - login_blocked: false
+  - action: utter_not_logged_in_prompt
+  - action: login_form
+  - active_loop: login_form
+  - active_loop: null
+  - action: action_login_form
+  - slot_was_set:
+    - is_logged_in: true
+  - action: action_show_valid_return_order
+  - intent: ask_for_menu
+  - action: utter_anything_else_options
 - story: submit, feedback form
   steps:
   - action: feedback_form
