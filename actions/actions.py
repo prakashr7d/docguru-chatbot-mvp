@@ -5,24 +5,35 @@ from dash_ecomm import generic_utils
 from dash_ecomm.constants import (
     ACTION_CANCEL_ORDER,
     ACTION_CHECK_ALL_ORDERS,
+    ACTION_PRODUCT_INQUIRY,
     ACTION_RETURN_ORDER,
     ACTION_THAT_TRIGGERED_SHOW_MORE,
+    BRAND,
     BUTTONS,
+    BUY_NOW,
     CANCEL_ORDER,
     CANCELED,
+    CATEGORY,
+    COLOR,
     CREDIT_POINTS,
     DELIVERED,
     DONT_NEED_THE_PRODUCT,
+    ELEMENTS,
     EMAIL_TRIES,
+    ENTITY_NAMES,
     FORM_SLOTS,
+    GENDER,
+    GENERIC,
     IMAGE_URL,
     INCORRECT_ITEMS,
     IS_LOGGED_IN,
     IS_SHOW_MORE_TRIGGERED,
     LOGIN_BLOCKED,
+    MAX,
     MAX_EMAIL_TRIES,
     MAX_ITEM_IN_CAROUSEL,
     MAX_OTP_TRIES,
+    MIN,
     MIN_ITEM_IN_CAROUSEL,
     MIN_NUMBER_ZERO,
     NOT_PICKED,
@@ -41,8 +52,11 @@ from dash_ecomm.constants import (
     PICKED,
     PICKUP_ADDRESS_FOR_RETURN,
     POSTBACK,
+    PRICE_MAX,
+    PRICE_MIN,
     PRIMARY_ACCOUNT,
     PRODUCT_DETAILS,
+    PRODUCT_NAME,
     QUALITY_ISSUES,
     REASON_FOR_RETURN,
     REASON_FOR_RETURN_DESCRIPTION,
@@ -55,10 +69,14 @@ from dash_ecomm.constants import (
     RETURN_ORDER,
     RETURN_ORDER_FORM,
     RETURN_PRODUCT,
+    SCROLL_ID,
     SHIPPED,
     SHOW_MORE_COUNT,
     STOP_SHOW_MORE_COUNT,
+    SUB_CATEGORY,
     SUBTITLE,
+    TEMPLATE,
+    TEMPLATE_TYPE,
     TITLE,
     TYPE,
     TYPE_OF_RETURN,
@@ -77,6 +95,7 @@ from dash_ecomm.database_utils import (
     is_valid_user,
     validate_order_id,
 )
+from dash_ecomm.es_query_builder import EsQueryBuilder
 from rasa_sdk import Action, FormValidationAction, Tracker, events
 from rasa_sdk.events import (
     ActiveLoop,
@@ -368,8 +387,12 @@ class CheckAllOrders(Action):
             required_buttons.append(
                 {TITLE: ORDER_STATUS, PAYLOAD: payload_order_status, TYPE: POSTBACK}
             )
-            required_buttons.append({TITLE: RETURN_ORDER, PAYLOAD: payload_return_order, TYPE: POSTBACK})
-            required_buttons.append({TITLE: REPLACE_ORDER, PAYLOAD: payload_replace_order, TYPE: POSTBACK})
+            required_buttons.append(
+                {TITLE: RETURN_ORDER, PAYLOAD: payload_return_order, TYPE: POSTBACK}
+            )
+            required_buttons.append(
+                {TITLE: REPLACE_ORDER, PAYLOAD: payload_replace_order, TYPE: POSTBACK}
+            )
         else:
             required_buttons.append(
                 {TITLE: ORDER_STATUS, PAYLOAD: payload_order_status, TYPE: POSTBACK}
@@ -507,6 +530,7 @@ class ShowMoreAction(Action):
             ACTION_CHECK_ALL_ORDERS,
             ACTION_RETURN_ORDER,
             ACTION_CANCEL_ORDER,
+            ACTION_PRODUCT_INQUIRY,
         ]:
             followup_action.append(FollowupAction(action_triggered))
             followup_action.append(SlotSet(IS_SHOW_MORE_TRIGGERED, True))
@@ -552,7 +576,7 @@ class ActionOrderStatus(Action):
         return carousel
 
     @staticmethod
-    def template_for_order_status(self, status_for_order_id):
+    def template_for_order_status(status_for_order_id):
         if status_for_order_id == ORDER_PENDING:
             template = "utter_order_status_order_pending"
         elif status_for_order_id == ORDER_CONFIRMED:
@@ -883,4 +907,267 @@ class ActionAskSwitch(Action):
                 slot_set.append(SlotSet(slot, None))
         slot_set.append(ActiveLoop(None))
         slot_set.append(SlotSet(REQUESTED_SLOT, None))
+        return slot_set
+
+
+class ActionProductInquiry(Action):
+    def name(self) -> Text:
+        return "action_product_inquiry"
+
+    def __validate_entities(
+        self,
+        category,
+        sub_category,
+        color: Text = None,
+        gender: Text = None,
+        price_min: int = None,
+        price_max: int = None,
+        brand: Text = None,
+        scroll_id: Text = None,
+    ) -> Dict:
+        not_none_entities = {}
+        entities = [
+            category,
+            sub_category,
+            color,
+            price_max,
+            gender,
+            price_min,
+            brand,
+            scroll_id,
+        ]
+        for entity in range(0, len(entities)):
+            if entities[entity] is not None:
+                not_none_entities[ENTITY_NAMES[entity]] = entities[entity]
+                logger.info(not_none_entities)
+        return not_none_entities
+
+    def __price_queries(
+        self, not_non_entities: Dict, entities_present: list, message: Text
+    ) -> (Dict, int):
+        products = None
+        query_builder = EsQueryBuilder()
+        if PRICE_MIN in entities_present and PRICE_MAX in entities_present:
+            products = query_builder.product_search_with_price(
+                message,
+                not_non_entities[PRICE_MIN],
+                not_non_entities[PRICE_MAX],
+            )
+        elif PRICE_MIN in entities_present:
+            products = query_builder.product_search_with_price_min(
+                message, not_non_entities[PRICE_MIN]
+            )
+        elif PRICE_MAX in entities_present:
+            products = query_builder.product_search_with_price_max(
+                message, not_non_entities[PRICE_MAX]
+            )
+        return products
+
+    def __not_scroll_id(
+        self, not_non_entities: Dict, message: Text, entities_present, query_builder
+    ) -> (Dict, int):
+        products = None
+        if entities_present == ENTITY_NAMES:
+            products = query_builder.product_search_with_all(
+                message,
+                not_non_entities[PRICE_MIN],
+                not_non_entities[PRICE_MAX],
+            )
+        elif PRICE_MIN in entities_present or PRICE_MAX in entities_present:
+            products = self.__price_queries(not_non_entities, entities_present, message)
+        elif SUB_CATEGORY in entities_present and BRAND not in entities_present:
+            products = query_builder.product_search_with_category(
+                not_non_entities[SUB_CATEGORY]
+            )
+        elif CATEGORY in entities_present and BRAND not in entities_present:
+            products = query_builder.product_search_with_category(
+                not_non_entities[CATEGORY]
+            )
+        elif GENDER in entities_present and BRAND not in entities_present:
+            products = query_builder.product_search_with_gender(message)
+        elif BRAND in entities_present:
+            products = query_builder.product_search_with_brand(not_non_entities[BRAND])
+        elif not entities_present:
+            products = query_builder.product_search_with_category(
+                not_non_entities[SUB_CATEGORY]
+            )
+        return products
+
+    def __generate_query_to_elasticsearch(
+        self, not_non_entities: Dict, message: Text
+    ) -> (Dict, int):
+        query_builder = EsQueryBuilder()
+        entities_present = []
+        products = None
+        for entity_name in not_non_entities.keys():
+            if entity_name in ENTITY_NAMES:
+                entities_present.append(entity_name)
+
+        if SCROLL_ID in not_non_entities:
+            products = query_builder.product_search_with_scroll(
+                not_non_entities[SCROLL_ID]
+            )
+        else:
+            products = self.__not_scroll_id(
+                not_non_entities, message, entities_present, query_builder
+            )
+        return products
+
+    def __get_five_products(
+        self, products, is_show_more_triggered: bool, show_more_count: int
+    ):
+        count = MIN_NUMBER_ZERO
+        logger.info(products)
+        if is_show_more_triggered:
+            count = show_more_count
+        else:
+            count = products["hits"]["total"]["value"]
+        scroll_id = products["_scroll_id"]
+        products = products["hits"]["hits"]
+        carousel_products = []
+        if count <= MAX_ITEM_IN_CAROUSEL:
+            count = STOP_SHOW_MORE_COUNT
+        else:
+            count -= MAX_ITEM_IN_CAROUSEL
+        for selected_product in products:
+            carousel_products.append(selected_product)
+        return carousel_products, count, scroll_id
+
+    def __convert_response_to_carousel(self, products):
+        carousel = {
+            TYPE: TEMPLATE,
+            PAYLOAD: {TEMPLATE_TYPE: GENERIC, ELEMENTS: []},
+        }
+        for selected_product in products:
+            product = selected_product["_source"]
+            carousel_element = {
+                TITLE: product[PRODUCT_NAME],
+                SUBTITLE: f"Price: {product['price']}; Ratings: {product['ratings']}",
+                IMAGE_URL: product["image"],
+                BUTTONS: [
+                    {
+                        TITLE: BUY_NOW,
+                        PAYLOAD: "",
+                        TYPE: POSTBACK,
+                    },
+                    {
+                        TITLE: PRODUCT_DETAILS,
+                        PAYLOAD: "",
+                        TYPE: POSTBACK,
+                    },
+                ],
+            }
+            carousel[PAYLOAD]["elements"].append(carousel_element)
+        return carousel
+
+    def __get_entities(self, tracker):
+        is_show_more_triggered = tracker.get_slot(IS_SHOW_MORE_TRIGGERED)
+        category = None
+        sub_category = None
+        color = None
+        price_min = None
+        price_max = None
+        brand = None
+        gender = None
+        latest_message = None
+        scroll_id = None
+        show_more_count = 0
+        if is_show_more_triggered:
+            scroll_id = tracker.get_slot(SCROLL_ID)
+            show_more_count = tracker.get_slot(SHOW_MORE_COUNT)
+        else:
+            category = next(tracker.get_latest_entity_values(CATEGORY), None)
+            sub_category = next(tracker.get_latest_entity_values(SUB_CATEGORY), None)
+            color = next(tracker.get_latest_entity_values(COLOR), None)
+            price_min = next(tracker.get_latest_entity_values(MIN), None)
+            price_max = next(tracker.get_latest_entity_values(MAX), None)
+            brand = next(tracker.get_latest_entity_values(BRAND), None)
+            gender = next(tracker.get_latest_entity_values(GENDER), None)
+            latest_message = tracker.latest_message
+        return (
+            category,
+            sub_category,
+            color,
+            price_min,
+            price_max,
+            brand,
+            gender,
+            show_more_count,
+            latest_message,
+            is_show_more_triggered,
+            scroll_id,
+        )
+
+    def __get_returnable_slots(self, count, dispatcher, not_non_entities, scroll_id):
+        slot_set = []
+        if count > STOP_SHOW_MORE_COUNT:
+            dispatcher.utter_message(template="utter_show_more_products")
+            slot_set.append(
+                SlotSet(ACTION_THAT_TRIGGERED_SHOW_MORE, ACTION_PRODUCT_INQUIRY)
+            )
+            slot_set.append(SlotSet(SCROLL_ID, scroll_id))
+            logger.info(not_non_entities)
+            for key, value in not_non_entities.items():
+                slot_set.append(SlotSet(key, value))
+        else:
+            slot_set.append(SlotSet(ACTION_THAT_TRIGGERED_SHOW_MORE, None))
+            slot_set.append(SlotSet(CATEGORY, None))
+            slot_set.append(SlotSet(SUB_CATEGORY, None))
+            slot_set.append(SlotSet(BRAND, None))
+            slot_set.append(SlotSet(PRICE_MIN, None))
+            slot_set.append(SlotSet(PRICE_MAX, None))
+            slot_set.append(SlotSet(COLOR, None))
+            slot_set.append(SlotSet(GENDER, None))
+            slot_set.append(SlotSet(SCROLL_ID, None))
+        return slot_set
+
+    def run(
+        self,
+        dispatcher,
+        tracker: Tracker,
+        domain: "DomainDict",  # noqa: F821
+    ) -> List[Dict[Text, Any]]:
+        slot_set = []
+        count = MIN_ITEM_IN_CAROUSEL
+        (
+            category,
+            sub_category,
+            color,
+            price_min,
+            price_max,
+            brand,
+            gender,
+            show_more_count,
+            latest_message,
+            is_show_more_triggered,
+            scroll_id,
+        ) = self.__get_entities(tracker)
+        not_non_entities = self.__validate_entities(
+            category,
+            sub_category,
+            color,
+            gender,
+            price_min,
+            price_max,
+            brand,
+            scroll_id,
+        )
+        if not_non_entities != {}:
+            products = self.__generate_query_to_elasticsearch(
+                not_non_entities, latest_message
+            )
+            five_products, count, scroll_id = self.__get_five_products(
+                products, is_show_more_triggered, show_more_count
+            )
+            carousel = self.__convert_response_to_carousel(five_products)
+            dispatcher.utter_message(attachment=carousel)
+            dispatcher.utter_message(template="utter_product_inquiry_info")
+            slot_set = self.__get_returnable_slots(
+                count, dispatcher, not_non_entities, scroll_id
+            )
+        else:
+            dispatcher.utter_message(template="utter_product_inquiry_options")
+
+        slot_set.append(SlotSet(SHOW_MORE_COUNT, count))
+        slot_set.append(SlotSet(IS_SHOW_MORE_TRIGGERED, False))
         return slot_set

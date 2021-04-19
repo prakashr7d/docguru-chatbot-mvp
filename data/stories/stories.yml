@@ -15,6 +15,7 @@ stories:
   - action: utter_anything_else
   - intent: deny
   - action: utter_i_am_here_for_you
+
 - story: order status already logged in happy path + anything else affirm
   steps:
   - intent: check_all_orders
@@ -538,6 +539,10 @@ stories:
   - intent: affirm
   - action: utter_anything_else_options
 
+- story: product inquiry
+  steps:
+  - intent: product_inquiry
+  - action: action_product_inquiry
 - story: Switch return form in select return order 3
   steps:
   - intent: return_order
