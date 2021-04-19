@@ -5,8 +5,6 @@ session_config:
   session_expiration_time: 60
   carry_over_slots_to_new_session: true
 intents:
-- ask_reason_for_return:
-    use_entities: true
 - check_all_orders:
     use_entities: true
 - order_cancel:
@@ -24,25 +22,23 @@ intents:
 - deny:
     use_entities: true
 - inform:
-    use_entities: true
-- order_shoes:
-    use_entities: true
+    use_entities: []
 - greet:
-    use_entities: true
+    use_entities: []
 - chitchat:
-    use_entities: true
+    use_entities: []
 - faq:
-    use_entities: true
+    use_entities: []
 - out_of_scope:
-    use_entities: true
+    use_entities: []
 - nlu_fallback:
     use_entities: true
 - logout:
     use_entities: []
 - EXTERNAL_logout:
-    use_entities: true
+    use_entities: []
 - EXTERNAL_unblock_login:
-    use_entities: true
+    use_entities: []
 - show_more:
     use_entities: []
 - return_order:
@@ -56,19 +52,27 @@ intents:
 - select_return_order:
     use_entities:
       - order_id
+    ignore_entities:
+      - number
 - order_status:
     use_entities: true
 - replace_order:
     use_entities: []
-
+- product_inquiry:
+    use_entities:
+      - category
+      - sub_category
+      - color
+      - gender
+      - brand
+      - min
+      - max
 entities:
 - email
-- color
 - number
 - negation
 - language
 - company
-- product
 - return_a_reason
 - return_e_type
 - return_refund_account
@@ -76,6 +80,13 @@ entities:
 - return_type
 - refund_account
 - reason_for_return
+- min
+- max
+- category
+- sub_category
+- color
+- brand
+- gender
 slots:
   user_email:
     type: rasa.shared.core.slots.TextSlot
@@ -93,7 +104,7 @@ slots:
     auto_fill: true
     influence_conversation: true
   is_logged_in:
-    type: rasa.shared.core.slots.BooleanSlot
+    type: bool
     initial_value: false
     auto_fill: true
     influence_conversation: true
@@ -101,21 +112,6 @@ slots:
     type: rasa.shared.core.slots.TextSlot
     initial_value: null
     auto_fill: true
-    influence_conversation: false
-  color:
-    type: rasa.shared.core.slots.TextSlot
-    initial_value: null
-    auto_fill: true
-    influence_conversation: false
-  size:
-    type: rasa.shared.core.slots.TextSlot
-    initial_value: null
-    auto_fill: false
-    influence_conversation: false
-  rating:
-    type: rasa.shared.core.slots.TextSlot
-    initial_value: null
-    auto_fill: false
     influence_conversation: false
   name:
     type: rasa.shared.core.slots.TextSlot
@@ -129,11 +125,6 @@ slots:
     influence_conversation: false
   requested_slot:
     type: rasa.shared.core.slots.UnfeaturizedSlot
-    initial_value: null
-    auto_fill: true
-    influence_conversation: false
-  survey_complete:
-    type: rasa.shared.core.slots.BooleanSlot
     initial_value: null
     auto_fill: true
     influence_conversation: false
@@ -155,7 +146,7 @@ slots:
     max_value: 1.0
     min_value: 0.0
   login_blocked:
-    type: rasa.shared.core.slots.BooleanSlot
+    type: bool
     initial_value: false
     auto_fill: false
     influence_conversation: true
@@ -225,6 +216,46 @@ slots:
     values:
     - return product
     - replace product
+  price_min:
+    type: float
+    initial_value: null
+    auto_fill: true
+    influence_conversation: false
+  price_max:
+    type: float
+    initial_value: null
+    auto_fill: true
+    influence_conversation: false
+  category:
+    type: rasa.shared.core.slots.TextSlot
+    initial_value: null
+    auto_fill: true
+    influence_conversation: false
+  sub_category:
+    type: rasa.shared.core.slots.TextSlot
+    initial_value: null
+    auto_fill: true
+    influence_conversation: false
+  color:
+    type: rasa.shared.core.slots.TextSlot
+    initial_value: null
+    auto_fill: true
+    influence_conversation: false
+  brand:
+    type: rasa.shared.core.slots.TextSlot
+    initial_value: null
+    auto_fill: true
+    influence_conversation: false
+  gender:
+    type: rasa.shared.core.slots.TextSlot
+    initial_value: null
+    auto_fill: true
+    influence_conversation: false
+  scroll_id:
+    type: text
+    initial_value: null
+    auto_fill: true
+    influence_conversation: false
 responses:
   utter_generic_greet:
   - buttons:
@@ -232,8 +263,8 @@ responses:
       title: check all orders
     - payload: /return_order
       title: Return an order
-    - payload: product_enquiry
-      title: product_enquiry
+    - payload: I want to buy something
+      title: product enquiry
     - payload: /buy_items_in_cart
       title: Buy items in cart
     - payload: /mood_based_search
@@ -264,8 +295,8 @@ responses:
       title: check all orders
     - payload: /return_order
       title: Return an order
-    - payload: product_enquiry
-      title: product_enquiry
+    - payload: I want to buy something
+      title: Product Inquiry
     - payload: /buy_items_in_cart
       title: Buy items in cart
     - payload: /mood_based_search
@@ -302,7 +333,7 @@ responses:
       title: Check all orders
     - payload: Return an order
       title: Return an order
-    - payload: Product Inquiry
+    - payload: I want to buy something
       title: Product Inquiry
     text: You are logged, you can try out these few options.
   utter_not_signed_up_response:
@@ -322,8 +353,8 @@ responses:
       title: check all orders
     - payload: /return_order
       title: Return an order
-    - payload: product_enquiry
-      title: product_enquiry
+    - payload: I want a product
+      title: product enquiry
     - payload: /buy_items_in_cart
       title: Buy items in cart
     - payload: /mood_based_search
@@ -364,7 +395,7 @@ responses:
   - buttons:
     - payload: /check all orders
       title: check all orders
-    - payload: Product inquiry
+    - payload: I want to buy something
       title: Product inquiry
     - payload: Return order
       title: Return order
@@ -451,9 +482,24 @@ responses:
   - text: The Order you have mentioned is not available in your order history. Please reach us at neuralspace@neuralspace.ai
   utter_try_after_logged_in:
   - text: Try after getting logged in you will continue with the login procedure.
-
-
-
+  utter_product_inquiry_options:
+  - buttons:
+    - payload: Show me some Laptops
+      title: Laptops
+    - payload: Show me some Mobiles
+      title: Mobiles
+    - payload: Show me [Men's Clothing](sub_category)
+      title: Men's Clothing
+    - payload: /mood_based_search
+      title: 🆕 Mood based search 🔥
+    text: Sure, you can try by telling me "Show me Hp Laptops under 30000" or you can try following options.
+  utter_product_inquiry_info:
+  - text: You can always ask me with different brand names, categories, product name, etc
+  utter_show_more_products:
+  - buttons:
+    - payload: show more
+      title: Show more
+    text: You can check more products by clicking on show more button below.
 actions:
 - personal_greet
 - validate_login_form
@@ -467,6 +513,7 @@ actions:
 - action_return_order
 - validate_return_order_form
 - action_switch
+- action_product_inquiry
 forms:
   login_form:
     user_email:

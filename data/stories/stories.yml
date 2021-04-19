@@ -548,3 +548,7 @@ stories:
   - intent: affirm
   - action: utter_anything_else_options
 
+- story: product inquiry
+  steps:
+  - intent: product_inquiry
+  - action: action_product_inquiry

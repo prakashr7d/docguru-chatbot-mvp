@@ -98,7 +98,7 @@ nlu:
     - I want to return [DASH123457](order_id)
     - [DASH123457](order_id)
     - return [DASH123457](order_id)
-- intent: ask_reason_for_return
+- intent: ask_return_a_reason
   examples: |
     - i want to return my product because I [don't want it]{"entity": "return_a_reason", "value": "Don't need the Product"}
     - i want to return my product because I [don't need it]{"entity": "return_a_reason", "value": "Don't need the Product"}
@@ -148,6 +148,38 @@ nlu:
     - can you show the menu
     - i want to see menu
     - menu
+- intent: product_inquiry
+  examples: |
+    - I want to buy a product
+    - Can you suggest me some products
+    - show me [Electronic](category) products
+    - [Lenovo]{"entity": "brand", "value": "Lenovo"} [laptops](sub_category)
+    - do you have [white](color) [shoes](sub_category)
+    - what about [men's clothing](sub_category)
+    - I want [mobiles](sub_category) of brand realme under [40000](max)
+    - [Laptops](sub_category) under [20000](max)
+    - Show me [shoes](sub_category) for [Men](gender)
+    - Show me [Men's Shirts](sub_category) between [1000](min) - [1500](max)
+    - I want [Mobile](sub_category) Phones between [10000](min) - [15000](max)
+    - [Men's Shirt](sub_category)
+    - Show me [women's]{"entity": "gender", "value": "women"} [sports shoes](sub_category)
+    - [Jeans](sub_category) for [Men](gender)
+    - Show me [laptops](sub_category) of 14inch
+    - can you show me [Hp]{"entity": "brand", "value": "Hp"} [laptops](sub_category) under [30000](min) starting from [10000](max)
+    - [Lenovo]{"entity": "brand", "value": "Lenovo"} [laptops](sub_category)
+    - can you show me [Oneplus]{"entity": "brand", "value": "Oneplus"} [mobiles](sub_category)
+    - I want to buy [nike]{"entity": "brand", "value": "nike"} [shoes](sub_category)
+    - I am looking for [redmi]{"entity": "brand", "value": "redmi"} [mobiles](sub_category)
+    - I want [mobiles](sub_category) of brand [realme]{"entity": "brand", "value": "realme"} under 40000
+    - Show me [Adidas]{"entity": "brand", "value": "Adidas"} [shoes](sub_category)
+    - I want to buy [Silver](color) [Lenovo]{"entity": "brand", "value": "Lenovo"} [Laptops](sub_category)
+    - I want to buy [LG]{"entity": "brand", "value": "LG"} [Washing Machine](sub_category)
+    - [Xiaomi]{"entity": "brand", "value": "Xiaomi"} Phones below [25000](max)
+    - Can you show me [Adidas]{"entity": "brand", "value": "Adidas"} [Tshirts](sub_category) for [Women](gender) ?
+    - I want to [US Polo]{"entity": "brand", "value": "US Polo"} products
+    - Show me [women's]{"entity": "gender", "value": "women"} [sports shoes](sub_category)
+    - I want to check out [Samsung]{"entity": "brand", "value": "Samsung"} LED [TV]{"entity": "sub_category", "value": "Television"}
+
 - intent: affirm
   examples: |
     - Accept
@@ -592,3 +624,169 @@ nlu:
 - synonym: Credit Points
   examples: |
     - Credit
+
+- lookup: category
+  examples: |
+    - Electronics
+    - Fashion
+    - Books
+    - Home
+    - Sports, Fitness, Bags & Luggage
+    - Toys and Games
+    - Beauty & Health
+
+- lookup: sub_category
+  examples: |
+    - Laptops
+    - Mobiles
+    - Computers
+    - Televisions
+    - Air Conditioners
+    - Refrigerators
+    - Washing Machines
+    - Microwaves
+    - Dishwashers
+    - Heating & Cooling Appliances
+    - Home Entertainment Systems
+    - Speakers & Headphones
+    - Cameras & Camera Accessories
+    - Monitors
+    - Sandals
+    - Heels
+    - Sports Shoes
+    - Casual Shoes
+    - Shoes
+    - Slippers
+    - Shirts
+    - T-shirts
+    - Trousers & Bottoms
+    - Jeans
+    - Skirts
+    - Shorts
+    - Kurta & Kurtis
+    - Sarees
+    - Swimwear
+    - Nightwear
+    - Decor
+    - Kitchen & Dining
+    - Bed
+    - Furnishing
+    - Storage & Organisers
+    - Bath
+    - Kids
+    - Action & Toy Figures
+    - Arts & craft
+    - Baby & Toddler Toys
+    - Building & Constructions Toys
+    - Dolls & Accessories
+    - Electronic Toys
+    - Games
+    - Party Supplies
+    - Pretend Play
+    - Soft Toys
+    - Sports & Outdoors
+    - Fiction Books
+    - School Books
+    - Children’s Books
+    - Exam Central
+    - Textbooks
+    - Indian Language Books
+    - Exercise & Fitness
+    - Cycling
+    - Badminton
+    - Cricket
+    - Football
+    - Backpacks
+    - Travel Luggage
+    - Travel Accessories
+    - Bags, Wallets & Luggage
+    - Action & Toy Figures
+    - Arts & craft
+    - Baby & Toddler Toys
+    - Building & Constructions Toys
+    - Dolls & Accessories
+    - Electronic Toys
+    - Games
+    - Party Supplies
+    - Pretend Play
+    - Soft Toys
+    - Beauty & Grooming
+    - Luxury Beauty
+    - Makeup
+    - Professional Beauty
+    - Women’s Styling Devices
+    - Men’s Grooming Devices
+    - Personal Care
+    - Sports Nutrition
+    - Health & Wellness
+- lookup: gender
+  examples: |
+    - men
+    - women
+    - boys
+    - girls
+    - all
+- lookup: color
+  examples: |
+    - blue
+    - pink
+    - orange
+    - rose gold
+    - black
+    - red
+    - light blue
+    - Beige
+    - Black
+    - Blue
+    - Brown
+    - Charcoal
+    - Copper
+    - Coral
+    - Cream
+    - Gold
+    - Green
+    - Grey
+    - Maroon
+    - Peach
+    - Pink
+    - Red
+    - Silver
+    - Tan
+    - Teal
+    - White
+    - Yellow
+
+- lookup: brand
+  examples: |
+    - adidas
+    - spark
+    - nike
+    - Acer
+    - Apple
+    - Asus
+    - Dell
+    - HP
+    - Lenovo
+    - Xiaomi
+    - LG
+    - OnePlus
+    - Xiaomi
+    - Samsung
+    - Vivo
+    - Realme
+    - Oppo
+    - Nokia
+    - Honor
+    - LG
+    - Lava
+    - Apple
+    - Samsung
+    - Whirlpool
+    - LG
+    - Xiaomi
+    - Phillips
+    - Havells
+    - Bajaj
+    - Voltas
+
+

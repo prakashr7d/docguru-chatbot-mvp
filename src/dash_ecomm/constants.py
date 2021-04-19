@@ -51,6 +51,7 @@ TYPE_OF_RETURN = "return_e_type"
 REASON_FOR_RETURN_DESCRIPTION = "return_a_reason_description"
 PICKUP_ADDRESS_FOR_RETURN = "return_pickup_address"
 REFUND_ACCOUNT = "return_refund_account"
+SCROLL_ID = "scroll_id"
 
 # slot counters
 EMAIL_TRIES = "email_tries"
@@ -66,6 +67,7 @@ REORDER = "Re-order"
 REFUND_ORDER = "Ask For Refund"
 SELECT_ORDER = "Select this order"
 REPLACE_ORDER = "Replace Item"
+BUY_NOW = "Buy Now"
 
 # order status
 ORDER_PENDING = "order pending"
@@ -87,6 +89,7 @@ MAX_EMAIL_TRIES = 1
 ACTION_CHECK_ALL_ORDERS = "action_check_all_orders"
 ACTION_RETURN_ORDER = "action_show_valid_return_order"
 ACTION_CANCEL_ORDER = "action_cancel_order"
+ACTION_PRODUCT_INQUIRY = "action_product_inquiry"
 
 # reasons for return
 DONT_NEED_THE_PRODUCT = "Don't need the Product"
@@ -120,12 +123,61 @@ FORM_SLOTS = {
     ],
 }
 
-# CAROUSEL
-POSTBACK = "postback"
+# var names
+PRODUCT_TYPE = "product_type"
+PRICE_MAX = "price_max"
+PRICE_MIN = "price_min"
+
+# entities:
+PRODUCT = "product"
+COLOR = "color"
+MIN = "min"
+MAX = "max"
+BRAND = "brand"
+GENDER = "gender"
+ENTITY_NAMES = [
+    "category",
+    "sub_category",
+    COLOR,
+    PRICE_MAX,
+    GENDER,
+    PRICE_MIN,
+    BRAND,
+    "scroll_id",
+]
+
+# gender values
+MEN = "men"
+WOMEN = "WOMEN"
+BOYS = "boys"
+girls = "girls"
+ALL = "all"
+
+# carousel values
 TITLE = "title"
-PAYLOAD = "payload"
-TYPE = "type"
 SUBTITLE = "subtitle"
 IMAGE_URL = "image_url"
 BUTTONS = "buttons"
+PAYLOAD = "payload"
+TYPE = "type"
+POSTBACK = "postback"
+ELEMENTS = "elements"
+TEMPLATE_TYPE = "template_type"
+TEMPLATE = "template"
+GENERIC = "generic"
+CAROUSEL = {
+    TYPE: TEMPLATE,
+    PAYLOAD: {TEMPLATE_TYPE: GENERIC, ELEMENTS: []},
+}
 
+# elastic search elements
+PRODUCT_NAME = "product_name"
+HITS = "hits"
+_SOURCE = "_source"
+IMAGE = "image"
+PRICE = "price"
+RATINGS_COUNT = "ratings_count"
+RATINGS = "ratings"
+CATEGORY = "category"
+SUB_CATEGORY = "sub_category"
+AUTHOR = "author"

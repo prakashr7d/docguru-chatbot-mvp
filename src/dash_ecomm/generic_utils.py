@@ -23,9 +23,9 @@ def get_unblock_timestamp(after_n_minutes: int = 2) -> datetime:
 def add_track_item_button(
     order: Dict[Text, Any], carousel: Dict[Text, Any]
 ) -> Dict[Text, Any]:
-        carousel["buttons"].append(
-            {"title": ORDER_STATUS, "payload": "", "type": "postback"}
-        )
+    carousel["buttons"].append(
+        {"title": ORDER_STATUS, "payload": "", "type": "postback"}
+    )
 
 
 def create_order_carousel(orders: List[Dict[Text, Any]]) -> Dict[Text, Any]:
