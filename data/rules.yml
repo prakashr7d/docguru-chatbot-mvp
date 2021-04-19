@@ -1,24 +1,20 @@
 version: "2.0"
 rules:
-
 - rule: respond to chitchat
   steps:
   - intent: chitchat
   - action: utter_chitchat
-
 - rule: anything else deny
   steps:
   - action: utter_anything_else
   - intent: deny
   - action: utter_i_am_here_for_you
-
 - rule: out of scope
   steps:
   - or:
     - intent: nlu_fallback
     - intent: out_of_scope
   - action: utter_default
-
 - rule: Activate login form
   condition:
   - slot_was_set:
@@ -31,7 +27,6 @@ rules:
   - active_loop: null
   - action: login_form
   - active_loop: login_form
-
 - rule: Submit, deactivate login form
   condition:
   - active_loop: login_form
@@ -39,7 +34,6 @@ rules:
   - action: login_form
   - active_loop: null
   - action: action_login_form
-
 - rule: login unblocked event
   condition:
   - slot_was_set:
@@ -47,12 +41,10 @@ rules:
   steps:
   - intent: EXTERNAL_unblock_login
   - action: action_unblock_login
-
 - rule: logout user
   steps:
   - intent: EXTERNAL_logout
   - action: action_logout
-
 - rule: login blocked
   condition:
   - slot_was_set:
@@ -60,7 +52,6 @@ rules:
   steps:
   - intent: login
   - action: action_login_form
-
 - rule: already login
   condition:
   - slot_was_set:
@@ -68,7 +59,6 @@ rules:
   steps:
   - intent: login
   - action: utter_already_logged_in
-
 - rule: check all orders + login blocked
   condition:
   - slot_was_set:
@@ -78,7 +68,6 @@ rules:
   - intent: check_all_orders
   - action: utter_check_all_orders_for_blocked_user
   - action: action_login_form
-
 - rule: order status + login blocked
   condition:
   - slot_was_set:
@@ -88,7 +77,6 @@ rules:
   - intent: order_status
   - action: utter_check_all_orders_for_blocked_user
   - action: action_login_form
-
 - rule: check all orders + valid login
   condition:
   - slot_was_set:
@@ -97,7 +85,6 @@ rules:
   steps:
   - intent: check_all_orders
   - action: action_check_all_orders
-
 - rule: order status + valid login
   condition:
   - slot_was_set:
@@ -106,12 +93,15 @@ rules:
   steps:
   - intent: order_status
   - action: action_order_status
-
+- rule: logout
+  steps:
+  - intent: logout
+  - action: action_logout
+  - action: utter_logout
 - rule: show more
   steps:
   - intent: show_more
   - action: show_more_action
-
 - rule: return order, show valid return orders, login
   condition:
   - slot_was_set:
@@ -120,7 +110,6 @@ rules:
   - intent: return_order
   - active_loop: null
   - action: action_show_valid_return_order
-
 - rule: return order, show valid return orders, not login
   condition:
   - slot_was_set:
@@ -130,8 +119,7 @@ rules:
   - action: utter_not_logged_in_prompt
   - action: login_form
   - active_loop: login_form
-
-- rule:  return form + valid login
+- rule: return form + valid login
   condition:
   - slot_was_set:
     - is_logged_in: true
@@ -142,8 +130,7 @@ rules:
   - intent: select_return_order
   - action: return_order_form
   - active_loop: return_order_form
-
-- rule:  return form + not logged
+- rule: return form + not logged
   condition:
   - slot_was_set:
     - is_logged_in: false
@@ -153,7 +140,6 @@ rules:
   - action: utter_not_logged_in_prompt
   - action: login_form
   - active_loop: login_form
-
 - rule: return form + blocked login
   condition:
   - slot_was_set:
@@ -164,7 +150,6 @@ rules:
   - action: utter_check_all_orders_for_blocked_user
   - action: action_login_form
   - action: utter_anything_else
-
 - rule: submit, return form
   condition:
   - active_loop: return_order_form
@@ -175,9 +160,85 @@ rules:
   - active_loop: null
   - action: action_return_order
   - action: utter_anything_else
-
 - rule: replace order
   steps:
   - intent: replace_order
   - action: utter_replace_order_inprogress
   - action: utter_anything_else_options
+- rule: switch with check all orders
+  condition:
+  - active_loop: return_order_form
+  - slot_was_set:
+    - is_logged_in: true
+  steps:
+  - intent: check_all_orders
+  - action: action_switch
+  - active_loop: null
+  - action: action_check_all_orders
+- rule: switch form+ order status
+  condition:
+  - active_loop: return_order_form
+  - slot_was_set:
+    - is_logged_in: true
+  steps:
+  - intent: order_status
+  - action: action_switch
+  - active_loop: null
+  - action: action_order_status
+- rule: return form switch + chitchat
+  condition:
+  - active_loop: return_order_form
+  steps:
+  - intent: chitchat
+  - action: utter_chitchat
+  - action: return_order_form
+  - active_loop: return_order_form
+- rule: form switch + show more
+  condition:
+  - active_loop: return_order_form
+  steps:
+  - intent: show_more
+  - action: action_switch
+  - active_loop: null
+  - action: show_more_action
+- rule: switch form + select return order
+  condition:
+  - active_loop: return_order_form
+  - slot_was_set:
+    - is_logged_in: true
+  steps:
+  - intent: select_return_order
+  - action: action_switch
+  - active_loop: null
+  - action: return_order_form
+  - active_loop: return_order_form
+- rule: switch menu
+  condition:
+  - active_loop: return_order_form
+  - slot_was_set:
+    - is_logged_in: true
+  steps:
+  - intent: ask_for_menu
+  - action: action_switch
+  - active_loop: null
+  - action: utter_anything_else_options
+- rule: switch with check all orders
+  condition:
+  - active_loop: return_order_form
+  - slot_was_set:
+    - is_logged_in: true
+  steps:
+  - intent: check_all_orders
+  - action: action_switch
+  - active_loop: null
+  - action: action_check_all_orders
+- rule: switch form+ order status
+  condition:
+  - active_loop: return_order_form
+  - slot_was_set:
+    - is_logged_in: true
+  steps:
+  - intent: order_status
+  - action: action_switch
+  - active_loop: null
+  - action: action_order_status

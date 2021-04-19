@@ -564,3 +564,91 @@ stories:
     user: |-
       Yes
   - action: utter_anything_else_options
+
+- story: Switch form
+  steps:
+  - intent: greet
+    user: |-
+      hi
+  - action: personal_greet
+  - slot_was_set:
+    - user_email: null
+  - slot_was_set:
+    - user_first_name: null
+  - slot_was_set:
+    - user_last_name: null
+  - slot_was_set:
+    - is_logged_in: false
+  - slot_was_set:
+    - user_otp: null
+  - intent: return_order
+    user: |-
+      /return_order
+  - action: utter_not_logged_in_prompt
+  - action: login_form
+  - active_loop: login_form
+  - slot_was_set:
+    - requested_slot: user_email
+  - intent: inform
+    user: |-
+      [dishant@neuralspace.ai](email)
+  - action: login_form
+  - slot_was_set:
+    - user_email: dishant@neuralspace.ai
+  - slot_was_set:
+    - requested_slot: user_otp
+  - intent: inform
+    user: |-
+      [1234]{"entity": "number", "value": 1234}
+  - action: login_form
+  - slot_was_set:
+    - user_otp: 1234
+  - slot_was_set:
+    - requested_slot: null
+  - active_loop: null
+  - action: action_login_form
+  - slot_was_set:
+    - user_email: dishant@neuralspace.ai
+  - slot_was_set:
+    - user_first_name: Dishant
+  - slot_was_set:
+    - user_last_name: Gandhi
+  - slot_was_set:
+    - is_logged_in: true
+  - slot_was_set:
+    - user_otp: '1234'
+  - intent: select_return_order
+    user: |-
+      please place the return order for [DASH123456](order_id)[123456]{"entity": "number", "value": 123456}
+  - action: return_order_form
+  - active_loop: return_order_form
+  - slot_was_set:
+    - order_id_for_return: DASH123456
+  - slot_was_set:
+    - requested_slot: return_a_reason
+  - intent: check_all_orders
+    user: |-
+      check all orders
+  - action: action_switch
+  - slot_was_set:
+    - order_id_for_return: null
+  - slot_was_set:
+    - return_a_reason: null
+  - slot_was_set:
+    - return_a_reason_description: null
+  - slot_was_set:
+    - return_e_type: null
+  - slot_was_set:
+    - return_pickup_address: null
+  - slot_was_set:
+    - return_refund_account: null
+  - active_loop: null
+  - slot_was_set:
+    - requested_slot: null
+  - action: action_check_all_orders
+  - slot_was_set:
+    - action_that_triggered_show_more: action_check_all_orders
+  - slot_was_set:
+    - show_more_count: 2
+  - slot_was_set:
+    - is_show_more_triggered: false

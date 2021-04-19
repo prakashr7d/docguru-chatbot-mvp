@@ -62,7 +62,6 @@ from dash_ecomm.constants import (
     REASON_FOR_RETURN_DESCRIPTION,
     RECEIVED,
     REFUND_ACCOUNT,
-    REFUND_ORDER,
     REFUNDED,
     REPLACE_ORDER,
     REPLACE_PRODUCT,
@@ -371,35 +370,42 @@ class CheckAllOrders(Action):
         return "action_check_all_orders"
 
     @staticmethod
-    def respective_buttons(status, is_eligible):
+    def respective_buttons(order_id, status, is_eligible):
         required_buttons = []
+        payload_order_status = "order status of {}".format(order_id)
+        payload_return_order = "please place the return for {}".format(order_id)
+        payload_replace_order = "/replace_order"
         if status == ORDER_PENDING or status == SHIPPED:
             required_buttons.append(
-                {"title": ORDER_STATUS, "payload": "", "type": "postback"}
+                {TITLE: ORDER_STATUS, PAYLOAD: payload_order_status, TYPE: POSTBACK}
             )
             required_buttons.append(
-                {"title": PRODUCT_DETAILS, "payload": "", "type": "postback"}
+                {TITLE: PRODUCT_DETAILS, PAYLOAD: "", TYPE: POSTBACK}
             )
             required_buttons.append({TITLE: CANCEL_ORDER, PAYLOAD: "", TYPE: POSTBACK})
         elif status == DELIVERED and is_eligible:
             required_buttons.append(
-                {"title": ORDER_STATUS, "payload": "", "type": "postback"}
+                {TITLE: ORDER_STATUS, PAYLOAD: payload_order_status, TYPE: POSTBACK}
             )
-            required_buttons.append({TITLE: RETURN_ORDER, PAYLOAD: "", TYPE: POSTBACK})
-            required_buttons.append({TITLE: REFUND_ORDER, PAYLOAD: "", TYPE: POSTBACK})
+            required_buttons.append(
+                {TITLE: RETURN_ORDER, PAYLOAD: payload_return_order, TYPE: POSTBACK}
+            )
+            required_buttons.append(
+                {TITLE: REPLACE_ORDER, PAYLOAD: payload_replace_order, TYPE: POSTBACK}
+            )
         else:
             required_buttons.append(
-                {"title": ORDER_STATUS, "payload": "", "type": "postback"}
+                {TITLE: ORDER_STATUS, PAYLOAD: payload_order_status, TYPE: POSTBACK}
             )
             required_buttons.append(
-                {"title": PRODUCT_DETAILS, "payload": "", "type": "postback"}
+                {TITLE: PRODUCT_DETAILS, PAYLOAD: "", TYPE: POSTBACK}
             )
         return required_buttons
 
     def __create_order_carousel(self, orders: List[Dict[Text, Any]]) -> Dict[Text, Any]:
         carousel = {
-            "type": "template",
-            "payload": {"template_type": "generic", "elements": []},
+            TYPE: "template",
+            PAYLOAD: {"template_type": "generic", "elements": []},
         }
 
         for selected_order in orders:
@@ -569,7 +575,8 @@ class ActionOrderStatus(Action):
         carousel[PAYLOAD]["elements"].append(carousel_element)
         return carousel
 
-    def template_for_order_status(self, status_for_order_id):
+    @staticmethod
+    def template_for_order_status(status_for_order_id):
         if status_for_order_id == ORDER_PENDING:
             template = "utter_order_status_order_pending"
         elif status_for_order_id == ORDER_CONFIRMED:

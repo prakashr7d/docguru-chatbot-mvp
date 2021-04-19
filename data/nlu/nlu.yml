@@ -10,6 +10,8 @@ nlu:
     - I want to check on my orders
     - i want to see my orders
     - show my orders dash
+    - check all orders
+    - check my orders
 - intent: order_status
   examples: |
     - track the order [DASH123461](order_id)
@@ -98,7 +100,8 @@ nlu:
     - I want to return [DASH123457](order_id)
     - [DASH123457](order_id)
     - return [DASH123457](order_id)
-- intent: ask_return_a_reason
+    - please place a return for [DASH123456](order_id)
+- intent: ask_reason_for_return
   examples: |
     - i want to return my product because I [don't want it]{"entity": "return_a_reason", "value": "Don't need the Product"}
     - i want to return my product because I [don't need it]{"entity": "return_a_reason", "value": "Don't need the Product"}
@@ -148,6 +151,9 @@ nlu:
     - can you show the menu
     - i want to see menu
     - menu
+    - I want to go to main menu
+    - main menu
+    - i want to go to main menu
 - intent: product_inquiry
   examples: |
     - I want to buy a product
@@ -534,6 +540,7 @@ nlu:
     - heyy
     - Hey!!!
     - hallo?
+    - hhi
 - intent: chitchat/goodbye
   examples: |
     - cu
