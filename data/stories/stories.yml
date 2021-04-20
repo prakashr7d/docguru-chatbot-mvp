@@ -15,7 +15,7 @@ stories:
   - action: utter_anything_else
   - intent: deny
   - action: utter_i_am_here_for_you
-
+  - action: action_feedback_reminder
 - story: order status already logged in happy path + anything else affirm
   steps:
   - intent: check_all_orders
@@ -91,6 +91,7 @@ stories:
   - action: utter_anything_else
   - intent: deny
   - action: utter_i_am_here_for_you
+  - action: action_feedback_reminder
 
 
 - story: check all order already logged in happy path + anything else with affirm after show more

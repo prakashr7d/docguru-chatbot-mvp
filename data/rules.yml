@@ -4,6 +4,7 @@ rules:
   steps:
   - intent: chitchat
   - action: utter_chitchat
+
 - rule: anything else deny
   steps:
   - action: utter_anything_else
