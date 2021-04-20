@@ -1208,11 +1208,7 @@ class ActionProductDetails(Action):
                 product = query_builder.product_search_with_id(product_id)
                 self.__make_utter_message(product, dispatcher)
             else:
-                dispatcher.utter_message(
-                    text="I think you gave me wrong product id. Please check and try giving me again"
-                )
+                dispatcher.utter_message(response="utter_wrong_product_id")
         else:
-            dispatcher.utter_message(
-                text="Sorry, I wasn't able to find the product id you gave me. Try to check the product id again"
-            )
+            dispatcher.utter_message(response="utter_invalid_product_id")
         return []

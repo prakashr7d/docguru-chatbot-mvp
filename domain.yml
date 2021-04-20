@@ -523,6 +523,10 @@ responses:
     - payload: show more
       title: Show more
     text: You can check more products by clicking on show more button below.
+  utter_wrong_product_id:
+  - text: I think you gave me wrong product id. Please check and try giving me again
+  utter_invalid_product_id:
+  - text: Sorry, I wasn't able to find the product id you gave me. Try to check the product id again
 actions:
 - personal_greet
 - validate_login_form
