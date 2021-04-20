@@ -30,7 +30,6 @@ stories:
   - action: utter_anything_else
   - intent: affirm
   - action: utter_anything_else_options
-  - action: action_feedback_reminder
 
 - story: order status + login from chat
   steps:
@@ -64,7 +63,6 @@ stories:
   - action: utter_anything_else
   - intent: affirm
   - action: utter_anything_else_options
-  - action: action_feedback_reminder
 
 - story: order status already logged in happy path + anything else with deny
   steps:
@@ -255,7 +253,6 @@ stories:
   - action: action_check_all_orders
   - intent: show_more
   - action: show_more_action
-  - action: action_feedback_reminder
 
 - story: order status with login happy path
   steps:
@@ -276,7 +273,6 @@ stories:
   - slot_was_set:
     - is_logged_in: true
   - action: action_order_status
-  - action: action_feedback_reminder
 
 - story: Order status - Unregistered user - repair path - anything else affirm
   steps:
@@ -299,7 +295,6 @@ stories:
   - action: utter_anything_else
   - intent: affirm
   - action: utter_anything_else_options
-  - action: action_feedback_reminder
 
 - story: Order status - Unregistered user - repair path - anything else affirm
   steps:
@@ -326,7 +321,6 @@ stories:
   - action: utter_anything_else
   - intent: affirm
   - action: utter_anything_else_options
-  - action: action_feedback_reminder
 
 - story: check all orders - registered user - repair path - anything else deny
   steps:
@@ -439,7 +433,6 @@ stories:
   - action: utter_anything_else
   - intent: affirm
   - action: utter_anything_else_options
-  - action: action_feedback_reminder
 
 - story: Order status - Unregistered user - repair path - anything else deny
   steps:
@@ -462,7 +455,6 @@ stories:
   - action: utter_anything_else
   - intent: affirm
   - action: utter_anything_else_options
-  - action: action_feedback_reminder
 
 - story: Unblock login
   steps:
@@ -505,7 +497,6 @@ stories:
   - action: utter_anything_else
   - intent: affirm
   - action: utter_anything_else_options
-  - action: action_feedback_reminder
 
 - story: return order with carousel, logged in
   steps:
@@ -598,7 +589,6 @@ stories:
   - action: utter_anything_else
   - intent: affirm
   - action: utter_anything_else_options
-  - action: action_feedback_reminder
 
 - story: product inquiry
   steps:

@@ -1,5 +1,4 @@
 import logging
-import re
 from typing import Any, Dict, List, Text, Tuple
 
 from dash_ecomm import generic_utils
@@ -1253,14 +1252,10 @@ class ActionProductDetails(Action):
     ) -> List[Dict[Text, Any]]:
         product_id = tracker.get_slot("es_product_id")
         logger.info(product_id)
-        product_id_regex = "^([A-Z]{2})+[0-9]{5}$"
         if product_id is not None:
-            if re.search(product_id_regex, product_id):
-                query_builder = EsQueryBuilder()
-                product = query_builder.product_search_with_id(product_id)
-                self.__make_utter_message(product, dispatcher)
-            else:
-                dispatcher.utter_message(response="utter_wrong_product_id")
+            query_builder = EsQueryBuilder()
+            product = query_builder.product_search_with_id(product_id)
+            self.__make_utter_message(product, dispatcher)
         else:
             dispatcher.utter_message(response="utter_invalid_product_id")
         return []

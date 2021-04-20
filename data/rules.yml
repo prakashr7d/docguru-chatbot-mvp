@@ -17,7 +17,6 @@ rules:
   - action: utter_anything_else
   - intent: affirm
   - action: utter_anything_else_options
-  - action: action_feedback_reminder
 
 - rule: out of scope
   steps:
