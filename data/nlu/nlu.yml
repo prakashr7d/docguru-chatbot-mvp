@@ -101,7 +101,7 @@ nlu:
     - [DASH123457](order_id)
     - return [DASH123457](order_id)
     - please place a return for [DASH123456](order_id)
-- intent: ask_reason_for_return
+- intent: ask_return_a_reason
   examples: |
     - i want to return my product because I [don't want it]{"entity": "return_a_reason", "value": "Don't need the Product"}
     - i want to return my product because I [don't need it]{"entity": "return_a_reason", "value": "Don't need the Product"}

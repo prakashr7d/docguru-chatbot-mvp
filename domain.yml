@@ -284,7 +284,7 @@ responses:
       title: check all orders
     - payload: /return_order
       title: Return an order
-    - payload: I want to buy something
+    - payload: I want to buy a product
       title: product enquiry
     - payload: /buy_items_in_cart
       title: Buy items in cart
@@ -316,7 +316,7 @@ responses:
       title: check all orders
     - payload: /return_order
       title: Return an order
-    - payload: I want to buy something
+    - payload: I want to buy a product
       title: Product Inquiry
     - payload: /buy_items_in_cart
       title: Buy items in cart
@@ -354,7 +354,7 @@ responses:
       title: Check all orders
     - payload: Return an order
       title: Return an order
-    - payload: I want to buy something
+    - payload: I want to buy a product
       title: Product Inquiry
     text: You are logged, you can try out these few options.
   utter_not_signed_up_response:
@@ -374,7 +374,7 @@ responses:
       title: check all orders
     - payload: /return_order
       title: Return an order
-    - payload: I want a product
+    - payload: I want to buy a product
       title: product enquiry
     - payload: /buy_items_in_cart
       title: Buy items in cart
@@ -416,7 +416,7 @@ responses:
   - buttons:
     - payload: /check all orders
       title: check all orders
-    - payload: I want to buy something
+    - payload: I want to buy a product
       title: Product inquiry
     - payload: Return order
       title: Return order
