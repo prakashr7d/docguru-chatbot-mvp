@@ -193,6 +193,29 @@ nlu:
     - Show me [women's]{"entity": "gender", "value": "women"} [sports shoes](sub_category)
     - I want to check out [Samsung]{"entity": "brand", "value": "Samsung"} LED [TV]{"entity": "sub_category", "value": "Television"}
 
+- intent: ask_feedback
+  examples: |
+    - [Awesome]{"entity":"feedback","value":"Awesome"}
+    - [better]{"entity":"feedback","value":"Awesome"}
+    - [Best]{"entity":"feedback","value":"Awesome"}
+    - [okish]{"entity":"feedback","value":"Meh"}
+    - [not likely]{"entity":"feedback","value":"Meh"}
+    - [not bad]{"entity":"feedback","value":"Meh"}
+    - [Meh]{"entity":"feedback","value":"Meh"}
+    - [worst]{"entity":"feedback","value":"Poor"}
+    - [Poor]{"entity":"feedback","value":"Poor"}
+    - [pretty bad]{"entity":"feedback","value":"Poor"}
+    - [I didn't like]{"entity":"feedback","value":"Poor"}
+    - [Good]{"entity":"feedback","value":"Awesome"}
+- intent: feedback
+  examples: |
+    - I want to give feedback
+    - feedback
+    - can you capture my feedback
+    - I want to add feedback
+    - feedback for you!
+    - I want to fill feedback form
+    - is there any feedback form?
 - regex: es_product_id
   examples: |
     - \b([A-Z]{2})[0-9]{5}\b

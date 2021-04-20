@@ -4,11 +4,21 @@ rules:
   steps:
   - intent: chitchat
   - action: utter_chitchat
+
 - rule: anything else deny
   steps:
   - action: utter_anything_else
   - intent: deny
   - action: utter_i_am_here_for_you
+  - action: action_feedback_reminder
+
+- rule: anything else affirm
+  steps:
+  - action: utter_anything_else
+  - intent: affirm
+  - action: utter_anything_else_options
+  - action: action_feedback_reminder
+
 - rule: out of scope
   steps:
   - or:
@@ -253,6 +263,25 @@ rules:
   - active_loop: null
   - action: action_order_status
 
+
+- rule: feedback form
+  condition:
+  - active_loop: null
+  steps:
+  - intent: feedback
+  - action: feedback_form
+  - active_loop: feedback_form
+
+- rule: submit, feedback form
+  steps:
+  - action: feedback_form
+  - active_loop: null
+  - action: action_feedback_submit
+
+- rule: cancel feedback reminder
+  steps:
+  - intent: EXTERNAL_feedback
+  - action: action_start_feedback_form
 - rule: product details
   steps:
   - intent: product_details

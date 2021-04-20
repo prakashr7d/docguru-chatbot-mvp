@@ -653,6 +653,16 @@ stories:
   - slot_was_set:
     - is_show_more_triggered: false
 
+- story: feedback form
+  steps:
+    user: |
+      can you start feedback form
+  - action: feedback_form
+  - active_loop: feedback_form
+    user: |
+      [Awesome](feedback)
+  - action: action_feedback_submit
+
 - story: product inquiry with product details
   steps:
   - intent: greet
