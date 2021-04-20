@@ -85,8 +85,6 @@ intents:
       - brand
       - min
       - max
-- feedback:
-    use_entities: []
 - product_details:
     use_entities:
       - es_product_id
