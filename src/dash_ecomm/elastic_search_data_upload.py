@@ -17,7 +17,6 @@ query = {
 }
 
 products = es.search(index="e_comm", body=query, scroll="1m")
-print(products)
 for i in products["hits"]["hits"]:
     print(i["_source"]["brand"])
 # products = es.search(index="e_comm", body=query)

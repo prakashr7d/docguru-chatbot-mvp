@@ -14,7 +14,7 @@ nlu:
     - check my orders
 - regex: order_id
   examples: |
-    - DASH+[0-9]{6}
+    - \bDASH[0-9]{6}\b
 - intent: order_status
   examples: |
     - track the order [DASH123461](order_id)
@@ -32,8 +32,8 @@ nlu:
     - [DASH123461](order_id)
 - regex: number
   examples: |
-    - /d{4}
-- intent: number
+    - \\d{4}
+- intent: otp
   examples: |
     - [1234](number)
     - here's my otp [1234](number)
@@ -41,6 +41,7 @@ nlu:
     - this is my otp [1234](number)
     - this is the otp I got [1234](number)
     - I received [1234](number)
+    - it's [1234](number)
 - intent: inform
   examples: |
     - example@rasa.com
@@ -51,7 +52,6 @@ nlu:
     - I'm looking for [orange](color) shoes
     - [brown](color)
     - [blue](color)
-    - it's 123
     - it's a@b.com
     - xyz@hulaloo.ai
     - gray
@@ -61,15 +61,11 @@ nlu:
     - [Grey](color)
     - test@test.com
     - ayushman@neuralspace.ai
-    - 5678
     - dishant@neuralspace.ai
-    - 87817
-    - 1234
     - shaia@mail.com
     - g@mail.com
     - mail@mail.com
     - pooja@neuralspace.ai
-    - 9876
 - intent: login
   examples: |
     - I want to login
@@ -112,7 +108,7 @@ nlu:
     - [DASH123457](order_id)
     - return [DASH123457](order_id)
     - please place a return for [DASH123456](order_id)
-- intent: ask_reason_for_return
+- intent: ask_return_a_reason
   examples: |
     - i want to return my product because I [don't want it]{"entity": "return_a_reason", "value": "Don't need the Product"}
     - i want to return my product because I [don't need it]{"entity": "return_a_reason", "value": "Don't need the Product"}
@@ -199,7 +195,7 @@ nlu:
 
 - regex: es_product_id
   examples: |
-    - ([A-Z]{2})+[0-9]{5}
+    - \b([A-Z]{2})[0-9]{5}\b
 - intent: product_details
   examples: |
     - more details on [AB12345](es_product_id)

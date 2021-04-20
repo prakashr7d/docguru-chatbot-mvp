@@ -33,8 +33,12 @@ intents:
     use_entities: []
 - nlu_fallback:
     use_entities: true
-- logout:
-    use_entities: []
+- otp:
+    use_entities:
+      - user_otp
+    ignore_entities:
+      - es_product_id
+      - order_id
 - EXTERNAL_logout:
     use_entities: []
 - EXTERNAL_unblock_login:
@@ -54,12 +58,13 @@ intents:
       - order_id
     ignore_entities:
       - es_product_id
+      - user_otp
 - order_status:
     use_entities:
       - order_id
     ignore_entities:
       - es_product_id
-      - number
+      - user_otp
 - replace_order:
     use_entities: []
 - ask_for_menu:
@@ -78,9 +83,10 @@ intents:
       - es_product_id
     ignore_entities:
       - order_id
+      - user_otp
 entities:
 - email
-- number
+- user_otp
 - negation
 - language
 - company
