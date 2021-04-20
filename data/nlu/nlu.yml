@@ -12,7 +12,7 @@ nlu:
     - show my orders dash
 - regex: order_id
   examples: |
-    - ^DASH+[0-9]{6}
+    - DASH+[0-9]{6}
 - intent: order_status
   examples: |
     - track the order [DASH123461](order_id)
@@ -28,6 +28,17 @@ nlu:
     - I want to check status of my order [DASH123461](order_id)
     - Show status of my order [DASH123461](order_id)
     - [DASH123461](order_id)
+- regex: number
+  examples: |
+    - /d{4}
+- intent: number
+  examples: |
+    - [1234](number)
+    - here's my otp [1234](number)
+    - otp is [1234](number)
+    - this is my otp [1234](number)
+    - this is the otp I got [1234](number)
+    - I received [1234](number)
 - intent: inform
   examples: |
     - example@rasa.com
@@ -182,7 +193,7 @@ nlu:
 
 - regex: es_product_id
   examples: |
-    - ^([A-Z]{2})+[0-9]{5}$
+    - ([A-Z]{2})+[0-9]{5}
 - intent: product_details
   examples: |
     - more details on [AB12345](es_product_id)
