@@ -1171,3 +1171,56 @@ class ActionProductInquiry(Action):
         slot_set.append(SlotSet(SHOW_MORE_COUNT, count))
         slot_set.append(SlotSet(IS_SHOW_MORE_TRIGGERED, False))
         return slot_set
+
+
+class ActionFeedbackReminder(Action):
+    def name(self) -> Text:
+        return "action_feedback_reminder"
+
+    def run(
+        self,
+        dispatcher,
+        tracker: Tracker,
+        domain: "DomainDict",  # noqa: F821
+    ) -> List[Dict[Text, Any]]:
+        reminder_events = []
+        timestamp = generic_utils.get_feedback_timestamp()
+        feedback_event = events.ReminderScheduled(
+            intent_name="EXTERNAL_feedback",
+            trigger_date_time=timestamp,
+            name="feedback_reminder",
+            kill_on_user_message=True,
+        )
+        reminder_events.append(feedback_event)
+        return reminder_events
+
+
+class ActionStartFeedbackForm(Action):
+    def name(self) -> Text:
+        return "action_start_feedback_form"
+
+    def run(
+        self,
+        dispatcher,
+        tracker: Tracker,
+        domain: "DomainDict",  # noqa: F821
+    ) -> List[Dict[Text, Any]]:
+        return_elements = []
+        return_elements.append(events.ReminderCancelled(name="feedback_reminder"))
+        return_elements.append(ActiveLoop("feedback_form"))
+        return_elements.append(FollowupAction("feedback_form"))
+        return return_elements
+
+
+class ActionFeedbacksubmit(Action):
+    def name(self) -> Text:
+        return "action_feedback_submit"
+
+    def run(
+        self,
+        dispatcher,
+        tracker: Tracker,
+        domain: "DomainDict",  # noqa: F821
+    ) -> List[Dict[Text, Any]]:
+        dispatcher.utter_message(response="utter_feedback_submitted")
+        return [SlotSet("feedback", None)]

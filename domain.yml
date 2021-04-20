@@ -61,6 +61,12 @@ intents:
       - number
 - replace_order:
     use_entities: []
+- ask_feedback:
+    use_entities: true
+- feedback:
+    use_entities: []
+- EXTERNAL_feedback:
+    use_entities: []
 - ask_for_menu:
     use_entities: []
 - product_inquiry:
@@ -92,6 +98,7 @@ entities:
 - color
 - brand
 - gender
+- feedback
 slots:
   user_email:
     type: rasa.shared.core.slots.TextSlot
@@ -261,6 +268,15 @@ slots:
     initial_value: null
     auto_fill: true
     influence_conversation: false
+  feedback:
+    type: categorical
+    initial_value: null
+    auto_fill: true
+    influence_conversation: false
+    values:
+    - Awesome
+    - Meh
+    - Poor
 responses:
   utter_generic_greet:
   - buttons:
@@ -505,6 +521,17 @@ responses:
     - payload: show more
       title: Show more
     text: You can check more products by clicking on show more button below.
+  utter_ask_feedback:
+  - buttons:
+    - payload: Awesome
+      title: Awesome
+    - payload: Meh
+      title: Meh
+    - payload: Poor
+      title: Poor
+    text: How would you rate your experience so far?
+  utter_feedback_submitted:
+  - text: "Thanks for adding your valuable feedback, I will use this feedback to improve myself and give you better experience"
 actions:
 - personal_greet
 - validate_login_form
@@ -519,6 +546,9 @@ actions:
 - validate_return_order_form
 - action_switch
 - action_product_inquiry
+- action_feedback_reminder
+- action_start_feedback_form
+- action_feedback_submit
 forms:
   login_form:
     user_email:
@@ -543,5 +573,9 @@ forms:
     - type: from_text
     return_refund_account:
     - entity: return_refund_account
+      type: from_entity
+  feedback_form:
+    feedback:
+    - entity: feedback
       type: from_entity
 e2e_actions: []
