@@ -32,16 +32,16 @@ nlu:
     - [DASH123461](order_id)
 - regex: number
   examples: |
-    - \\d{4}
+    - \b\d{4}\b
 - intent: otp
   examples: |
-    - [1234](number)
-    - here's my otp [1234](number)
-    - otp is [1234](number)
-    - this is my otp [1234](number)
-    - this is the otp I got [1234](number)
-    - I received [1234](number)
-    - it's [1234](number)
+    - 2783
+    - here's my otp 6871
+    - otp is 7981
+    - this is my otp 5671
+    - this is the otp I got 5635
+    - I received 2573
+    - it's 2698
 - intent: inform
   examples: |
     - example@rasa.com

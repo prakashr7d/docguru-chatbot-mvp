@@ -35,7 +35,7 @@ intents:
     use_entities: true
 - otp:
     use_entities:
-      - user_otp
+      - number
     ignore_entities:
       - es_product_id
       - order_id
@@ -58,17 +58,18 @@ intents:
       - order_id
     ignore_entities:
       - es_product_id
-      - user_otp
+      - number
 - order_status:
     use_entities:
       - order_id
     ignore_entities:
       - es_product_id
-      - user_otp
+      - number
 - replace_order:
     use_entities: []
 - ask_feedback:
-    use_entities: true
+    use_entities:
+      - feedback
 - feedback:
     use_entities: []
 - EXTERNAL_feedback:
@@ -84,15 +85,17 @@ intents:
       - brand
       - min
       - max
+- feedback:
+    use_entities: []
 - product_details:
     use_entities:
       - es_product_id
     ignore_entities:
       - order_id
-      - user_otp
+      - number
 entities:
 - email
-- user_otp
+- number
 - negation
 - language
 - company

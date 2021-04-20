@@ -278,7 +278,6 @@ class ValidateLoginForm(FormValidationAction):
         elif not is_valid_user(email):
             utter = "utter_user_email_not_registered"
             slots[REQUESTED_SLOT] = None
-            # slots.pop(USER_EMAIL)
         else:
             utter = "utter_user_email_not_valid"
         return utter, slots
@@ -308,7 +307,7 @@ class ValidateLoginForm(FormValidationAction):
             logger.debug(returned_slots)
             dispatcher.utter_message(template=utter)
             returned_slots[EMAIL_TRIES] = email_tries
-        return [returned_slots]
+        return returned_slots
 
     def validate_user_otp(
         self,
@@ -333,7 +332,7 @@ class ValidateLoginForm(FormValidationAction):
                 otp_tries += 1
                 dispatcher.utter_message(template="utter_incorrect_otp")
                 returned_slots = {USER_OTP: None, OTP_TRIES: otp_tries}
-        return [returned_slots]
+        return returned_slots
 
 
 class ActionLoginUnblock(Action):

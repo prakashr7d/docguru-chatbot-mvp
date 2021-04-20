@@ -10,7 +10,7 @@ stories:
   - intent: greet
   - action: personal_greet
   - intent: ask_for_menu
-  - intent: utter_anything_else_options
+  - action: utter_anything_else_options
 - story: anything else deny
   steps:
   - action: utter_anything_else
@@ -615,7 +615,17 @@ stories:
 
 - story: submit, feedback form
   steps:
+  - action: action_feedback_reminder
   - action: feedback_form
+  - active_loop: feedback_form
+  - active_loop: null
+  - action: action_feedback_submit
+
+- story: feedback form
+  steps:
+  - action: feedback
+  - action: feedback_form
+  - active_loop: feedback_form
   - active_loop: null
   - action: action_feedback_submit
 
