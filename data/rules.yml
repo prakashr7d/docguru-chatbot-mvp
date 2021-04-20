@@ -253,6 +253,10 @@ rules:
   - active_loop: null
   - action: action_order_status
 
+- rule: product inquiry
+  steps:
+  - intent: product_inquiry
+  - action: action_product_inquiry
 
 - rule: feedback form
   condition:
