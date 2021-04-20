@@ -59,7 +59,10 @@ intents:
       - order_id
     ignore_entities:
       - es_product_id
+      - number
 - replace_order:
+    use_entities: []
+- ask_for_menu:
     use_entities: []
 - product_inquiry:
     use_entities:
@@ -430,7 +433,7 @@ responses:
       title: Quality issues
     - payload: Incorrect Items
       title: Incorrect Items
-    - payload: Hi
+    - payload: I want to go to main menu
       title: Back to Main Menu
     text: Could you please share the reason for returning the order?
   utter_ask_return_e_type:
@@ -491,7 +494,7 @@ responses:
   utter_order_status_refunded:
   - text: Your refund for {order_id}  has been successfully processed, If you did't get your refund in the account you have choosed, reach us out at neuralspace@neuralspace.ai. [click here](https://sites.google.com/view/orderstatus-{small_order_id}/home) for more information
   utter_ask_status_order_id:
-  - text: please enter the order id for the order you want to track or to see the order status
+  - text: Please enter the order id for the order you want to track or to see the order status. If you don't remember your order id, just say "check all orders", and I will show you all your orders
   utter_order_status_failed:
   - text: The Order you have mentioned is not available in your order history. Please reach us at neuralspace@neuralspace.ai
   utter_try_after_logged_in:

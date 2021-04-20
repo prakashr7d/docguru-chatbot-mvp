@@ -5,7 +5,12 @@ stories:
   steps:
   - intent: greet
   - action: personal_greet
-
+- story: intro + ask for menu
+  steps:
+  - intent: greet
+  - action: personal_greet
+  - intent: ask_for_menu
+  - intent: utter_anything_else_options
 - story: anything else deny
   steps:
   - action: utter_anything_else
@@ -30,7 +35,7 @@ stories:
   steps:
   - intent: order_status
   - slot_was_set:
-      - is_logged_in: true
+    - is_logged_in: true
   - active_loop: null
   - action: action_order_status
 
@@ -43,7 +48,7 @@ stories:
   - action: action_order_status
   - intent: order_status
   - slot_was_set:
-      - is_logged_in: true
+    - is_logged_in: true
   - active_loop: null
   - action: action_order_status
 
@@ -118,7 +123,7 @@ stories:
   - action: action_check_all_orders
   - intent: order_status
   - slot_was_set:
-      - is_logged_in: true
+    - is_logged_in: true
   - active_loop: null
   - action: action_order_status
 
@@ -147,9 +152,9 @@ stories:
   - active_loop: null
   - action: action_login_form
   - slot_was_set:
-      - is_logged_in: false
+    - is_logged_in: false
   - slot_was_set:
-      - login_blocked: false
+    - login_blocked: false
   - intent: affirm
   - action: utter_signed_up_user_failed_login_response
 
@@ -157,7 +162,7 @@ stories:
   steps:
   - intent: order_status
   - slot_was_set:
-      - is_logged_in: true
+    - is_logged_in: true
   - active_loop: null
   - action: action_order_status
 
@@ -173,18 +178,16 @@ stories:
   steps:
   - intent: order_status
   - slot_was_set:
-      - is_logged_in: false
+    - is_logged_in: false
   - slot_was_set:
-      - login_blocked: false
+    - login_blocked: false
   - action: utter_not_logged_in_prompt
   - action: login_form
   - active_loop: login_form
   - active_loop: null
   - action: action_login_form
   - slot_was_set:
-      - is_logged_in: true
-  - action: action_listen
-
+    - is_logged_in: true
 - story: order status already logged in happy path + order status without show_more + anything else deny
   steps:
   - intent: check_all_orders
@@ -267,8 +270,6 @@ stories:
   - action: action_login_form
   - slot_was_set:
     - is_logged_in: true
-  - action: action_listen
-
 - story: Order status - Unregistered user - repair path - anything else affirm
   steps:
   - intent: check_all_orders
@@ -295,7 +296,7 @@ stories:
   steps:
   - intent: order_status
   - slot_was_set:
-      - is_logged_in: true
+    - is_logged_in: true
   - active_loop: null
   - action: action_order_status
   - slot_was_set:
@@ -446,11 +447,10 @@ stories:
   - intent: affirm
   - action: utter_anything_else_options
 
-
 - story: Unblock login
   steps:
   - slot_was_set:
-      - login_blocked: true
+    - login_blocked: true
   - intent: EXTERNAL_unblock_login
   - action: action_unblock_login
 
@@ -499,7 +499,15 @@ stories:
   - action: utter_anything_else
   - intent: deny
   - action: utter_i_am_here_for_you
-
+- story: Switch return form in select return order 1
+  steps:
+  - intent: return_order
+  - slot_was_set:
+    - is_logged_in: true
+  - active_loop: null
+  - action: action_show_valid_return_order
+  - intent: ask_for_menu
+  - action: utter_anything_else_options
 - story: return order with carousel, not logged in
   steps:
   - intent: return_order
@@ -523,7 +531,23 @@ stories:
   - action: utter_anything_else
   - intent: deny
   - action: utter_i_am_here_for_you
-
+- story: Switch return form in select return order 2
+  steps:
+  - intent: return_order
+  - slot_was_set:
+    - is_logged_in: false
+  - slot_was_set:
+    - login_blocked: false
+  - action: utter_not_logged_in_prompt
+  - action: login_form
+  - active_loop: login_form
+  - active_loop: null
+  - action: action_login_form
+  - slot_was_set:
+    - is_logged_in: true
+  - action: action_show_valid_return_order
+  - intent: ask_for_menu
+  - action: utter_anything_else_options
 - story: return order with carousel, not logged in
   steps:
   - intent: return_order
@@ -552,6 +576,24 @@ stories:
   steps:
   - intent: product_inquiry
   - action: action_product_inquiry
+
+- story: Switch return form in select return order 3
+  steps:
+  - intent: return_order
+  - slot_was_set:
+    - is_logged_in: false
+  - slot_was_set:
+    - login_blocked: false
+  - action: utter_not_logged_in_prompt
+  - action: login_form
+  - active_loop: login_form
+  - active_loop: null
+  - action: action_login_form
+  - slot_was_set:
+    - is_logged_in: true
+  - action: action_show_valid_return_order
+  - intent: ask_for_menu
+  - action: utter_anything_else_options
 
 - story: product details
   steps:
