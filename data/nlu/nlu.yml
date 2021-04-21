@@ -242,8 +242,6 @@ nlu:
 - intent: affirm
   examples: |
     - Accept
-    - Awesome!
-    - Good
     - Great
     - I accept
     - I accept.
@@ -300,8 +298,6 @@ nlu:
     - alright, cool
     - amayzing
     - amazing!
-    - awesome
-    - awesome!
     - confirm
     - cool story bro
     - definitely yes without a doubt
@@ -314,7 +310,6 @@ nlu:
     - go ahead
     - go for it
     - going super well
-    - good.
     - great
     - great lets do that
     - great!
@@ -338,19 +333,16 @@ nlu:
     - kk
     - lets do it
     - lets do this
-    - not bad
     - of course
     - ofcoure i do
     - ofcourse
-    - oh awesome!
+    - oh
     - oh cool
-    - oh good !!
     - oh super
     - ok
     - ok cool
     - ok fine
     - ok friend
-    - ok good
     - ok great
     - ok i accept
     - ok Dash
@@ -378,7 +370,6 @@ nlu:
     - that sounds fine
     - that's great
     - thats fine
-    - thats good
     - thats great
     - top
     - uh-huh
@@ -465,7 +456,6 @@ nlu:
     - considering
     - More a less
     - cool beans
-    - sounds good!
     - really
 - intent: deny
   examples: |
@@ -522,10 +512,8 @@ nlu:
     - it sux
     - na
     - nah
-    - nah I'm good
     - nah not for me
     - nah, first time
-    - nah, i'm good
     - nehi
     - nein
     - neither
@@ -557,7 +545,6 @@ nlu:
     - noooooooooooooooooooooooooooooooooooooooo
     - nop
     - nope!
-    - nope. i am good
     - not going well at all
     - not right now
     - not yet
