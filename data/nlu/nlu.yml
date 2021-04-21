@@ -212,6 +212,7 @@ nlu:
     - [pretty bad]{"entity":"feedback","value":"Poor"}
     - [I didn't like]{"entity":"feedback","value":"Poor"}
     - [Good]{"entity":"feedback","value":"Awesome"}
+    - [great]{"entity":"feedback","value":"Awesome"}
 - intent: feedback
   examples: |
     - I want to give feedback
@@ -242,7 +243,6 @@ nlu:
 - intent: affirm
   examples: |
     - Accept
-    - Great
     - I accept
     - I accept.
     - I agree
@@ -270,7 +270,6 @@ nlu:
     - SURE
     - Sure
     - Sweet
-    - That would be great
     - I think that would be fine
     - YES
     - YUP
@@ -310,9 +309,6 @@ nlu:
     - go ahead
     - go for it
     - going super well
-    - great
-    - great lets do that
-    - great!
     - hell yeah
     - hell yes
     - hm, i'd like that
@@ -326,7 +322,6 @@ nlu:
     - its okay
     - ja
     - ja cool
-    - ja thats great
     - jezz
     - jo
     - k
@@ -343,7 +338,6 @@ nlu:
     - ok cool
     - ok fine
     - ok friend
-    - ok great
     - ok i accept
     - ok Dash
     - ok, I behave now
@@ -368,9 +362,7 @@ nlu:
     - that is cool
     - that ok
     - that sounds fine
-    - that's great
     - thats fine
-    - thats great
     - top
     - uh-huh
     - very much
@@ -414,7 +406,6 @@ nlu:
     - yes give me information
     - yes go ahead
     - yes go for it
-    - yes great
     - yes i accept
     - yes i agree
     - yes i have built a bot before
@@ -427,7 +418,6 @@ nlu:
     - yes please!
     - yes pls
     - yes sirfr
-    - yes that's great
     - yes that's what i want
     - yes you can
     - yes'
@@ -835,3 +825,9 @@ nlu:
     - Havells
     - Bajaj
     - Voltas
+
+- intent: un_supported_buttons
+  examples: |
+    - invalid buttons
+    - invalid
+    - use case not available
