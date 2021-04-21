@@ -3,6 +3,11 @@ from pathlib import Path
 
 this_path = Path(os.path.realpath(__file__))
 
+ELASTICSEARCH_URL = "http://localhost:9200"
+E_COMM = "e_comm"
+PRODUCT_EXCEL_SHEET = "e-comm-products.xlsx"
+PRODUCTS_JSON = "products.json"
+
 STOP_SHOW_MORE_COUNT = -1
 MAX_ITEM_IN_CAROUSEL = 5
 MIN_ITEM_IN_CAROUSEL = 0

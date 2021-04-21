@@ -38,9 +38,8 @@ bootstrap-user-mac: check-py3 install-system-deps-user
 .PHONY: poetry-setup
 poetry-setup:
 	poetry config virtualenvs.in-project true
-	poetry run pip install pip==20.0.2
+	poetry run pip install pip==21.0.1
 	poetry install --no-root
-	poetry run pip install azure-keyvault-secrets azure.identity
 	poetry install
 
 ## Setup pre-commit
