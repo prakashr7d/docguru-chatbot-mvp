@@ -163,6 +163,11 @@ nlu:
     - i want to go to main menu
 - intent: product_inquiry
   examples: |
+    - product enquiry
+    - product inquiry
+    - product enqur
+    - show me some product
+    - search product
     - I want to buy a product
     - Can you suggest me some products
     - show me [Electronic](category) products

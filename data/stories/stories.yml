@@ -64,6 +64,7 @@ stories:
   - intent: affirm
   - action: utter_anything_else_options
 
+
 - story: order status already logged in happy path + anything else with deny
   steps:
   - intent: check_all_orders
@@ -292,9 +293,6 @@ stories:
     - login_blocked: false
   - intent: affirm
   - action: utter_signed_up_user_failed_login_response
-  - action: utter_anything_else
-  - intent: affirm
-  - action: utter_anything_else_options
 
 - story: Order status - Unregistered user - repair path - anything else affirm
   steps:
@@ -318,9 +316,7 @@ stories:
     - login_blocked: false
   - intent: affirm
   - action: utter_signed_up_user_failed_login_response
-  - action: utter_anything_else
-  - intent: affirm
-  - action: utter_anything_else_options
+
 
 - story: check all orders - registered user - repair path - anything else deny
   steps:
@@ -340,10 +336,6 @@ stories:
     - login_blocked: false
   - intent: affirm
   - action: utter_signed_up_user_failed_login_response
-  - action: utter_anything_else
-  - intent: deny
-  - action: utter_i_am_here_for_you
-  - action: action_feedback_reminder
 
 - story: Order status - registered user - repair path - anything else deny
   steps:
@@ -363,10 +355,6 @@ stories:
     - login_blocked: false
   - intent: affirm
   - action: utter_signed_up_user_failed_login_response
-  - action: utter_anything_else
-  - intent: deny
-  - action: utter_i_am_here_for_you
-  - action: action_feedback_reminder
 
 - story: check all orders - Unregistered user - repair path - anything else deny
   steps:
@@ -433,6 +421,7 @@ stories:
   - action: utter_anything_else
   - intent: affirm
   - action: utter_anything_else_options
+
 
 - story: Order status - Unregistered user - repair path - anything else deny
   steps:
@@ -497,6 +486,7 @@ stories:
   - action: utter_anything_else
   - intent: affirm
   - action: utter_anything_else_options
+
 
 - story: return order with carousel, logged in
   steps:

@@ -32,10 +32,10 @@ rules:
     - login_blocked: false
   steps:
   - intent: login
-  - action: action_deactivate_loop
-  - active_loop: null
   - action: login_form
   - active_loop: login_form
+
+
 - rule: Submit, deactivate login form
   condition:
   - active_loop: login_form
