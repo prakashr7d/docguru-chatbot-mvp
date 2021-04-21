@@ -8,6 +8,7 @@ from dash_ecomm.constants import (
     ACTION_PRODUCT_INQUIRY,
     ACTION_RETURN_ORDER,
     ACTION_THAT_TRIGGERED_SHOW_MORE,
+    ADD_TO_CART,
     BRAND,
     BUTTONS,
     BUY_NOW,
@@ -93,7 +94,6 @@ from dash_ecomm.database_utils import (
     get_valid_order_return,
     is_valid_otp,
     is_valid_user,
-    validate_order_id,
 )
 from dash_ecomm.es_query_builder import EsQueryBuilder
 from rasa_sdk import Action, FormValidationAction, Tracker, events
@@ -137,9 +137,9 @@ class PersonalGreet(Action):
 
     def __get_user_token_from_metadata(self, tracker: Tracker) -> Text:
         user_token = None
-        events = tracker.current_state()["events"]
+        tracker_events = tracker.current_state()["events"]
         user_events = []
-        for e in events:
+        for e in tracker_events:
             if e["event"] == "user":
                 user_events.append(e)
         if tracker.events:
@@ -278,7 +278,6 @@ class ValidateLoginForm(FormValidationAction):
         elif not is_valid_user(email):
             utter = "utter_user_email_not_registered"
             slots[REQUESTED_SLOT] = None
-            # slots.pop(USER_EMAIL)
         else:
             utter = "utter_user_email_not_valid"
         return utter, slots
@@ -798,17 +797,13 @@ class ValidateReturnOrder(FormValidationAction):
         tracker: "Tracker",
         domain: "DomainDict",  # noqa: F821
     ) -> List[EventType]:
-        user_email = tracker.get_slot(USER_EMAIL)
         slot_set = {}
-        if value is not None and validate_order_id(value, user_email):
+        if value is not None:
             slot_set = {ORDER_ID_FOR_RETURN: value}
         else:
-            if validate_order_id(value, user_email) is False:
-                dispatcher.utter_message(template="utter_ineligible_order_id")
-            else:
-                dispatcher.utter_message(template="utter_ineligible_order_id")
+            dispatcher.utter_message(template="utter_ineligible_order_id")
             slot_set = {REQUESTED_SLOT: ORDER_ID_FOR_RETURN}
-        return slot_set
+        return [slot_set]
 
     def validate_return_a_reason(
         self,
@@ -827,7 +822,7 @@ class ValidateReturnOrder(FormValidationAction):
         else:
             dispatcher.utter_message(template="utter_invalid_reason")
             slot_set = {REQUESTED_SLOT: REASON_FOR_RETURN}
-        return slot_set
+        return [slot_set]
 
     def validate_return_e_type(
         self,
@@ -845,7 +840,7 @@ class ValidateReturnOrder(FormValidationAction):
                 dispatcher.utter_message(template="utter_replace_order_inprogress")
             else:
                 dispatcher.utter_message(template="utter_invalid_type_of_return")
-        return slot_set
+        return [slot_set]
 
     def validate_return_a_reason_description(
         self,
@@ -859,7 +854,7 @@ class ValidateReturnOrder(FormValidationAction):
             slot_set = {REASON_FOR_RETURN_DESCRIPTION: value}
         else:
             slot_set = {REQUESTED_SLOT: REASON_FOR_RETURN_DESCRIPTION}
-        return slot_set
+        return [slot_set]
 
     def validate_return_pickup_address(
         self,
@@ -873,7 +868,7 @@ class ValidateReturnOrder(FormValidationAction):
             slot_set = {PICKUP_ADDRESS_FOR_RETURN: value}
         else:
             slot_set = {REQUESTED_SLOT: PICKUP_ADDRESS_FOR_RETURN}
-        return slot_set
+        return [slot_set]
 
     def validate_return_refund_account(
         self,
@@ -887,7 +882,7 @@ class ValidateReturnOrder(FormValidationAction):
             slot_set = {REFUND_ACCOUNT: value}
         else:
             slot_set = {REQUESTED_SLOT: REFUND_ACCOUNT}
-        return slot_set
+        return [slot_set]
 
 
 class ActionAskSwitch(Action):
@@ -1017,7 +1012,6 @@ class ActionProductInquiry(Action):
         self, products, is_show_more_triggered: bool, show_more_count: int
     ):
         count = MIN_NUMBER_ZERO
-        logger.info(products)
         if is_show_more_triggered:
             count = show_more_count
         else:
@@ -1046,12 +1040,17 @@ class ActionProductInquiry(Action):
                 IMAGE_URL: product["image"],
                 BUTTONS: [
                     {
+                        TITLE: PRODUCT_DETAILS,
+                        PAYLOAD: f"{product['id']} details",
+                        TYPE: POSTBACK,
+                    },
+                    {
                         TITLE: BUY_NOW,
                         PAYLOAD: "",
                         TYPE: POSTBACK,
                     },
                     {
-                        TITLE: PRODUCT_DETAILS,
+                        TITLE: ADD_TO_CART,
                         PAYLOAD: "",
                         TYPE: POSTBACK,
                     },
@@ -1224,3 +1223,38 @@ class ActionFeedbacksubmit(Action):
     ) -> List[Dict[Text, Any]]:
         dispatcher.utter_message(response="utter_feedback_submitted")
         return [SlotSet("feedback", None)]
+
+
+class ActionProductDetails(Action):
+    def name(self) -> Text:
+        return "action_product_details"
+
+    def __make_utter_message(self, product, dispatcher):
+        product = product["hits"]["hits"][0]["_source"]
+        price_utter = (
+            f"Brand:{product['brand']} \nPrice: {product['price']}"
+            f"\nColor: {product['color']}\nRatings: {product['ratings']} "
+            f"- by {product['ratings_count']}"
+            f"\n[click here](https://sites.google.com/view/productdetailneuralspace/home) for more info"
+        )
+        dispatcher.utter_message(text=product["product_name"])
+        dispatcher.utter_message(image=product["image"])
+
+        dispatcher.utter_message(text=price_utter)
+        dispatcher.utter_message(text=product["product_description"])
+
+    def run(
+        self,
+        dispatcher,
+        tracker: Tracker,
+        domain: "DomainDict",  # noqa: F821
+    ) -> List[Dict[Text, Any]]:
+        product_id = tracker.get_slot("es_product_id")
+        logger.info(product_id)
+        if product_id is not None:
+            query_builder = EsQueryBuilder()
+            product = query_builder.product_search_with_id(product_id)
+            self.__make_utter_message(product, dispatcher)
+        else:
+            dispatcher.utter_message(response="utter_invalid_product_id")
+        return []

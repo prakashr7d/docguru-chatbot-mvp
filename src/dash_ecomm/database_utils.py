@@ -23,7 +23,6 @@ from dash_ecomm.constants import (
     USER_PROFILE_COLUMN_OTP,
     this_path,
 )
-from dash_ecomm.generic_utils import is_valid_order_id
 from elasticsearch import Elasticsearch
 
 with open(DB_FILE, "r") as dbf:
@@ -142,15 +141,12 @@ def get_valid_order_return(ordermail: Text) -> List[Dict[Text, Any]]:
 def validate_order_id(order_id: Text, order_email: Text) -> bool:
     global DATABASE
 
-    if is_valid_order_id(order_id):
-        for selected_order in DATABASE[DB_USER_ORDERS]:
-            if (
-                order_id in selected_order[ORDER_COLUMN_ID]
-                and order_email == selected_order[ORDER_COLUMN_EMAIL]
-            ):
-                return True
-    else:
-        return False
+    for selected_order in DATABASE[DB_USER_ORDERS]:
+        if (
+            order_id in selected_order[ORDER_COLUMN_ID]
+            and order_email == selected_order[ORDER_COLUMN_EMAIL]
+        ):
+            return True
 
 
 def update_order_status(status: Text, order_id: Text):

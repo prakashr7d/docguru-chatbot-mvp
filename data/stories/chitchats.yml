@@ -40,4 +40,3 @@ stories:
     - intent: affirm
     - intent: greet
   - action: utter_anything_else_options
-  - action: action_feedback_reminder
