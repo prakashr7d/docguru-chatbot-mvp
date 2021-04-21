@@ -8,7 +8,6 @@ pipeline:
   use_word_boundaries: False
 - name: LexicalSyntacticFeaturizer
 - name: CountVectorsFeaturizer
-- name: CountVectorsFeaturizer
   analyzer: char_wb
   min_ngram: 1
   max_ngram: 4
@@ -27,8 +26,8 @@ pipeline:
 - name: DucklingHTTPExtractor
   url: http://duckling:8000
   dimensions:
-  - number
   - email
+  - number
 policies:
 - name: AugmentedMemoizationPolicy
   max_history: 10

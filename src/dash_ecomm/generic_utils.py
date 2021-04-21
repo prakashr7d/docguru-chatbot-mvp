@@ -1,5 +1,4 @@
 import datetime
-import re
 from datetime import datetime, timedelta  # noqa:  F811
 from typing import Any, Dict, List, Text
 
@@ -61,12 +60,3 @@ def create_order_carousel(orders: List[Dict[Text, Any]]) -> Dict[Text, Any]:
         add_track_item_button(selected_order, carousel_element)
         carousel["payload"]["elements"].append(carousel_element)
     return carousel
-
-
-def is_valid_order_id(order_id: Text) -> bool:
-    order_id_regex = "^DASH[0-9]{6}$"
-    compiled_regex = re.compile(order_id_regex)
-    if re.search(compiled_regex, order_id):
-        return True
-    else:
-        return False

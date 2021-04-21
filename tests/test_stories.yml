@@ -662,3 +662,33 @@ stories:
     user: |
       [Awesome](feedback)
   - action: action_feedback_submit
+
+- story: product inquiry with product details
+  steps:
+  - intent: greet
+    user: |-
+      hi
+  - action: personal_greet
+  - slot_was_set:
+    - user_email: null
+  - slot_was_set:
+    - user_first_name: null
+  - slot_was_set:
+    - user_last_name: null
+  - slot_was_set:
+    - is_logged_in: false
+  - slot_was_set:
+    - user_otp: null
+  - intent: product_inquiry
+    user: |-
+      laptops
+  - action: action_product_inquiry
+  - intent: product_details
+  - user: |-
+      LN35691 details
+  - action: action_product_details
+  - action: utter_anything_else
+  - intent: deny
+  - user: |-
+      no
+  - action: utter_i_am_here_for_you

@@ -12,24 +12,36 @@ nlu:
     - show my orders dash
     - check all orders
     - check my orders
+- regex: order_id
+  examples: |
+    - \bDASH[0-9]{6}\b
 - intent: order_status
   examples: |
     - track the order [DASH123461](order_id)
-    - track [DASH123456](order_id)
+    - track [DASH123461](order_id)
     - track the order
     - order status
-    - [DASH123456](order_id)
-    - [DASH123457](order_id)
-    - i want to track order [DASH123456](order_id)
-    - show where is my order [DASH123460](order_id)
-    - Check order status of [DASH123450](order_id)
-    - order status of [DASH123621](order_id)
-    - I want to check status of my order [DASH123420](order_id)
-    - Show status of my order [DASH123430](order_id)
-    - [DASH1232425](order_id)
-    - [DASH123525](order_id)
     - [DASH123461](order_id)
-    - [DASH242452](order_id)
+    - [DASH123461](order_id)
+    - i want to track order [DASH123461](order_id)
+    - show where is my order [DASH123461](order_id)
+    - Check order status of [DASH123461](order_id)
+    - order status of [DASH123461](order_id)
+    - I want to check status of my order [DASH123461](order_id)
+    - Show status of my order [DASH123461](order_id)
+    - [DASH123461](order_id)
+- regex: number
+  examples: |
+    - \b\d{4}\b
+- intent: otp
+  examples: |
+    - 2783
+    - here's my otp 6871
+    - otp is 7981
+    - this is my otp 5671
+    - this is the otp I got 5635
+    - I received 2573
+    - it's 2698
 - intent: inform
   examples: |
     - example@rasa.com
@@ -40,7 +52,6 @@ nlu:
     - I'm looking for [orange](color) shoes
     - [brown](color)
     - [blue](color)
-    - it's 123
     - it's a@b.com
     - xyz@hulaloo.ai
     - gray
@@ -50,15 +61,11 @@ nlu:
     - [Grey](color)
     - test@test.com
     - ayushman@neuralspace.ai
-    - 5678
     - dishant@neuralspace.ai
-    - 87817
-    - 1234
     - shaia@mail.com
     - g@mail.com
     - mail@mail.com
     - pooja@neuralspace.ai
-    - 9876
 - intent: login
   examples: |
     - I want to login
@@ -156,6 +163,11 @@ nlu:
     - i want to go to main menu
 - intent: product_inquiry
   examples: |
+    - product enquiry
+    - product inquiry
+    - product enqur
+    - show me some product
+    - search product
     - I want to buy a product
     - Can you suggest me some products
     - show me [Electronic](category) products
@@ -209,6 +221,24 @@ nlu:
     - feedback for you!
     - I want to fill feedback form
     - is there any feedback form?
+- regex: es_product_id
+  examples: |
+    - \b([A-Z]{2})[0-9]{5}\b
+- intent: product_details
+  examples: |
+    - more details on [AB12345](es_product_id)
+    - I want more details on [AB12345](es_product_id)
+    - can you show more details of [AB12345](es_product_id)
+    - [AB12345](es_product_id)
+    - what are specs of this id [AB12345](es_product_id)
+    - specs for [AB12345](es_product_id)
+    - show me [AB12345](es_product_id)
+    - [AB12345](es_product_id)
+    - [AB12345](es_product_id) details
+    - product details for [AB12345](es_product_id)
+    - more details on [AB12345](es_product_id)
+    - describe [AB12345](es_product_id)
+    - price of [AB12345](es_product_id)
 - intent: affirm
   examples: |
     - Accept
@@ -818,5 +848,3 @@ nlu:
     - Havells
     - Bajaj
     - Voltas
-
-

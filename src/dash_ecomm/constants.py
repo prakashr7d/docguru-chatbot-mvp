@@ -68,6 +68,7 @@ REFUND_ORDER = "Ask For Refund"
 SELECT_ORDER = "Select this order"
 REPLACE_ORDER = "Replace Item"
 BUY_NOW = "Buy Now"
+ADD_TO_CART = "Add to Cart"
 
 # order status
 ORDER_PENDING = "order pending"
@@ -145,6 +146,7 @@ ENTITY_NAMES = [
     BRAND,
     "scroll_id",
 ]
+PRODUCT_ID = "product_id"
 
 # gender values
 MEN = "men"
