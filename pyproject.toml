@@ -19,6 +19,7 @@ rasa-x = "0.38.0"
 spacy = "^3.0.5"
 elasticsearch = "^7.12.0"
 pandas = ">=1.2.1, <1.2.3"
+click = "^7.1.2"
 
 [tool.poetry.dev-dependencies]
 isort = "^4.3.21"

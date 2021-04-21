@@ -18,7 +18,10 @@ spec:
       containers:
       - image: textclouddev.azurecr.io/neuralspace/dash-ecomm:latest
         imagePullPolicy: Always
-        command: [ "poetry", "run", "rasa", "run", "--cors", "*", "--endpoints", "endpoints-rasa-prod.yml", "--debug"]
+        command: [ "/bin/sh","-c" ]
+          args: [
+              "poetry run python -m dash_ecomm.elastic_search_data_upload upload --es-url http://elasticsearch:9200 --index-name e_comm && poetry run rasa run --cors * --endpoints endpoints-rasa-prod.yml --debug"
+          ]
         name: dash-ecomm-rasa-prod
         ports:
         - containerPort: 5005
@@ -27,3 +30,7 @@ spec:
             cpu: 0.2
             memory: 100Mi
       restartPolicy: Always
+      initContainers:
+      - name: es-running
+        image: curlimages/curl:7.75.0
+        command: ["curl", "--retry", "10", "--retry-connrefused", "http://elasticsearch:9200"]
