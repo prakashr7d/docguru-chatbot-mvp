@@ -40,7 +40,7 @@ poetry-setup:
 	poetry config virtualenvs.in-project true
 	poetry run pip install pip==20.0.2
 	poetry install --no-root
-	poetry run pip install azure-keyvault-secrets azure.identity
+	poetry run pip install dm-tree==0.1.6
 	poetry install
 
 ## Setup pre-commit

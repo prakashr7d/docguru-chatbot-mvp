@@ -1,14 +1,7 @@
 import click
-from dash_ecomm.constants import (
-    E_COMM,
-    ELASTICSEARCH_URL,
-    PRODUCT_EXCEL_SHEET,
-    PRODUCTS_JSON,
-)
+from dash_ecomm.constants import PRODUCT_EXCEL_SHEET, PRODUCTS_JSON
 from dash_ecomm.database_utils import get_products_to_json, upload_data_to_elastic
 from elasticsearch import Elasticsearch
-
-es = Elasticsearch(ELASTICSEARCH_URL)
 
 
 @click.group()
@@ -17,18 +10,20 @@ def cli():
 
 
 @cli.command(name="upload", help="uploads data onto elastic search index")
-def upload_data():
-    if es.indices.exists(index=E_COMM):
-        es.indices.delete(index=E_COMM)
-        get_products_to_json(PRODUCT_EXCEL_SHEET)
-        upload_data_to_elastic(PRODUCTS_JSON)
-    else:
-        get_products_to_json(PRODUCT_EXCEL_SHEET)
-        upload_data_to_elastic(PRODUCTS_JSON)
+@click.option("--es-url", required=True)
+@click.option("--index-name", required=True)
+def upload_data(es_url, index_name):
+    es = Elasticsearch(es_url)
+    if es.indices.exists(index=index_name):
+        es.indices.delete(index=index_name)
+    get_products_to_json(PRODUCT_EXCEL_SHEET)
+    upload_data_to_elastic(PRODUCTS_JSON)
 
 
 @cli.command(name="show", help="shows laptops name from elastic search")
-def show_data():
+@click.option("--es-url", required=True)
+@click.option("--index-name", required=True)
+def show_data(es_url, index_name):
     query = {
         "_source": [],
         "size": 5,
@@ -40,7 +35,8 @@ def show_data():
             }
         },
     }
-    products = es.search(index="e_comm", body=query, scroll="1m")
+    es = Elasticsearch(es_url)
+    products = es.search(index=index_name, body=query, scroll="1m")
     for i in products["hits"]["hits"]:
         print(i["_source"]["brand"])
 
