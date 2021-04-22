@@ -692,3 +692,122 @@ stories:
   - user: |-
       no
   - action: utter_i_am_here_for_you
+
+- story: Buttons not implemented
+  steps:
+  - intent: greet
+    user: |-
+      hi
+  - action: personal_greet
+  - slot_was_set:
+    - user_email: null
+  - slot_was_set:
+    - user_first_name: null
+  - slot_was_set:
+    - user_last_name: null
+  - slot_was_set:
+    - is_logged_in: false
+  - slot_was_set:
+    - user_otp: null
+  - intent: check_all_orders
+    user: |-
+      /check_all_orders
+  - action: utter_not_logged_in_prompt
+  - action: login_form
+  - active_loop: login_form
+  - slot_was_set:
+    - requested_slot: user_email
+  - intent: inform
+    user: |-
+      [dishant@neuralspace.ai](email)
+  - action: login_form
+  - slot_was_set:
+    - user_email: dishant@neuralspace.ai
+  - slot_was_set:
+    - requested_slot: user_otp
+  - intent: otp
+    user: |-
+      [1234]{"entity": "number", "value": 1234}
+  - action: login_form
+  - slot_was_set:
+    - user_otp: 1234
+  - slot_was_set:
+    - requested_slot: null
+  - active_loop: null
+  - action: action_login_form
+  - slot_was_set:
+    - user_email: dishant@neuralspace.ai
+  - slot_was_set:
+    - user_first_name: Dishant
+  - slot_was_set:
+    - user_last_name: Gandhi
+  - slot_was_set:
+    - is_logged_in: true
+  - slot_was_set:
+    - user_otp: '1234'
+  - action: action_check_all_orders
+  - slot_was_set:
+    - action_that_triggered_show_more: action_check_all_orders
+  - slot_was_set:
+    - show_more_count: 2
+  - slot_was_set:
+    - is_show_more_triggered: false
+  - intent: un_supported_buttons
+    user: |-
+      use case not available
+  - action: utter_not_implemented
+
+- story: feedback form
+  steps:
+  - slot_was_set:
+    - session_started_metadata:
+        user_token: dishant@neuralspace.ai
+  - slot_was_set:
+    - session_started_metadata:
+        user_token: dishant@neuralspace.ai
+  - intent: greet
+    user: |-
+      /greet
+  - action: personal_greet
+  - slot_was_set:
+    - user_email: dishant@neuralspace.ai
+  - slot_was_set:
+    - user_first_name: Dishant
+  - slot_was_set:
+    - user_last_name: Gandhi
+  - slot_was_set:
+    - is_logged_in: true
+  - slot_was_set:
+    - user_otp: '1234'
+  - intent: order_status
+    user: |-
+      order status of [DASH123456](order_id)[DASH123456](order_id)[123456]{"entity": "number", "value": 123456}
+  - action: action_order_status
+  - action: utter_anything_else
+  - intent: deny
+    user: |-
+      No
+  - action: utter_i_am_here_for_you
+  - action: action_feedback_reminder
+  - intent: EXTERNAL_feedback
+    user: |-
+      EXTERNAL: EXTERNAL_feedback
+  - action: action_start_feedback_form
+  - active_loop: feedback_form
+  - action: feedback_form
+  - slot_was_set:
+    - requested_slot: feedback
+  - intent: ask_feedback
+    user: |-
+      [Awesome](feedback)
+  - slot_was_set:
+    - feedback: Awesome
+  - action: feedback_form
+  - slot_was_set:
+    - feedback: Awesome
+  - slot_was_set:
+    - requested_slot: null
+  - active_loop: null
+  - action: action_feedback_submit
+  - slot_was_set:
+    - feedback: null
