@@ -1,4 +1,5 @@
 import logging
+import os
 from typing import Dict, Text
 
 from elasticsearch import Elasticsearch
@@ -8,7 +9,7 @@ logger = logging.getLogger(__name__)
 
 class EsQueryBuilder:
     def __init__(self):
-        self.es = Elasticsearch("http://elasticsearch:9200")
+        self.es = Elasticsearch(os.environ.get("ELASTICSEARCH_URL"))
 
     def product_search_with_id(self, product_id):
         query = {

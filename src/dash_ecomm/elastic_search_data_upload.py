@@ -17,7 +17,7 @@ def upload_data(es_url, index_name):
     if es.indices.exists(index=index_name):
         es.indices.delete(index=index_name)
     get_products_to_json(PRODUCT_EXCEL_SHEET)
-    upload_data_to_elastic(PRODUCTS_JSON)
+    upload_data_to_elastic(PRODUCTS_JSON, es)
 
 
 @cli.command(name="show", help="shows laptops name from elastic search")
