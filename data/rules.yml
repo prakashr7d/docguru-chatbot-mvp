@@ -289,3 +289,19 @@ rules:
   steps:
   - intent: product_details
   - action: action_product_details
+
+- rule: for blocked buttons
+  condition:
+  - slot_was_set:
+    - is_logged_in: true
+  steps:
+  - intent: un_supported_buttons
+  - action: utter_not_implemented
+
+- rule: for blocked buttons
+  condition:
+  - slot_was_set:
+    - is_logged_in: true
+  steps:
+  - intent: un_supported_buttons
+  - action: utter_not_implemented

@@ -29,6 +29,7 @@ ORDER_COLUMN_DATE = "order_date"
 ORDER_COLUMN_COLOUR = "color"
 ORDER_COLUMN_SIZE = "size"
 ORDER_COLUMN_STATUS = "status"
+ORDER_COLUMN_PRODUCT_ID = "product_id"
 ORDER_COLUMN_RETURNABLE = "returnable"
 ORDER_COLUMN_REFUNDED = "refunded"
 ORDER_COLUMN_IMAGE_URL = "image_url"
@@ -183,3 +184,7 @@ RATINGS = "ratings"
 CATEGORY = "category"
 SUB_CATEGORY = "sub_category"
 AUTHOR = "author"
+
+# payload
+
+PAYLOAD_BUTTON_BLOCKED = "use case not available"

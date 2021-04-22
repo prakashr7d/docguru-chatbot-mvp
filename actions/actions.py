@@ -41,6 +41,7 @@ from dash_ecomm.constants import (
     ORDER_COLUMN_EMAIL,
     ORDER_COLUMN_ID,
     ORDER_COLUMN_IMAGE_URL,
+    ORDER_COLUMN_PRODUCT_ID,
     ORDER_COLUMN_PRODUCT_NAME,
     ORDER_COLUMN_RETURNABLE,
     ORDER_COLUMN_STATUS,
@@ -50,6 +51,7 @@ from dash_ecomm.constants import (
     ORDER_STATUS,
     OTP_TRIES,
     PAYLOAD,
+    PAYLOAD_BUTTON_BLOCKED,
     PICKED,
     PICKUP_ADDRESS_FOR_RETURN,
     POSTBACK,
@@ -369,19 +371,25 @@ class CheckAllOrders(Action):
         return "action_check_all_orders"
 
     @staticmethod
-    def respective_buttons(order_id, status, is_eligible):
+    def respective_buttons(order_id, status, is_eligible, product_id):
         required_buttons = []
         payload_order_status = "order status of {}".format(order_id)
         payload_return_order = "please place the return for {}".format(order_id)
-        payload_replace_order = "/replace_order"
+
         if status == ORDER_PENDING or status == SHIPPED:
             required_buttons.append(
                 {TITLE: ORDER_STATUS, PAYLOAD: payload_order_status, TYPE: POSTBACK}
             )
             required_buttons.append(
-                {TITLE: PRODUCT_DETAILS, PAYLOAD: "", TYPE: POSTBACK}
+                {
+                    TITLE: PRODUCT_DETAILS,
+                    PAYLOAD: f"{product_id} details",
+                    TYPE: POSTBACK,
+                }
             )
-            required_buttons.append({TITLE: CANCEL_ORDER, PAYLOAD: "", TYPE: POSTBACK})
+            required_buttons.append(
+                {TITLE: CANCEL_ORDER, PAYLOAD: PAYLOAD_BUTTON_BLOCKED, TYPE: POSTBACK}
+            )
         elif status == DELIVERED and is_eligible:
             required_buttons.append(
                 {TITLE: ORDER_STATUS, PAYLOAD: payload_order_status, TYPE: POSTBACK}
@@ -390,14 +398,25 @@ class CheckAllOrders(Action):
                 {TITLE: RETURN_ORDER, PAYLOAD: payload_return_order, TYPE: POSTBACK}
             )
             required_buttons.append(
-                {TITLE: REPLACE_ORDER, PAYLOAD: payload_replace_order, TYPE: POSTBACK}
+                {TITLE: REPLACE_ORDER, PAYLOAD: PAYLOAD_BUTTON_BLOCKED, TYPE: POSTBACK}
+            )
+            required_buttons.append(
+                {
+                    TITLE: PRODUCT_DETAILS,
+                    PAYLOAD: f"{product_id} details",
+                    TYPE: POSTBACK,
+                }
             )
         else:
             required_buttons.append(
                 {TITLE: ORDER_STATUS, PAYLOAD: payload_order_status, TYPE: POSTBACK}
             )
             required_buttons.append(
-                {TITLE: PRODUCT_DETAILS, PAYLOAD: "", TYPE: POSTBACK}
+                {
+                    TITLE: PRODUCT_DETAILS,
+                    PAYLOAD: f"{product_id} details",
+                    TYPE: POSTBACK,
+                }
             )
         return required_buttons
 
@@ -412,6 +431,7 @@ class CheckAllOrders(Action):
                 selected_order[ORDER_COLUMN_ID],
                 selected_order[ORDER_COLUMN_STATUS],
                 selected_order[ORDER_COLUMN_RETURNABLE],
+                selected_order[ORDER_COLUMN_PRODUCT_ID],
             )
             if selected_order[ORDER_COLUMN_STATUS] in [NOT_PICKED, PICKED]:
                 carousel_element = {
@@ -675,7 +695,7 @@ class ShowValidReturnOrders(Action):
                     },
                     {
                         TITLE: REPLACE_ORDER,
-                        PAYLOAD: "/replace_order",
+                        PAYLOAD: PAYLOAD_BUTTON_BLOCKED,
                         TYPE: POSTBACK,
                     },
                 ],
@@ -1046,12 +1066,12 @@ class ActionProductInquiry(Action):
                     },
                     {
                         TITLE: BUY_NOW,
-                        PAYLOAD: "",
+                        PAYLOAD: PAYLOAD_BUTTON_BLOCKED,
                         TYPE: POSTBACK,
                     },
                     {
                         TITLE: ADD_TO_CART,
-                        PAYLOAD: "",
+                        PAYLOAD: PAYLOAD_BUTTON_BLOCKED,
                         TYPE: POSTBACK,
                     },
                 ],
