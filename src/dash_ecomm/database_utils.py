@@ -30,8 +30,6 @@ with open(DB_FILE, "r") as dbf:
 
 logger = logging.getLogger(__name__)
 
-es = Elasticsearch([{"host": "localhost", "port": 9200}])
-
 
 @dataclass
 class UserProfile:
@@ -161,11 +159,14 @@ def update_order_status(status: Text, order_id: Text):
     #     yaml.dump(DATABASE, dbfw)
 
 
-def upload_data_to_elastic(file_path: Text):
+def upload_data_to_elastic(file_path: Text, es_client: Elasticsearch):
     with open(this_path.parent / file_path) as products:
         content = json.load(products)
+        print(es_client)
         for item in content["data"]:
-            es.index(index="e_comm", id=item["id"], doc_type="products", body=item)
+            es_client.index(
+                index="e_comm", id=item["id"], doc_type="products", body=item
+            )
 
 
 def get_products_to_json(excel_file_path: Text):
