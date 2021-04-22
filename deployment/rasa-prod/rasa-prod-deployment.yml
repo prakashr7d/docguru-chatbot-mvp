@@ -23,6 +23,9 @@ spec:
               "poetry run python -m dash_ecomm.elastic_search_data_upload upload --es-url http://elasticsearch:9200 --index-name e_comm && poetry run rasa run --cors * --endpoints endpoints-rasa-prod.yml --debug"
           ]
         name: dash-ecomm-rasa-prod
+        env:
+          - name: "ELASTICSEARCH_URL"
+            value: "http://elasticsearch:9200"
         ports:
         - containerPort: 5005
         resources:
@@ -33,4 +36,4 @@ spec:
       initContainers:
       - name: es-running
         image: curlimages/curl:7.75.0
-        command: ["curl", "--retry", "10", "--retry-connrefused", "http://elasticsearch:9200"]
+        command: ["curl", "--retry", "10", "--retry-delay", "30", "--retry-connrefused", "http://elasticsearch:9200"]

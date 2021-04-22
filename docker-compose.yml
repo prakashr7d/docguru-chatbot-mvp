@@ -9,7 +9,14 @@ services:
       - ./models:/app/models
       - ./data:/app/data
       - ./src:/app/src
-    command: ["poetry","run","rasa","x", "--no-prompt"]
+    command: >
+      bash -c "curl --retry 10 --retry-delay 30 --retry-connrefused http://elasticsearch:9200 &&
+               poetry run python -m dash_ecomm.elastic_search_data_upload upload --es-url http://elasticsearch:9200 --index-name e_comm &&
+               poetry run rasa x --no-prompt"
+    depends_on:
+      - "elasticsearch"
+    environment:
+      ELASTICSEARCH_URL: http://elasticsearch:9200
     ports:
       - '5005:5005'
       - '5002:5002'
@@ -24,7 +31,9 @@ services:
     volumes:
       - ./actions:/app/actions
       - ./src:/app/src
-    command: ["poetry","run","rasa","run","actions"]
+    command: [ "poetry","run","rasa","run","actions" ]
+    environment:
+      ELASTICSEARCH_URL: http://elasticsearch:9200
     networks:
       - all
 
@@ -34,7 +43,7 @@ services:
     restart: always
     volumes:
       - ./src:/app/src
-    command: ["poetry","run","python", "-m", "dash_ecomm.callback_server"]
+    command: [ "poetry","run","python", "-m", "dash_ecomm.callback_server" ]
     networks:
       - all
 
@@ -50,7 +59,7 @@ services:
     working_dir: /app/demo/local
     volumes:
       - ./demo:/app/demo
-    command: ["poetry","run", "python", "-m", "http.server", "7000"]
+    command: [ "poetry","run", "python", "-m", "http.server", "7000" ]
     ports:
       - '7000:7000'
     networks:
