@@ -156,7 +156,7 @@ orders:
   status: shipped
 - color: Peach
   id: DASH123470
-  image_url: https://images-na.ssl-images-amazon.com/images/I/81-E%2BCmzvML._UL1500_.jpg
+  image_url: https://images-na.ssl-images-amazon.com/images/I/7166-0sqb0L._UL1500_.jpg
   order_date: '2021-01-05'
   order_email: prakash@neuralspace.ai
   order_number: 123459
@@ -168,7 +168,7 @@ orders:
   status: shipped
 - color: Peach
   id: DASH123471
-  image_url: https://images-na.ssl-images-amazon.com/images/I/81-E%2BCmzvML._UL1500_.jpg
+  image_url: https://images-na.ssl-images-amazon.com/images/I/7166-0sqb0L._UL1500_.jpg
   order_date: '2021-01-05'
   order_email: prakash@neuralspace.ai
   order_number: 123459
@@ -180,7 +180,7 @@ orders:
   status: shipped
 - color: Peach
   id: DASH123472
-  image_url: https://images-na.ssl-images-amazon.com/images/I/81-E%2BCmzvML._UL1500_.jpg
+  image_url: https://images-na.ssl-images-amazon.com/images/I/7166-0sqb0L._UL1500_.jpg
   order_date: '2021-01-05'
   order_email: prakash@neuralspace.ai
   order_number: 123459
