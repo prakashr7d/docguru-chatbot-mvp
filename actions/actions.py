@@ -1230,18 +1230,21 @@ class ActionProductDetails(Action):
         return "action_product_details"
 
     def __make_utter_message(self, product, dispatcher):
-        product = product["hits"]["hits"][0]["_source"]
-        price_utter = (
-            f"Brand:{product['brand']} \nPrice: {product['price']}"
-            f"\nColor: {product['color']}\nRatings: {product['ratings']} "
-            f"- by {product['ratings_count']}"
-            f"\n[click here](https://sites.google.com/view/productdetailneuralspace/home) for more info"
-        )
-        dispatcher.utter_message(text=product["product_name"])
-        dispatcher.utter_message(image=product["image"])
+        if product["hits"]["total"]["value"] > 0:
+            product = product["hits"]["hits"][0]["_source"]
+            price_utter = (
+                f"Brand:{product['brand']} \nPrice: {product['price']}"
+                f"\nColor: {product['color']}\nRatings: {product['ratings']} "
+                f"- by {product['ratings_count']}"
+                f"\n[click here](https://sites.google.com/view/productdetailneuralspace/home) for more info"
+            )
+            dispatcher.utter_message(text=product["product_name"])
+            dispatcher.utter_message(image=product["image"])
 
-        dispatcher.utter_message(text=price_utter)
-        dispatcher.utter_message(text=product["product_description"])
+            dispatcher.utter_message(text=price_utter)
+            dispatcher.utter_message(text=product["product_description"])
+        else:
+            dispatcher.utter_message(response="utter_wrong_product_id")
 
     def run(
         self,
