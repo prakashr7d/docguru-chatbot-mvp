@@ -19,9 +19,9 @@ spec:
       - image: textclouddev.azurecr.io/neuralspace/dash-ecomm:latest
         imagePullPolicy: Always
         command: [ "/bin/sh","-c" ]
-          args: [
-              "poetry run python -m dash_ecomm.elastic_search_data_upload upload --es-url http://elasticsearch:9200 --index-name e_comm && poetry run rasa run --cors * --endpoints endpoints-rasa-prod.yml --debug"
-          ]
+        args:
+        - "poetry run python -m dash_ecomm.elastic_search_data_upload upload --es-url http://elasticsearch:9200 --index-name e_comm && poetry run rasa run --cors * --endpoints endpoints-rasa-prod.yml --debug"
+
         name: dash-ecomm-rasa-prod
         env:
           - name: "ELASTICSEARCH_URL"
