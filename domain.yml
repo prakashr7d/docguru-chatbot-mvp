@@ -5,6 +5,8 @@ session_config:
   session_expiration_time: 60
   carry_over_slots_to_new_session: true
 intents:
+- un_supported_buttons:
+    use_entities: []
 - check_all_orders:
     use_entities: true
 - order_cancel:
@@ -555,6 +557,9 @@ responses:
   - text: I think you gave me wrong product id. Please check and try giving me again
   utter_invalid_product_id:
   - text: Sorry, I wasn't able to find the product id you gave me. Try to check the product id again
+  utter_not_implemented:
+  - text: Sorry, this feature is still under work in progress. Please stay tuned.
+  - text: Sorry, this feature is not functional at the moment.
 actions:
 - personal_greet
 - validate_login_form
