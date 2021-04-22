@@ -154,6 +154,78 @@ orders:
   returnable: false
   size: '11'
   status: shipped
+- color: Peach
+  id: DASH123470
+  image_url: https://images-na.ssl-images-amazon.com/images/I/81-E%2BCmzvML._UL1500_.jpg
+  order_date: '2021-01-05'
+  order_email: prakash@neuralspace.ai
+  order_number: 123459
+  product_name: Aurelia Women's Kurta
+  product_id: AB12359
+  refunded: false
+  returnable: false
+  size: '11'
+  status: shipped
+- color: Peach
+  id: DASH123471
+  image_url: https://images-na.ssl-images-amazon.com/images/I/81-E%2BCmzvML._UL1500_.jpg
+  order_date: '2021-01-05'
+  order_email: prakash@neuralspace.ai
+  order_number: 123459
+  product_name: Aurelia Women's Kurta
+  product_id: AB12359
+  refunded: false
+  returnable: false
+  size: '11'
+  status: shipped
+- color: Peach
+  id: DASH123472
+  image_url: https://images-na.ssl-images-amazon.com/images/I/81-E%2BCmzvML._UL1500_.jpg
+  order_date: '2021-01-05'
+  order_email: prakash@neuralspace.ai
+  order_number: 123459
+  product_name: Aurelia Women's Kurta
+  product_id: AB12359
+  refunded: false
+  returnable: false
+  size: '11'
+  status: shipped
+- color: Blue
+  id: DASH123473
+  image_url: https://m.media-amazon.com/images/I/61JZD4HKQSL._UL1500_.jpg
+  order_date: '2021-01-05'
+  order_email: raja@neuralspace.ai
+  order_number: 123459
+  product_name: Allen Solly Women's T-shirt
+  product_id: AB12358
+  refunded: false
+  returnable: false
+  size: '11'
+  status: received
+- color: Blue
+  id: DASH123474
+  image_url: https://m.media-amazon.com/images/I/61JZD4HKQSL._UL1500_.jpg
+  order_date: '2021-01-05'
+  order_email: raja@neuralspace.ai
+  order_number: 123459
+  product_name: Allen Solly Women's T-shirt
+  product_id: AB12358
+  refunded: false
+  returnable: false
+  size: '11'
+  status: received
+- color: Blue
+  id: DASH123475
+  image_url: https://m.media-amazon.com/images/I/61JZD4HKQSL._UL1500_.jpg
+  order_date: '2021-01-05'
+  order_email: raja@neuralspace.ai
+  order_number: 123459
+  product_name: Allen Solly Women's T-shirt
+  product_id: AB12358
+  refunded: false
+  returnable: false
+  size: '11'
+  status: received
 products:
 - color: blue
   product_name: Shoes
@@ -193,6 +265,7 @@ users:
     no_of_orders: 1
     otp: '5678'
     user_email: ayushman@neuralspace.ai
+    user_phone: +918763330202
   dishant@neuralspace.ai:
     first_name: Dishant
     id: 0
@@ -200,10 +273,28 @@ users:
     no_of_orders: 6
     otp: '1234'
     user_email: dishant@neuralspace.ai
+    user_phone: +918169075860
   pooja@neuralspace.ai:
     first_name: Pooja
-    id: 2
+    id: 3
     last_name: Mishra
     no_of_orders: 4
     otp: '9876'
     user_email: pooja@neuralspace.ai
+    user_phone: +918093648810
+  prakash@neuralspace.ai:
+    first_name: Prakash
+    id: 2
+    last_name: Ramesh
+    no_of_orders: 3
+    otp: '8888'
+    user_email: prakash@neuralspace.ai
+    user_phone: +918870539376
+  raja@neuralspace.ai:
+    first_name: Raja
+    id: 4
+    last_name: Pradhan
+    no_of_orders: 3
+    otp: '7404'
+    user_email: raja@neuralspace.ai
+    user_phone: +917609972404
