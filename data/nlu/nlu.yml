@@ -834,3 +834,47 @@ nlu:
     - invalid buttons
     - invalid
     - use case not available
+
+- intent: faq/refund_policy
+  examples: |
+    - I haven't received refund
+    - what is refund policy
+    - how to return a product?
+    - refund policy
+    - return and refund policies
+    - rules for refund
+    - instructions for return
+- intent: faq/delivery_charges
+  examples: |
+    - what are delivery charges
+    - delivery charges
+    - will there be any charges for my order
+    - are there any delivery charges for order above 500?
+    - can you tell me charges for delivery
+    - charges for delivery
+- intent: faq/shipping_speed
+  examples: |
+    - how much time does it take to reach me
+    - shipping speed
+    - how long I have to wait for my product
+    - time taken by orders
+    - in how much days will my product reach to me
+    - I want my product now
+- intent: faq/refund_timelines
+  examples: |
+    - when will I get refund
+    - how much time will it take to refund
+    - refund time
+    - how long for refund
+    - I want my refund asap
+    - hey give me my money
+    - I want my money
+- intent: faq/payments
+  examples: |
+    - what are the payment gateways
+    - what kind of payment methods do you offer?
+    - how do I pay
+    - payment methods
+    - is upi accepted?
+    - can I pay with debit card?
+    - how about a credit card payments
