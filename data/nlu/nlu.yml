@@ -142,6 +142,7 @@ nlu:
     - I would like to get my refund in [primary]{"entity": "return_refund_account", "value": "Primary Account"} one
 - intent: replace_order
   examples: |
+    - replace order
     - I want to replace an item
     - can you please replace this item for me
     - requesting replacement
@@ -689,6 +690,7 @@ nlu:
     - Speakers & Headphones
     - Cameras & Camera Accessories
     - Monitors
+    - Men's Clothing
     - Sandals
     - Heels
     - Sports Shoes

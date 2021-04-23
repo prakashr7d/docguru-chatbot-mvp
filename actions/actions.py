@@ -398,7 +398,7 @@ class CheckAllOrders(Action):
                 {TITLE: RETURN_ORDER, PAYLOAD: payload_return_order, TYPE: POSTBACK}
             )
             required_buttons.append(
-                {TITLE: REPLACE_ORDER, PAYLOAD: PAYLOAD_BUTTON_BLOCKED, TYPE: POSTBACK}
+                {TITLE: REPLACE_ORDER, PAYLOAD: "replace my order", TYPE: POSTBACK}
             )
             required_buttons.append(
                 {
@@ -695,7 +695,7 @@ class ShowValidReturnOrders(Action):
                     },
                     {
                         TITLE: REPLACE_ORDER,
-                        PAYLOAD: PAYLOAD_BUTTON_BLOCKED,
+                        PAYLOAD: "replace my order",
                         TYPE: POSTBACK,
                     },
                 ],

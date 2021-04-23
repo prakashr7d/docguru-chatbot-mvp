@@ -34,21 +34,19 @@ class EsQueryBuilder:
             "_source": [],
             "size": 5,
             "query": {
-                "bool": {
-                    "filter": [
-                        {
-                            "multi_match": {
-                                "query": f"{category}",
-                                "type": "best_fields",
-                                "fields": ["category", "sub_category"],
-                                "operator": "and",
-                            }
-                        }
-                    ]
-                }
+                "fuzzy": {"sub_category": {"value": f"{category}", "fuzziness": 5}},
             },
         }
         products = self.es.search(index="e_comm", body=product_search, scroll="1m")
+        if not products:
+            product_search = {
+                "_source": [],
+                "size": 5,
+                "query": {
+                    "fuzzy": {"category": {"value": f"{category}", "fuzziness": 5}}
+                },
+            }
+            products = self.es.search(index="e_comm", body=product_search, scroll="1m")
         return products
 
     def product_search_with_category_and_max_price(

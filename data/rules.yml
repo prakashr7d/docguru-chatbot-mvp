@@ -179,11 +179,24 @@ rules:
   - action: action_return_order
   - action: utter_anything_else
 
-- rule: replace order
+- rule: replace order in login true
+  condition:
+  - slot_was_set:
+    - is_logged_in: true
   steps:
   - intent: replace_order
   - action: utter_replace_order_inprogress
   - action: utter_anything_else_options
+
+- rule: replace order in login false
+  condition:
+  - slot_was_set:
+    - is_logged_in: false
+  steps:
+    - intent: replace_order
+    - action: utter_replace_order_inprogress
+    - action: utter_anything_else_options
+
 - rule: switch with check all orders
   condition:
   - active_loop: return_order_form
