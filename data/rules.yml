@@ -305,3 +305,11 @@ rules:
   steps:
   - intent: un_supported_buttons
   - action: utter_not_implemented
+
+- rule: for blocked buttons
+  condition:
+  - slot_was_set:
+    - is_logged_in: false
+  steps:
+  - intent: un_supported_buttons
+  - action: utter_not_implemented

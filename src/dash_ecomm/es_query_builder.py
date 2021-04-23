@@ -51,6 +51,31 @@ class EsQueryBuilder:
         products = self.es.search(index="e_comm", body=product_search, scroll="1m")
         return products
 
+    def product_search_with_category_and_max_price(
+        self, price_max: int, category: Text
+    ):
+        product_search = {
+            "_source": [],
+            "size": 5,
+            "query": {
+                "bool": {
+                    "filter": [
+                        {
+                            "multi_match": {
+                                "query": f"{category}",
+                                "type": "best_fields",
+                                "fields": ["category", "sub_category"],
+                                "operator": "and",
+                            }
+                        },
+                        {"range": {"price": {"lte": price_max}}},
+                    ]
+                }
+            },
+        }
+        products = self.es.search(index="e_comm", body=product_search, scroll="1m")
+        return products
+
     def product_search_with_price(
         self, message: Text, price_min: int, price_max: int
     ) -> (Dict, int):
@@ -162,6 +187,30 @@ class EsQueryBuilder:
                                 "operator": "or",
                             }
                         }
+                    ]
+                }
+            },
+        }
+        products = self.es.search(index="e_comm", body=product_search, scroll="1m")
+        return products
+
+    def product_search_with_brand_and_max(
+        self, price_max: int, brand: Text
+    ) -> (Dict, int):
+        product_search = {
+            "_source": [],
+            "size": 5,
+            "query": {
+                "bool": {
+                    "filter": [
+                        {
+                            "multi_match": {
+                                "query": f"{brand}",
+                                "fields": ["brand"],
+                                "operator": "or",
+                            }
+                        },
+                        {"range": {"price": {"lte": price_max}}},
                     ]
                 }
             },

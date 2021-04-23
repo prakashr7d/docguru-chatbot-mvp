@@ -227,6 +227,7 @@ nlu:
     - \b([A-Z]{2})[0-9]{5}\b
 - intent: product_details
   examples: |
+    - product details
     - more details on [AB12345](es_product_id)
     - I want more details on [AB12345](es_product_id)
     - can you show more details of [AB12345](es_product_id)

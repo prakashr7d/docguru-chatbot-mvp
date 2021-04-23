@@ -339,15 +339,15 @@ responses:
       title: Return an order
     - payload: I want to buy a product
       title: Product Inquiry
-    - payload: /buy_items_in_cart
+    - payload: use case not available
       title: Buy items in cart
-    - payload: /mood_based_search
+    - payload: use case not available
       title: 🆕 Mood based search 🔥
-    - payload: /photo_search
+    - payload: use case not available
       title: 🆕 Search via photos 🔥
-    - payload: /discount_and_offers
+    - payload: use case not available
       title: Looking for discounts and offers
-    - payload: /service_request_enquiry
+    - payload: use case not available
       title: Enquire about a service request
     text: Hi {first_name}, great that you logged in. Now I can give you a personalized experience. These are a few things I can do for you.
   utter_not_logged_in_prompt:
@@ -397,15 +397,15 @@ responses:
       title: Return an order
     - payload: I want to buy a product
       title: product enquiry
-    - payload: /buy_items_in_cart
+    - payload: use case not available
       title: Buy items in cart
-    - payload: /mood_based_search
+    - payload: use case not available
       title: 🆕 Mood based search 🔥
-    - payload: /photo_search
+    - payload: use case not available
       title: 🆕 Search via photos 🔥
-    - payload: /discount_and_offers
+    - payload: use case not available
       title: Looking for discounts and offers
-    - payload: /service_request_enquiry
+    - payload: use case not available
       title: Enquire about a service request
     text: You can ask me about any product, check all orders, return order request, cancel order request.
   utter_i_am_here_for_you:
@@ -532,7 +532,7 @@ responses:
       title: Mobiles
     - payload: Show me [Men's Clothing](sub_category)
       title: Men's Clothing
-    - payload: /mood_based_search
+    - payload: use case not available
       title: 🆕 Mood based search 🔥
     text: Sure, you can try by telling me "Show me Hp Laptops under 30000" or you can try following options.
   utter_product_inquiry_info:
