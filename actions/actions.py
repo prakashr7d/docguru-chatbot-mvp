@@ -96,6 +96,7 @@ from dash_ecomm.database_utils import (
     get_valid_order_return,
     is_valid_otp,
     is_valid_user,
+    validate_return_order,
 )
 from dash_ecomm.es_query_builder import EsQueryBuilder
 from rasa_sdk import Action, FormValidationAction, Tracker, events
@@ -817,7 +818,7 @@ class ValidateReturnOrder(FormValidationAction):
         domain: "DomainDict",  # noqa: F821
     ) -> List[EventType]:
         slot_set = {}
-        if value is not None:
+        if value is not None and value in [RETURN_PRODUCT]:
             slot_set = {ORDER_ID_FOR_RETURN: value}
         else:
             dispatcher.utter_message(template="utter_ineligible_order_id")
@@ -851,7 +852,7 @@ class ValidateReturnOrder(FormValidationAction):
         domain: "DomainDict",  # noqa: F821
     ) -> List[EventType]:
         slot_set = {}
-        if value is not None and value in [RETURN_PRODUCT]:
+        if value is not None:
             slot_set = {TYPE_OF_RETURN: value}
         else:
             slot_set = {REQUESTED_SLOT: TYPE_OF_RETURN}
@@ -883,7 +884,8 @@ class ValidateReturnOrder(FormValidationAction):
         domain: "DomainDict",  # noqa: F821
     ) -> List[EventType]:
         slot_set = {}
-        if value is not None:
+        order_email = tracker.get_slot("user_email")
+        if value is not None and validate_return_order(value, order_email):
             slot_set = {PICKUP_ADDRESS_FOR_RETURN: value}
         else:
             slot_set = {REQUESTED_SLOT: PICKUP_ADDRESS_FOR_RETURN}

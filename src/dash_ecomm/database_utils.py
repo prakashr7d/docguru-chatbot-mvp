@@ -189,3 +189,16 @@ def get_products_to_json(excel_file_path: Text):
     products_json["data"] = products_list
     with open(this_path.parent / "products.json", "w+") as products_json_file:
         json.dump(products_json, products_json_file)
+
+
+def validate_return_order(order_id, order_email):
+    global DATABASE
+    returnable = False
+    for selected_order in DATABASE[DB_USER_ORDERS]:
+        if (
+            order_email in selected_order[ORDER_COLUMN_EMAIL]
+            and order_id in selected_order[ORDER_COLUMN_ID]
+        ):
+            if selected_order[ORDER_COLUMN_RETURNABLE]:
+                returnable = True
+    return returnable
