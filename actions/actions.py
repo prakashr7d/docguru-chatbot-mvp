@@ -977,11 +977,12 @@ class ActionProductInquiry(Action):
             )
         return products
 
-    def __not_scroll_id(
+    def __not_scroll_id(  # noqa: C901
         self, not_non_entities: Dict, message: Text, entities_present, query_builder
     ) -> (Dict, int):
         products = None
         if entities_present == ENTITY_NAMES:
+            logger.info("first")
             products = query_builder.product_search_with_all(
                 message,
                 not_non_entities[PRICE_MIN],
@@ -991,8 +992,9 @@ class ActionProductInquiry(Action):
             PRICE_MIN in entities_present
             or PRICE_MAX in entities_present
             and BRAND not in entities_present
+            and SUB_CATEGORY not in entities_present
+            and CATEGORY not in entities_present
         ):
-            logger.info("price min or max")
             products = self.__price_queries(not_non_entities, entities_present, message)
         elif (
             SUB_CATEGORY in entities_present
@@ -1000,36 +1002,46 @@ class ActionProductInquiry(Action):
             and not BRAND
             and not PRICE_MIN
         ):
-            logger.info("sub_category+price max")
             products = query_builder.product_search_with_category_and_max_price(
                 not_non_entities[PRICE_MAX], not_non_entities[SUB_CATEGORY]
             )
-        elif SUB_CATEGORY in entities_present and BRAND not in entities_present:
+        elif (
+            SUB_CATEGORY in entities_present
+            and BRAND not in entities_present
+            and CATEGORY not in entities_present
+        ):
             products = query_builder.product_search_with_sub_category(
                 not_non_entities[SUB_CATEGORY]
             )
-            logger.info("only sub_categories")  # TODO: Subcategory and price max
-        elif CATEGORY in entities_present and BRAND not in entities_present:
+        elif (
+            SUB_CATEGORY in entities_present
+            and PRICE_MAX in entities_present
+            and CATEGORY not in entities_present
+            and not BRAND
+        ):
+            products = query_builder.product_search_with_sub_category_with_max(
+                not_non_entities[SUB_CATEGORY], not_non_entities[PRICE_MAX]
+            )
+        elif (
+            CATEGORY in entities_present
+            and BRAND not in entities_present
+            and SUB_CATEGORY not in entities_present
+        ):
             products = query_builder.product_search_with_category(
                 not_non_entities[CATEGORY]
             )
-            logger.info("only category")
         elif GENDER in entities_present and BRAND not in entities_present:
             products = query_builder.product_search_with_gender(message)
-            logger.info("gender only")
         elif BRAND in entities_present and PRICE_MAX in entities_present:
-            logger.info("max+brand")
             products = query_builder.product_search_with_brand_and_max(
                 not_non_entities[PRICE_MAX], not_non_entities[BRAND]
             )
         elif BRAND in entities_present:
-            logger.info("brand")
             products = query_builder.product_search_with_brand(not_non_entities[BRAND])
         elif not entities_present:
             products = query_builder.product_search_with_category(
                 not_non_entities[SUB_CATEGORY]
             )
-        logger.info(products)
         return products
 
     def __generate_query_to_elasticsearch(

@@ -49,6 +49,29 @@ class EsQueryBuilder:
         products = self.es.search(index="e_comm", body=product_search, scroll="1m")
         return products
 
+    def product_search_with_sub_category_with_max(self, category: Text, price_max: int):
+        product_search = {
+            "_source": [],
+            "size": 5,
+            "query": {
+                "bool": {
+                    "filter": [
+                        {
+                            "multi_match": {
+                                "query": f"{category}",
+                                "type": "best_fields",
+                                "fields": ["category", "sub_category"],
+                                "operator": "and",
+                            }
+                        },
+                        {"range": {"price": {"lte": price_max}}},
+                    ]
+                }
+            },
+        }
+        products = self.es.search(index="e_comm", body=product_search, scroll="1m")
+        return products
+
     def product_search_with_category(self, category: Text):
         product_search = {
             "_source": [],

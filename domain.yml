@@ -417,9 +417,9 @@ responses:
     - payload: /buy_items_in_cart
       title: Buy Items In Cart
     - payload: /mood_based_search
-      title: 🆕 Mood Based Search 🔥
+      title: 🆕 Mood Based Search
     - payload: /Search_via_photos
-      title: 🆕 Search Via Photos 🔥
+      title: 🆕 Search Via Photos
     - payload: i want discount
       title: Looking For Discounts And Offers
     - payload: /enquire_about_a_service_request
