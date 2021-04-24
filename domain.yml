@@ -417,9 +417,9 @@ responses:
     - payload: /buy_items_in_cart
       title: Buy Items In Cart
     - payload: /mood_based_search
-      title: 🆕 Mood Based Search 🔥
+      title: 🆕 Mood Based Search
     - payload: /Search_via_photos
-      title: 🆕 Search Via Photos 🔥
+      title: 🆕 Search Via Photos
     - payload: i want discount
       title: Looking For Discounts And Offers
     - payload: /enquire_about_a_service_request
@@ -509,7 +509,7 @@ responses:
   utter_return_initiated:
   - text: "Your return order request for order no. {order_no} has been initiated and your order will be picked up from address: {address} within 2-3 business days. Your refund request will be initiated within 7-10 business days once we receive your order and it passes quality check."
   utter_replace_order_inprogress:
-  - text: Sorry for the inconvenience! We can only provide Return Order functionality now as we're still working on implementing replacement order functionality.
+  - text: We apologise for the inconvenience! We can only offer Return Order functionality for the time being as we are still working on the Replacement Order functionality.
   utter_ask_switch_form:
   - buttons:
     - payload: Yes
@@ -569,7 +569,7 @@ responses:
       title: Poor
     text: How would you rate your experience so far?
   utter_feedback_submitted:
-  - text: Thank you for your valuable feedback; I will use it to improve myself and provide you with a better experience.
+  - text: Thank you for your valuable feedback, I will use it to improve myself and provide you with a better experience.
   utter_wrong_product_id:
   - text: I believe you gave me the incorrect product ID. Please double-check and try again.
   utter_invalid_product_id:

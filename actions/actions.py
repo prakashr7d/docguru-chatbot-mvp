@@ -96,6 +96,7 @@ from dash_ecomm.database_utils import (
     get_valid_order_return,
     is_valid_otp,
     is_valid_user,
+    validate_return_order,
 )
 from dash_ecomm.es_query_builder import EsQueryBuilder
 from rasa_sdk import Action, FormValidationAction, Tracker, events
@@ -629,43 +630,42 @@ class ActionOrderStatus(Action):
         order_email = tracker.get_slot(USER_EMAIL)
         is_logged_in = tracker.get_slot(IS_LOGGED_IN)
         if is_logged_in:
-            try:
+            if not tracker.latest_message["entities"]:
+                follow_up_action.append(FollowupAction(ACTION_CHECK_ALL_ORDERS))
+                return follow_up_action
+            else:
                 order_id_to_show_order_status = tracker.latest_message["entities"][0][
                     "value"
                 ]
-            except IndexError:
-                dispatcher.utter_message(template="utter_ask_status_order_id")
-                follow_up_action.append(FollowupAction("action_listen"))
-                return follow_up_action
-            follow_up_action.append(FollowupAction("utter_anything_else"))
-            logger.info(order_id_to_show_order_status)
-            order_for_order_id = get_order_by_order_id(
-                order_id_to_show_order_status, order_email
-            )
-            if order_for_order_id:
-                valid_order = order_for_order_id
-                carousel_order = self.__create_order_carousel(valid_order)
-                status_for_order_id = order_for_order_id[ORDER_COLUMN_STATUS]
-                template = self.template_for_order_status(status_for_order_id)
-                if template != "utter_order_status_failed":
-                    dispatcher.utter_message(attachment=carousel_order)
-                utter = {
-                    "template": template,
-                    "order_id": order_id_to_show_order_status,
-                    "small_order_id": order_id_to_show_order_status.lower(),
-                    "shipped_date": "04/04/2021",
-                    "delivery_date": "10/05/2021",
-                    "status": status_for_order_id,
-                }
-                dispatcher.utter_message(**utter)
-            else:
-                utter = {
-                    "template": "utter_order_status_failed",
-                    "order_id": order_id_to_show_order_status,
-                }
-                dispatcher.utter_message(**utter)
+                follow_up_action.append(FollowupAction("utter_anything_else"))
+                logger.info(order_id_to_show_order_status)
+                order_for_order_id = get_order_by_order_id(
+                    order_id_to_show_order_status, order_email
+                )
+                if order_for_order_id:
+                    valid_order = order_for_order_id
+                    carousel_order = self.__create_order_carousel(valid_order)
+                    status_for_order_id = order_for_order_id[ORDER_COLUMN_STATUS]
+                    template = self.template_for_order_status(status_for_order_id)
+                    if template != "utter_order_status_failed":
+                        dispatcher.utter_message(attachment=carousel_order)
+                    utter = {
+                        "template": template,
+                        "order_id": order_id_to_show_order_status,
+                        "small_order_id": order_id_to_show_order_status.lower(),
+                        "shipped_date": "04/04/2021",
+                        "delivery_date": "10/05/2021",
+                        "status": status_for_order_id,
+                    }
+                    dispatcher.utter_message(**utter)
+                else:
+                    utter = {
+                        "template": "utter_order_status_failed",
+                        "order_id": order_id_to_show_order_status,
+                    }
+                    dispatcher.utter_message(**utter)
 
-            return follow_up_action
+                return follow_up_action
         else:
             dispatcher.utter_message(template="utter_try_after_logged_in")
             return []
@@ -818,7 +818,7 @@ class ValidateReturnOrder(FormValidationAction):
         domain: "DomainDict",  # noqa: F821
     ) -> List[EventType]:
         slot_set = {}
-        if value is not None:
+        if value is not None and value in [RETURN_PRODUCT]:
             slot_set = {ORDER_ID_FOR_RETURN: value}
         else:
             dispatcher.utter_message(template="utter_ineligible_order_id")
@@ -852,7 +852,7 @@ class ValidateReturnOrder(FormValidationAction):
         domain: "DomainDict",  # noqa: F821
     ) -> List[EventType]:
         slot_set = {}
-        if value is not None and value in [RETURN_PRODUCT]:
+        if value is not None:
             slot_set = {TYPE_OF_RETURN: value}
         else:
             slot_set = {REQUESTED_SLOT: TYPE_OF_RETURN}
@@ -884,7 +884,8 @@ class ValidateReturnOrder(FormValidationAction):
         domain: "DomainDict",  # noqa: F821
     ) -> List[EventType]:
         slot_set = {}
-        if value is not None:
+        order_email = tracker.get_slot("user_email")
+        if value is not None and validate_return_order(value, order_email):
             slot_set = {PICKUP_ADDRESS_FOR_RETURN: value}
         else:
             slot_set = {REQUESTED_SLOT: PICKUP_ADDRESS_FOR_RETURN}
@@ -978,11 +979,12 @@ class ActionProductInquiry(Action):
             )
         return products
 
-    def __not_scroll_id(
+    def __not_scroll_id(  # noqa: C901
         self, not_non_entities: Dict, message: Text, entities_present, query_builder
     ) -> (Dict, int):
         products = None
         if entities_present == ENTITY_NAMES:
+            logger.info("first")
             products = query_builder.product_search_with_all(
                 message,
                 not_non_entities[PRICE_MIN],
@@ -992,8 +994,9 @@ class ActionProductInquiry(Action):
             PRICE_MIN in entities_present
             or PRICE_MAX in entities_present
             and BRAND not in entities_present
+            and SUB_CATEGORY not in entities_present
+            and CATEGORY not in entities_present
         ):
-            logger.info("price min or max")
             products = self.__price_queries(not_non_entities, entities_present, message)
         elif (
             SUB_CATEGORY in entities_present
@@ -1001,36 +1004,46 @@ class ActionProductInquiry(Action):
             and not BRAND
             and not PRICE_MIN
         ):
-            logger.info("sub_category+price max")
             products = query_builder.product_search_with_category_and_max_price(
                 not_non_entities[PRICE_MAX], not_non_entities[SUB_CATEGORY]
             )
-        elif SUB_CATEGORY in entities_present and BRAND not in entities_present:
-            products = query_builder.product_search_with_category(
+        elif (
+            SUB_CATEGORY in entities_present
+            and BRAND not in entities_present
+            and CATEGORY not in entities_present
+        ):
+            products = query_builder.product_search_with_sub_category(
                 not_non_entities[SUB_CATEGORY]
             )
-            logger.info("only sub_categories")  # TODO: Subcategory and price max
-        elif CATEGORY in entities_present and BRAND not in entities_present:
+        elif (
+            SUB_CATEGORY in entities_present
+            and PRICE_MAX in entities_present
+            and CATEGORY not in entities_present
+            and not BRAND
+        ):
+            products = query_builder.product_search_with_sub_category_with_max(
+                not_non_entities[SUB_CATEGORY], not_non_entities[PRICE_MAX]
+            )
+        elif (
+            CATEGORY in entities_present
+            and BRAND not in entities_present
+            and SUB_CATEGORY not in entities_present
+        ):
             products = query_builder.product_search_with_category(
                 not_non_entities[CATEGORY]
             )
-            logger.info("only category")
         elif GENDER in entities_present and BRAND not in entities_present:
             products = query_builder.product_search_with_gender(message)
-            logger.info("gender only")
         elif BRAND in entities_present and PRICE_MAX in entities_present:
-            logger.info("max+brand")
             products = query_builder.product_search_with_brand_and_max(
                 not_non_entities[PRICE_MAX], not_non_entities[BRAND]
             )
         elif BRAND in entities_present:
-            logger.info("brand")
             products = query_builder.product_search_with_brand(not_non_entities[BRAND])
         elif not entities_present:
             products = query_builder.product_search_with_category(
                 not_non_entities[SUB_CATEGORY]
             )
-        logger.info(products)
         return products
 
     def __generate_query_to_elasticsearch(
