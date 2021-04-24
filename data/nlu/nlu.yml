@@ -970,7 +970,7 @@ nlu:
     - What happens if my EMI conversion is denied by my bank?
     - What happens when my EMI conversion is refused by the bank?
 - intent: faq/promotions
-  examples:
+  examples: |
     - i want some promotions
     - i want discount
     - can i get discount
