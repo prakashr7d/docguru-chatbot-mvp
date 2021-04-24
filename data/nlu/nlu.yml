@@ -159,6 +159,8 @@ nlu:
     - can you show the menu
     - i want to see menu
     - menu
+    - i need help
+    - help
     - I want to go to main menu
     - main menu
     - i want to go to main menu
@@ -878,3 +880,101 @@ nlu:
     - is upi accepted?
     - can I pay with debit card?
     - how about a credit card payments
+- intent: buy_now
+  examples: |
+    - buy product
+    - buy
+- intent: cancel_order
+  examples: |
+    - i want to cancel my order
+    - please cancel my order
+    - cancel order
+    - cancel
+- intent: mood_based_search
+  examples: |
+    - mood based search
+    - show me product according to my mood
+    - products for my mood
+- intent: enquire_about_a_service_request
+  examples: |
+    - check service request
+    - i want to talk to customer care
+    - i want to contact live agent
+    - is there any live agent available
+    - customer service request
+- intent: Search_via_photos
+  examples: |
+    - I want to search using photos
+    - can you show me the product from the picture i have
+    - show me product on this picture
+    - i want to search via photos
+- intent: buy_items_in_cart
+  examples: |
+    - i want to checkout my cart
+    - checkout my cart
+    - buy items in cart
+    - i wnat to puchase items in my cart
+- intent: add_to_cart
+  examples: |
+    - i want to add this product to my cart
+    - add to cart
+- intent: faq/cancel_order
+  examples: |
+    - how to cancel order
+    - can you please cancel order
+    - when can I cancel order
+    - where to cancel order
+    - cancel order
+    - how can I cancel my order
+    - how will my order be cancalled
+    - how will I have my order cancelled
+    - May my order be cancelled?
+- intent: faq/shipping_address_change
+  examples: |
+    - how to change my shipping address
+    - change my shipping address
+    - can you change shipping address
+    - how can I change my address of shipment
+    - change shipment address
+    - change order address
+    - how to update my address
+    - how to update my address of shipment
+    - can you update my address
+    - how can I modify my address
+- intent: faq/gst_charges
+  examples: |
+    - how much is gst charged on each order
+    - why should I pay gst
+    - why you guys charge gst
+    - gst charge policy
+    - explain me why you charge gst
+    - I don't want to pay gst
+    - I am not allowed to pay gst
+    - gst is not my rule
+    - Why am I being fined GST?
+    - Why am I being charged GST?
+    - Why do I have to pay GST?
+    - What is the significance of the GST charge?
+- intent: faq/emi_conversion
+  examples: |
+    - emi conversion
+    - emi stopped by bank
+    - I can't pay emi
+    - what to do when bank rejects my emi
+    - emi rejected by bank
+    - Bank rejects emi
+    - what is policy when bank rejecys my emi
+    - What happens if my EMI conversion is rejected by the bank?
+    - What happens if my bank refuses my EMI conversion?
+    - What happens if my bank refuses to convert my EMI?
+    - What happens if my EMI conversion is denied by my bank?
+    - What happens when my EMI conversion is refused by the bank?
+
+- intent: ask_order_id
+  examples: |
+    - [DASH123450](order_id)
+    - [DASH123461](order_id)
+    - DASH123462
+    - DASH123477
+    - DASH123456
+    - DASH123457

@@ -1009,7 +1009,7 @@ class ActionProductInquiry(Action):
             products = query_builder.product_search_with_category(
                 not_non_entities[SUB_CATEGORY]
             )
-            logger.info("only sub_categories")
+            logger.info("only sub_categories")  # TODO: Subcategory and price max
         elif CATEGORY in entities_present and BRAND not in entities_present:
             products = query_builder.product_search_with_category(
                 not_non_entities[CATEGORY]
@@ -1030,6 +1030,7 @@ class ActionProductInquiry(Action):
             products = query_builder.product_search_with_category(
                 not_non_entities[SUB_CATEGORY]
             )
+        logger.info(products)
         return products
 
     def __generate_query_to_elasticsearch(

@@ -7,6 +7,15 @@ from elasticsearch import Elasticsearch
 logger = logging.getLogger(__name__)
 
 
+def range_filter_under(price_min: int, products):
+    filtered_product = []
+
+    for selected_product in products:
+        product = selected_product["_source"]
+        if product["price"] < price_min:
+            filtered_product.append(selected_product)
+
+
 class EsQueryBuilder:
     def __init__(self):
         self.es = Elasticsearch(os.environ.get("ELASTICSEARCH_URL"))
@@ -34,7 +43,7 @@ class EsQueryBuilder:
             "_source": [],
             "size": 5,
             "query": {
-                "fuzzy": {"sub_category": {"value": f"{category}", "fuzziness": 5}},
+                "fuzzy": {"sub_category": {"value": f"{category}", "fuzziness": 10}},
             },
         }
         products = self.es.search(index="e_comm", body=product_search, scroll="1m")
@@ -43,7 +52,7 @@ class EsQueryBuilder:
                 "_source": [],
                 "size": 5,
                 "query": {
-                    "fuzzy": {"category": {"value": f"{category}", "fuzziness": 5}}
+                    "fuzzy": {"category": {"value": f"{category}", "fuzziness": 10}}
                 },
             }
             products = self.es.search(index="e_comm", body=product_search, scroll="1m")

@@ -93,6 +93,23 @@ intents:
     ignore_entities:
       - order_id
       - number
+- buy_now:
+    use_entities: []
+- cancel_order:
+    use_entities: []
+- mood_based_search:
+    use_entities: []
+- enquire_about_a_service_request:
+    use_entities: []
+- Search_via_photos:
+    use_entities: []
+- buy_items_in_cart:
+    use_entities: []
+- add_to_cart:
+    use_entities: []
+- ask_order_id:
+    use_entities:
+      - order_id
 entities:
 - email
 - number
@@ -302,21 +319,21 @@ responses:
   utter_generic_greet:
   - buttons:
     - payload: /check_all_orders
-      title: check all orders
+      title: Check All Orders
     - payload: /return_order
-      title: Return an order
+      title: Return An Order
     - payload: I want to buy a product
-      title: product enquiry
+      title: Product Enquiry
     - payload: /buy_items_in_cart
-      title: Buy items in cart
+      title: Buy Items In Cart
     - payload: /mood_based_search
-      title: 🆕 Mood based search 🔥
-    - payload: /photo_search
-      title: 🆕 Search via photos 🔥
+      title: 🆕 Mood Based Search 🔥
+    - payload: /Search_via_photos
+      title: 🆕 Search Via Photos 🔥
     - payload: /discount_and_offers
-      title: Looking for discounts and offers
-    - payload: /service_request_enquiry
-      title: Enquire about a service request
+      title: Looking For Discounts And Offers
+    - payload: /enquire_about_a_service_request
+      title: Enquire About A Service Request
     text: Hi there! I'm Dash, a virtual sales assistant. How can I help you? These are a few things I can do for you.
   utter_default:
   - text: I don't think I understand. Can you be a bit more clear or paraphrase?
@@ -334,21 +351,21 @@ responses:
   utter_personalized_greet_new_session:
   - buttons:
     - payload: /check_all_orders
-      title: check all orders
+      title: Check All Orders
     - payload: /return_order
-      title: Return an order
+      title: Return An Order
     - payload: I want to buy a product
-      title: Product Inquiry
-    - payload: use case not available
-      title: Buy items in cart
-    - payload: use case not available
-      title: 🆕 Mood based search 🔥
-    - payload: use case not available
-      title: 🆕 Search via photos 🔥
-    - payload: use case not available
-      title: Looking for discounts and offers
-    - payload: use case not available
-      title: Enquire about a service request
+      title: Product Enquiry
+    - payload: /buy_items_in_cart
+      title: Buy Items In Cart
+    - payload: /mood_based_search
+      title: 🆕 Mood Based Search 🔥
+    - payload: /Search_via_photos
+      title: 🆕 Search Via Photos 🔥
+    - payload: /discount_and_offers
+      title: Looking For Discounts And Offers
+    - payload: /enquire_about_a_service_request
+      title: Enquire About A Service Request
     text: Hi {first_name}, great that you logged in. Now I can give you a personalized experience. These are a few things I can do for you.
   utter_not_logged_in_prompt:
   - text: Seems like you have not logged in.
@@ -359,7 +376,7 @@ responses:
   utter_user_email_not_valid:
   - text: Sorry, I could not find an account associated with this email. Have you signed up on our website?
   utter_ask_user_otp:
-  - text: I have sent an otp to your email id. Can you please share that with me?
+  - text: I have sent an OTP to your email id. Can you please share that with me?
   utter_login_success:
   - text: Great! I have successfully validated your account.
   utter_login_failed:
@@ -372,11 +389,11 @@ responses:
   utter_already_logged_in:
   - buttons:
     - payload: Check all orders
-      title: Check all orders
-    - payload: Return an order
-      title: Return an order
+      title: Check All Orders
+    - payload: Return An Order
+      title: Return An Order
     - payload: I want to buy a product
-      title: Product Inquiry
+      title: Product Enquiry
     text: You are logged, you can try out these few options.
   utter_not_signed_up_response:
   - text: You can signup on our website any time. Once you are a registered user, I will be able to give you a personalized experience.
@@ -392,22 +409,22 @@ responses:
   utter_anything_else_options:
   - buttons:
     - payload: /check_all_orders
-      title: check all orders
+      title: Check All Orders
     - payload: /return_order
-      title: Return an order
+      title: Return An Order
     - payload: I want to buy a product
-      title: product enquiry
-    - payload: use case not available
-      title: Buy items in cart
-    - payload: use case not available
-      title: 🆕 Mood based search 🔥
-    - payload: use case not available
-      title: 🆕 Search via photos 🔥
-    - payload: use case not available
-      title: Looking for discounts and offers
-    - payload: use case not available
-      title: Enquire about a service request
-    text: You can ask me about any product, check all orders, return order request, cancel order request.
+      title: Product Enquiry
+    - payload: /buy_items_in_cart
+      title: Buy Items In Cart
+    - payload: /mood_based_search
+      title: 🆕 Mood Based Search 🔥
+    - payload: /Search_via_photos
+      title: 🆕 Search Via Photos 🔥
+    - payload: /discount_and_offers
+      title: Looking For Discounts And Offers
+    - payload: /enquire_about_a_service_request
+      title: Enquire About A Service Request
+    text: You can ask me about any product, check all orders, Return Order request, cancel order request.
   utter_i_am_here_for_you:
   - text: No worries, I am here for you if you need anything
   utter_login_blocked:
@@ -419,7 +436,7 @@ responses:
   utter_logout:
   - text: I have logged you out successfully.
   utter_login_via_website:
-  - text: Btw, You can always try logging in via the website.
+  - text: Btw, you can always try logging in via the website.
   utter_user_email_not_registered:
   - text: Seems like you are not our registered user.
   utter_incorrect_otp:
@@ -435,12 +452,12 @@ responses:
     text: Check for more orders by clicking the button below or say 'show more'
   utter_show_more_something:
   - buttons:
-    - payload: /check all orders
-      title: check all orders
+    - payload: check all orders
+      title: Check All Orders
     - payload: I want to buy a product
-      title: Product inquiry
-    - payload: Return order
-      title: Return order
+      title: Product Enquiry
+    - payload: Return Order
+      title: Return Order
     text: Sorry, I don't have anything to show now. I suggest you could do one of these.
   utter_orders_eligible_for_return:
   - text: Sorry for the inconvience. Following are the orders eligible for return
@@ -471,11 +488,11 @@ responses:
   utter_invalid_return_e_type:
   - text: Sorry, I wasn't able to understand, it seems like you typed an invalid option. Try selecting one from buttons below.
   utter_ask_return_a_reason_description:
-  - text: Thank you for sharing reason for returning the order, could you please explain it in brief? Feel free to add comments that you have regarding the product.
+  - text: Thank you for sharing the reason for returning the order, could you please explain it in brief? Feel free to add comments that you have regarding the product.
   utter_ask_return_pickup_address:
   - text: Thank you for sharing the reason in detail, can you please provide a pickup address?
   utter_ask_order_id_for_return:
-  - text: Can you please share order id of delivered order with us?
+  - text: Can you please share order ID of delivered order with us?
   utter_ask_return_refund_account:
   - buttons:
     - payload: Primary Account
@@ -484,15 +501,15 @@ responses:
       title: Credit Points
     text: Can you please pick where you want your refund amount to be sent from the buttons below?
   utter_ineligible_order_id:
-  - text: Sorry, I wasn't able to find any order with that id. Please recheck your order id any send me here.
+  - text: Sorry, I wasn't able to find any order associated with that ID. Please recheck your order ID.
   utter_invalid_reason:
-  - text: Please select a valid reason for returning from below buttons.
+  - text: Please select a valid reason for returning the order from the buttons below.
   utter_return_order_blocked:
-  - text: Sorry, currently you can't return order because you have been blocked.
+  - text: Sorry, currently you can't return any order as you have been blocked.
   utter_return_initiated:
-  - text: "Your return order request for order no. \b{order_no}\b has been initiated and your order will be picked up from address: {address} within 2-3 days. Your refund request will be initiated within 7-10 business days once we receive your order and it passes quality check"
+  - text: "Your return order request for order no. {order_no} has been initiated and your order will be picked up from address: {address} within 2-3 business days. Your refund request will be initiated within 7-10 business days once we receive your order and it passes quality check."
   utter_replace_order_inprogress:
-  - text: Sorry for the inconvenience! We can only provide return order functionality now as we're still working on implementing replacement order functionality.
+  - text: Sorry for the inconvenience! We can only provide Return Order functionality now as we're still working on implementing replacement order functionality.
   utter_ask_switch_form:
   - buttons:
     - payload: Yes
@@ -501,27 +518,27 @@ responses:
       title: No
     text: Would you like to cancel this form and switch?
   utter_order_status_order_pending:
-  - text: Your order {order_id} is waiting to be accepted by Neural Space. [click here](https://sites.google.com/view/orderstatus-{small_order_id}/home) to track order
+  - text: Your order {order_id} is waiting to be accepted by NeuralSpace. [Click here](https://sites.google.com/view/orderstatus-{small_order_id}/home) to track order.
   utter_order_status_order_confirmed:
-  - text: Thanks for shopping! your {order_id} hasn't shipped yet. [click here](https://sites.google.com/view/orderstatus-{small_order_id}/home) to track order
+  - text: Thanks for shopping! Your {order_id} hasn't been shipped yet. [Click here](https://sites.google.com/view/orderstatus-{small_order_id}/home) to track order.
   utter_order_status_order_shipped:
-  - text: Your order {order_id} has been shipped on {shipped_date} and will be delivered by {delivery_date}. [click here](https://sites.google.com/view/orderstatus-{small_order_id}/home) to track order
+  - text: Your order {order_id} has been shipped on {shipped_date} and will be delivered by {delivery_date}. [Click here](https://sites.google.com/view/orderstatus-{small_order_id}/home) to track order.
   utter_order_status_cancelled:
-  - text: We apologize that your order {order_id} has got cancelled. [click here](https://sites.google.com/view/orderstatus-{small_order_id}/home) to get more information.
+  - text: We regret that your order {order_id} has been cancelled on our end. [Click here](https://sites.google.com/view/orderstatus-{small_order_id}/home) to get more information.
   utter_order_status_delivered:
-  - text: Your order {order_id} has delivered on {delivery_date}. [click here](https://sites.google.com/view/orderstatus-{small_order_id}/home) to track order
+  - text: Your order {order_id} has been delivered on {delivery_date}. [Click here](https://sites.google.com/view/orderstatus-{small_order_id}/home) to track order.
   utter_order_status_not_picked:
-  - text: Your order {order_id} has been requested for return and it will be picked by our delivery executive on {delivery_date}. [click here](https://sites.google.com/view/orderstatus-{small_order_id}/home) to track order
+  - text: Your order {order_id} has been requested for return and it will be picked up by our delivery agent on {delivery_date}. [Click here](https://sites.google.com/view/orderstatus-{small_order_id}/home) to track order.
   utter_order_status_picked:
-  - text: Your order {order_id} has been requested for return and has picked by our delivery executive on {delivery_date} and you will get refund soon. [click here](https://sites.google.com/view/orderstatus-{small_order_id}/home) to track order
+  - text: Your order {order_id} has been requested for return and has been picked up by our delivery agent on {delivery_date} and you will receive the refund soon. [Click here](https://sites.google.com/view/orderstatus-{small_order_id}/home) to track order.
   utter_order_status_received:
-  - text: Your product for the order {order_id} has been received in our end, You will get the refund soon once your product get verified. [click here](https://sites.google.com/view/orderstatus-{small_order_id}/home) to track order
+  - text: Your product for the order {order_id} has been received in our end, You will get the refund soon once your product get verified. [Click here](https://sites.google.com/view/orderstatus-{small_order_id}/home) to track order.
   utter_order_status_refunded:
-  - text: Your refund for {order_id}  has been successfully processed, If you did't get your refund in the account you have choosed, reach us out at neuralspace@neuralspace.ai. [click here](https://sites.google.com/view/orderstatus-{small_order_id}/home) for more information
+  - text: Your refund for {order_id} has been successfully processed, If you haven't received the refund amount in the account you have chosen, reach us at neuralspace@neuralspace.ai. [Click here](https://sites.google.com/view/orderstatus-{small_order_id}/home) for more information.
   utter_ask_status_order_id:
-  - text: Please enter the order id for the order you want to track or to see the order status. If you don't remember your order id, just say "check all orders", and I will show you all your orders
+  - text: Please enter the order ID for the order you want to track or see the order status. If you don't remember your order ID, just say "check all orders", and I will show you all your orders.
   utter_order_status_failed:
-  - text: The Order you have mentioned is not available in your order history. Please reach us at neuralspace@neuralspace.ai
+  - text: The order ID you have mentioned is not available in your order history. Please reach us at neuralspace@neuralspace.ai
   utter_try_after_logged_in:
   - text: Try after getting logged in you will continue with the login procedure.
   utter_product_inquiry_options:
@@ -532,8 +549,8 @@ responses:
       title: Fashion
     - payload: Show me Home
       title: Home
-    - payload: use case not available
-      title: 🆕 Mood based search 🔥
+    - payload: /mood_based_search
+      title: 🆕 Mood Based Search 🔥
     text: Sure, you can try by telling me "Show me Hp Laptops under 30000" or you can try following options.
   utter_product_inquiry_info:
   - text: You can always ask me with different brand names, categories, product name, etc
@@ -552,14 +569,49 @@ responses:
       title: Poor
     text: How would you rate your experience so far?
   utter_feedback_submitted:
-  - text: "Thanks for adding your valuable feedback, I will use this feedback to improve myself and give you better experience"
+  - text: Thank you for your valuable feedback; I will use it to improve myself and provide you with a better experience.
   utter_wrong_product_id:
-  - text: I think you gave me wrong product id. Please check and try giving me again
+  - text: I believe you gave me the incorrect product ID. Please double-check and try again.
   utter_invalid_product_id:
-  - text: Sorry, I wasn't able to find the product id you gave me. Try to check the product id again
+  - text: I'm sorry, but I couldn't find the product ID you provided. Check the Product ID again.
   utter_not_implemented:
   - text: Sorry, this feature is still under work in progress. Please stay tuned.
   - text: Sorry, this feature is not functional at the moment.
+  utter_BuyAddCancel:
+  - text: We’re sorry, this feature is not functional at the moment.
+  utter_PhotoMood:
+  - text: This feature is still being worked on by our technical team. Keep an eye out for updates.
+  utter_enquire:
+  - buttons:
+    - payload: /check all orders
+      title: Check All Orders
+    - payload: I want to buy a product
+      title: Product Enquiry
+    - payload: Return Order
+      title: Return Order
+    text: Our representative will be available shortly. You can try these options until then.
+  utter_faq/refund_policy:
+    - text: "Our Refund & Return Policy:\n1. Any item purchased on the website can only be returned with 10 days of delivery of the item.\n2. Items must be in their original packaging and have price tags intact.\n3. The refund will be initiated immediately once the item is picked up and verified.\n4. The amount will be refunded with 7-10 business days"
+  utter_faq/delivery_charges:
+    - text: "No Delivery Charges on orders above Rs. 500/-, a Delivery Charge of Rs. 70/- will be applicable on orders below Rs. 499/-"
+  utter_faq/shipping_speed:
+    - text: "We currently offer standard shipping, which takes approximately 3-4 days to deliver a product. However, Covid-19 may have an impact on shipping and cause a delay."
+  utter_faq/refund_timelines:
+    - text: "Refund will be initiated once the item is picked up and it passes quality check. The amount will be refunded within :\n1- 3 business days for Bank Account (via IMPS)\n7 - 10 business days for source account (that is Credit Card, Debit Card and Netbanking)"
+  utter_faq/payments:
+    - text: "We support the following payment options:\n1. Debit Card\n2. Credit Card\n3. UPI\n4. Cash on Delivery (COD)\n5. Credit Points"
+  utter_faq/promotions:
+    - text: "These are the major discount sales throughout the year:\n1. Republic Day sale\n2. Holi Sale\n3. Diwali Sale\n4. Big Billion Days Sale\n5. Winter Sale"
+  utter_faq/cancel_order:
+    - text: "If you are unable to cancel an order, you may refuse it at the time of delivery, and the refund will made to your source account for pre-paid orders."
+  utter_faq/shipping_address_change:
+    - text: "You can modify the shipping address of your order before we have processed (packed) it, by updating it under 'change address' option which is available under 'My order' section on our website "
+  utter_faq/gst_charges:
+    - text: "The ultimate buyer of the good or service is responsible for paying GST. It encompasses all other taxes, such as excise duty, VAT, and entry fee."
+  utter_faq/emi_conversion:
+    - text: "Customer needs to pay a full amount of transaction to the bank, since EMI facility is at sole discretion of the issuing bank, please contact your card issuing bank."
+  utter_ask_order_id:
+    - text: "It seems you have provided me with an order ID. If you want to get the order status, just say {order_ id} status, and if you want to request a return, say return order for {order_id}."
 actions:
 - personal_greet
 - validate_login_form
