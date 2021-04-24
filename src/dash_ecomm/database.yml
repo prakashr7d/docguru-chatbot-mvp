@@ -1,147 +1,231 @@
 orders:
-- color: blue
+- color: Black
   id: DASH123450
-  image_url: https://images.unsplash.com/photo-1542291026-7eec264c27ff?ixid=MXwxMjA3fDB8MHxzZWFyY2h8Mnx8c2hvZXN8ZW58MHx8MHw%3D&ixlib=rb-1.2.1&w=1000&q=80
+  image_url: https://images-na.ssl-images-amazon.com/images/I/61Dw5Z8LzJL._SL1000_.jpg
   order_date: '2021-03-12'
-  order_email: not-registered@me.com
+  order_email: prakash@neuralspace.ai
   order_number: 123456
-  product_name: Shoes
+  product_name: Lenovo IdeaPad
+  product_id: AB12345
   refunded: false
   returnable: false
-  size: '9'
   status: shipped
-- color: blue
+- color: Brown
   id: DASH123451
-  image_url: https://assets.ajio.com/medias/sys_master/root/h5a/h59/13018715881502/-1117Wx1400H-460342492-blue-MODEL.jpg
+  image_url: https://images-na.ssl-images-amazon.com/images/I/61T0DkKlXNL._SL1500_.jpg
   order_date: '2021-03-12'
   order_email: pooja@neuralspace.ai
   order_number: 123456
-  product_name: Shoes
+  product_name: OnePlus Nord 5G
+  product_id: AB12346
   refunded: true
   returnable: false
   size: '9'
   status: canceled
-- color: Blue
+- color: Silver
   id: DASH123452
-  image_url: https://images.pexels.com/photos/19090/pexels-photo.jpg?auto=compress&cs=tinysrgb&dpr=1&w=500
+  image_url: https://images-na.ssl-images-amazon.com/images/I/71LERednS1L._SL1500_.jpg
   order_date: '2021-03-11'
   order_email: pooja@neuralspace.ai
   order_number: 123456
-  product_name: Shoes
+  product_name: Redmi Note 10
+  product_id: AB12349
   refunded: false
   returnable: false
   size: '9'
   status: shipped
-- color: Pink
+- color: Blue
   id: DASH123453
   image_url: https://image.shutterstock.com/image-photo/pair-pink-sport-shoes-on-260nw-228691018.jpg
   order_date: '2021-03-11'
   order_email: pooja@neuralspace.ai
   order_number: 123456
-  product_name: Shoes
+  product_name: Samsung Galaxy M12
+  product_id: AB12350
   refunded: false
   returnable: false
   size: '9'
   status: picked
-- color: Pink
+- color: Black
   id: DASH123454
   image_url: https://images.pexels.com/photos/19090/pexels-photo.jpg?auto=compress&cs=tinysrgb&dpr=1&w=500
   order_date: '2021-03-11'
   order_email: pooja@neuralspace.ai
   order_number: 123456
-  product_name: Shoes
+  product_name: Panasonic 100 cm TV
+  product_id: AB12351
   refunded: false
   returnable: false
   size: '9'
   status: order pending
-- color: black
+- color: Black
   id: DASH123455
-  image_url: https://images.unsplash.com/photo-1542291026-7eec264c27ff?ixid=MXwxMjA3fDB8MHxzZWFyY2h8Mnx8c2hvZXN8ZW58MHx8MHw%3D&ixlib=rb-1.2.1&w=1000&q=80
+  image_url: https://images-na.ssl-images-amazon.com/images/I/81hS8spMZiL._SL1500_.jpg
   order_date: '2021-01-05'
   order_email: ayushman@neuralspace.ai
   order_number: 123457
-  product_name: Shoes
+  product_name: Samsung 108 cm TV
+  product_id: AB12352
   refunded: false
   returnable: false
   size: '10'
   status: order pending
-- color: Navy blue
+- color: Black
   id: DASH123456
-  image_url: https://i02.appmifile.com/363_operator_in/13/10/2020/c7bde508f128d7b1fd10a224d18a5333.png
+  image_url: https://images-na.ssl-images-amazon.com/images/I/81W-gXVE8iL._SL1500_.jpg
   order_date: '2021-01-05'
   order_email: dishant@neuralspace.ai
   order_number: 123458
-  product_name: Shoes
+  product_name: Sony Bravia 108 cm TV
+  product_id: AB12353
   refunded: true
   returnable: true
   size: '10'
   status: delivered
-- color: gray
+- color: Black
   id: DASH123457
-  image_url: https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRYQal2Wt0rgcL_9IIPCHwBr5Z_3ilg5rv0xQ&usqp=CAU
+  image_url: https://images-na.ssl-images-amazon.com/images/I/71CM0FCo3BL._SL1500_.jpg
   order_date: '2021-01-05'
   order_email: dishant@neuralspace.ai
   order_number: 123459
-  product_name: Shoes
+  product_name: Infinity (JBL) Glide
+  product_id: AB12354
   refunded: true
   returnable: true
   size: '11'
   status: order pending
-- color: gray
+- color: Black
   id: DASH123458
-  image_url: https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTCytvY7-SDfxRIfcX4IuzzTdrq_15WV9d3Vw&usqp=CAU
+  image_url: https://images-na.ssl-images-amazon.com/images/I/914hFeTU2-L._SL1500_.jpg
   order_date: '2021-01-05'
   order_email: dishant@neuralspace.ai
   order_number: 123459
-  product_name: Shoes
+  product_name: Canon EOS
+  product_id: AB12355
   refunded: false
   returnable: false
   size: '11'
   status: not picked
-- color: gray
+- color: Black
   id: DASH123459
-  image_url: https://i0.wp.com/post.healthline.com/wp-content/uploads/2020/09/hoka.png
+  image_url: https://images-na.ssl-images-amazon.com/images/I/71RxTP5GWoL._SL1500_.jpg
   order_date: '2021-01-05'
   order_email: dishant@neuralspace.ai
   order_number: 123459
-  product_name: Shoes
+  product_name: DIGITEK® Tripod
+  product_id: AB12356
   refunded: false
   returnable: true
   size: '11'
   status: shipped
-- color: gray
+- color: Black
   id: DASH123460
-  image_url: https://cdnmedia.dsc-cricket.com/media/catalog/product/cache/67ee89799642c567a71fc92f3699d937/d/s/dsc-zooter-cricket-shoes-red.jpg
+  image_url: https://images-na.ssl-images-amazon.com/images/I/81hmsCtTbNL._UL1500_.jpg
   order_date: '2021-01-05'
   order_email: dishant@neuralspace.ai
   order_number: 123459
-  product_name: Shoes
+  product_name: Adidas Women's T-shirt
+  product_id: AB12357
   refunded: false
   returnable: false
   size: '11'
   status: shipped
-- color: gray
+- color: Blue
   id: DASH123443
-  image_url: https://cdnmedia.dsc-cricket.com/media/catalog/product/cache/67ee89799642c567a71fc92f3699d937/d/s/dsc-zooter-cricket-shoes-red.jpg
+  image_url: https://m.media-amazon.com/images/I/61JZD4HKQSL._UL1500_.jpg
   order_date: '2021-01-05'
   order_email: dishant@neuralspace.ai
   order_number: 123459
-  product_name: Shoes
+  product_name: Allen Solly Women's T-shirt
+  product_id: AB12358
   refunded: false
   returnable: false
   size: '11'
   status: received
-- color: gray
+- color: Peach
   id: DASH123461
-  image_url: https://i0.wp.com/post.healthline.com/wp-content/uploads/2020/01/268453-Best_Running_Shoes_for_Flat_Feet-1296x728-header-1296x728.jpg?w=1155&h=1528
+  image_url: https://images-na.ssl-images-amazon.com/images/I/7166-0sqb0L._UL1500_.jpg
   order_date: '2021-01-05'
   order_email: dishant@neuralspace.ai
   order_number: 123459
-  product_name: Shoes
+  product_name: Aurelia Women's Kurta
+  product_id: AB12359
   refunded: false
   returnable: false
   size: '11'
   status: shipped
+- color: Peach
+  id: DASH123470
+  image_url: https://images-na.ssl-images-amazon.com/images/I/7166-0sqb0L._UL1500_.jpg
+  order_date: '2021-01-05'
+  order_email: prakash@neuralspace.ai
+  order_number: 123459
+  product_name: Aurelia Women's Kurta
+  product_id: AB12359
+  refunded: false
+  returnable: false
+  size: '11'
+  status: shipped
+- color: Peach
+  id: DASH123471
+  image_url: https://images-na.ssl-images-amazon.com/images/I/7166-0sqb0L._UL1500_.jpg
+  order_date: '2021-01-05'
+  order_email: prakash@neuralspace.ai
+  order_number: 123459
+  product_name: Aurelia Women's Kurta
+  product_id: AB12359
+  refunded: false
+  returnable: false
+  size: '11'
+  status: shipped
+- color: Peach
+  id: DASH123472
+  image_url: https://images-na.ssl-images-amazon.com/images/I/7166-0sqb0L._UL1500_.jpg
+  order_date: '2021-01-05'
+  order_email: prakash@neuralspace.ai
+  order_number: 123459
+  product_name: Aurelia Women's Kurta
+  product_id: AB12359
+  refunded: false
+  returnable: false
+  size: '11'
+  status: shipped
+- color: Blue
+  id: DASH123473
+  image_url: https://m.media-amazon.com/images/I/61JZD4HKQSL._UL1500_.jpg
+  order_date: '2021-01-05'
+  order_email: raja@neuralspace.ai
+  order_number: 123459
+  product_name: Allen Solly Women's T-shirt
+  product_id: AB12358
+  refunded: false
+  returnable: false
+  size: '11'
+  status: received
+- color: Blue
+  id: DASH123474
+  image_url: https://m.media-amazon.com/images/I/61JZD4HKQSL._UL1500_.jpg
+  order_date: '2021-01-05'
+  order_email: raja@neuralspace.ai
+  order_number: 123459
+  product_name: Allen Solly Women's T-shirt
+  product_id: AB12358
+  refunded: false
+  returnable: false
+  size: '11'
+  status: received
+- color: Blue
+  id: DASH123475
+  image_url: https://m.media-amazon.com/images/I/61JZD4HKQSL._UL1500_.jpg
+  order_date: '2021-01-05'
+  order_email: raja@neuralspace.ai
+  order_number: 123459
+  product_name: Allen Solly Women's T-shirt
+  product_id: AB12358
+  refunded: false
+  returnable: false
+  size: '11'
+  status: received
 products:
 - color: blue
   product_name: Shoes
@@ -181,6 +265,7 @@ users:
     no_of_orders: 1
     otp: '5678'
     user_email: ayushman@neuralspace.ai
+    user_phone: +918763330202
   dishant@neuralspace.ai:
     first_name: Dishant
     id: 0
@@ -188,10 +273,28 @@ users:
     no_of_orders: 6
     otp: '1234'
     user_email: dishant@neuralspace.ai
+    user_phone: +918169075860
   pooja@neuralspace.ai:
     first_name: Pooja
-    id: 2
+    id: 3
     last_name: Mishra
     no_of_orders: 4
     otp: '9876'
     user_email: pooja@neuralspace.ai
+    user_phone: +918093648810
+  prakash@neuralspace.ai:
+    first_name: Prakash
+    id: 2
+    last_name: Ramesh
+    no_of_orders: 3
+    otp: '8888'
+    user_email: prakash@neuralspace.ai
+    user_phone: +918870539376
+  raja@neuralspace.ai:
+    first_name: Raja
+    id: 4
+    last_name: Pradhan
+    no_of_orders: 3
+    otp: '7404'
+    user_email: raja@neuralspace.ai
+    user_phone: +917609972404
