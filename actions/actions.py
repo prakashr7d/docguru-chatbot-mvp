@@ -629,43 +629,42 @@ class ActionOrderStatus(Action):
         order_email = tracker.get_slot(USER_EMAIL)
         is_logged_in = tracker.get_slot(IS_LOGGED_IN)
         if is_logged_in:
-            try:
+            if not tracker.latest_message["entities"]:
+                follow_up_action.append(FollowupAction(ACTION_CHECK_ALL_ORDERS))
+                return follow_up_action
+            else:
                 order_id_to_show_order_status = tracker.latest_message["entities"][0][
                     "value"
                 ]
-            except IndexError:
-                dispatcher.utter_message(template="utter_ask_status_order_id")
-                follow_up_action.append(FollowupAction("action_listen"))
-                return follow_up_action
-            follow_up_action.append(FollowupAction("utter_anything_else"))
-            logger.info(order_id_to_show_order_status)
-            order_for_order_id = get_order_by_order_id(
-                order_id_to_show_order_status, order_email
-            )
-            if order_for_order_id:
-                valid_order = order_for_order_id
-                carousel_order = self.__create_order_carousel(valid_order)
-                status_for_order_id = order_for_order_id[ORDER_COLUMN_STATUS]
-                template = self.template_for_order_status(status_for_order_id)
-                if template != "utter_order_status_failed":
-                    dispatcher.utter_message(attachment=carousel_order)
-                utter = {
-                    "template": template,
-                    "order_id": order_id_to_show_order_status,
-                    "small_order_id": order_id_to_show_order_status.lower(),
-                    "shipped_date": "04/04/2021",
-                    "delivery_date": "10/05/2021",
-                    "status": status_for_order_id,
-                }
-                dispatcher.utter_message(**utter)
-            else:
-                utter = {
-                    "template": "utter_order_status_failed",
-                    "order_id": order_id_to_show_order_status,
-                }
-                dispatcher.utter_message(**utter)
+                follow_up_action.append(FollowupAction("utter_anything_else"))
+                logger.info(order_id_to_show_order_status)
+                order_for_order_id = get_order_by_order_id(
+                    order_id_to_show_order_status, order_email
+                )
+                if order_for_order_id:
+                    valid_order = order_for_order_id
+                    carousel_order = self.__create_order_carousel(valid_order)
+                    status_for_order_id = order_for_order_id[ORDER_COLUMN_STATUS]
+                    template = self.template_for_order_status(status_for_order_id)
+                    if template != "utter_order_status_failed":
+                        dispatcher.utter_message(attachment=carousel_order)
+                    utter = {
+                        "template": template,
+                        "order_id": order_id_to_show_order_status,
+                        "small_order_id": order_id_to_show_order_status.lower(),
+                        "shipped_date": "04/04/2021",
+                        "delivery_date": "10/05/2021",
+                        "status": status_for_order_id,
+                    }
+                    dispatcher.utter_message(**utter)
+                else:
+                    utter = {
+                        "template": "utter_order_status_failed",
+                        "order_id": order_id_to_show_order_status,
+                    }
+                    dispatcher.utter_message(**utter)
 
-            return follow_up_action
+                return follow_up_action
         else:
             dispatcher.utter_message(template="utter_try_after_logged_in")
             return []
@@ -1006,7 +1005,7 @@ class ActionProductInquiry(Action):
                 not_non_entities[PRICE_MAX], not_non_entities[SUB_CATEGORY]
             )
         elif SUB_CATEGORY in entities_present and BRAND not in entities_present:
-            products = query_builder.product_search_with_category(
+            products = query_builder.product_search_with_sub_category(
                 not_non_entities[SUB_CATEGORY]
             )
             logger.info("only sub_categories")  # TODO: Subcategory and price max

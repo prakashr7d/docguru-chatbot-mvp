@@ -509,7 +509,7 @@ responses:
   utter_return_initiated:
   - text: "Your return order request for order no. {order_no} has been initiated and your order will be picked up from address: {address} within 2-3 business days. Your refund request will be initiated within 7-10 business days once we receive your order and it passes quality check."
   utter_replace_order_inprogress:
-  - text: Sorry for the inconvenience! We can only provide Return Order functionality now as we're still working on implementing replacement order functionality.
+  - text: We apologise for the inconvenience! We can only offer Return Order functionality for the time being as we are still working on the Replacement Order functionality.
   utter_ask_switch_form:
   - buttons:
     - payload: Yes

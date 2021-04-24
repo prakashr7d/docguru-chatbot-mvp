@@ -38,7 +38,7 @@ class EsQueryBuilder:
         products = self.es.scroll(scroll_id=scroll_id, scroll="1m")
         return products
 
-    def product_search_with_category(self, category: Text):
+    def product_search_with_sub_category(self, category: Text):
         product_search = {
             "_source": [],
             "size": 5,
@@ -47,15 +47,15 @@ class EsQueryBuilder:
             },
         }
         products = self.es.search(index="e_comm", body=product_search, scroll="1m")
-        if not products:
-            product_search = {
-                "_source": [],
-                "size": 5,
-                "query": {
-                    "fuzzy": {"category": {"value": f"{category}", "fuzziness": 10}}
-                },
-            }
-            products = self.es.search(index="e_comm", body=product_search, scroll="1m")
+        return products
+
+    def product_search_with_category(self, category: Text):
+        product_search = {
+            "_source": [],
+            "size": 5,
+            "query": {"fuzzy": {"category": {"value": f"{category}", "fuzziness": 10}}},
+        }
+        products = self.es.search(index="e_comm", body=product_search, scroll="1m")
         return products
 
     def product_search_with_category_and_max_price(

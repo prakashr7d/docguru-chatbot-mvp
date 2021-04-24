@@ -179,6 +179,17 @@ rules:
   - action: action_return_order
   - action: utter_anything_else
 
+- rule: form switch + return order + replace
+  condition:
+  - active_loop: return_order_form
+  - slot_was_set:
+    - is_logged_in: true
+  steps:
+  - intent: replace_order
+  - action: utter_replace_order_inprogress
+  - action: return_order_form
+  - active_loop: return_order_form
+
 - rule: replace order in login true
   condition:
   - slot_was_set:
