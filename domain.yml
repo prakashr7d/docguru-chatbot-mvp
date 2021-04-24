@@ -330,7 +330,7 @@ responses:
       title: 🆕 Mood Based Search 🔥
     - payload: /Search_via_photos
       title: 🆕 Search Via Photos 🔥
-    - payload: /discount_and_offers
+    - payload: i want discount
       title: Looking For Discounts And Offers
     - payload: /enquire_about_a_service_request
       title: Enquire About A Service Request
@@ -362,7 +362,7 @@ responses:
       title: 🆕 Mood Based Search 🔥
     - payload: /Search_via_photos
       title: 🆕 Search Via Photos 🔥
-    - payload: /discount_and_offers
+    - payload: i want discount
       title: Looking For Discounts And Offers
     - payload: /enquire_about_a_service_request
       title: Enquire About A Service Request
@@ -420,7 +420,7 @@ responses:
       title: 🆕 Mood Based Search 🔥
     - payload: /Search_via_photos
       title: 🆕 Search Via Photos 🔥
-    - payload: /discount_and_offers
+    - payload: i want discount
       title: Looking For Discounts And Offers
     - payload: /enquire_about_a_service_request
       title: Enquire About A Service Request

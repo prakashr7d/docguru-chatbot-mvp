@@ -969,7 +969,13 @@ nlu:
     - What happens if my bank refuses to convert my EMI?
     - What happens if my EMI conversion is denied by my bank?
     - What happens when my EMI conversion is refused by the bank?
-
+- intent: faq/promotions
+  examples:
+    - i want some promotions
+    - i want discount
+    - can i get discount
+    - is there any discount
+    - is there any promotion available for this products
 - intent: ask_order_id
   examples: |
     - [DASH123450](order_id)
