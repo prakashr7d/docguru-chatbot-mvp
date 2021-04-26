@@ -612,6 +612,140 @@ responses:
     - text: "Customer needs to pay a full amount of transaction to the bank, since EMI facility is at sole discretion of the issuing bank, please contact your card issuing bank."
   utter_ask_order_id:
     - text: "It seems you have provided me with an order ID. If you want to get the order status, just say {order_ id} status, and if you want to request a return, say return order for {order_id}."
+  utter_out_of_scope/non_english:
+  - text: "I'm sorry, I only understand English."
+  utter_out_of_scope/other:
+  - text: "I'm afraid, I can't help you with that"
+  utter_faq/languages:
+  - text: "You can use TextLite to build chatbots in 50+ languages"
+  utter_faq/founders:
+  - text: "I appreciate your curiousity. NeuralSpace is Co-founded by: \n1. Ayushman Dash [LinkedIn](https://www.linkedin.com/in/ayushman-dash/)\n2. Felix Laumann [LinkedIn](https://www.linkedin.com/in/felix-laumann/)\n3. Kumar Shridhar [LinkedIn](https://www.linkedin.com/in/kumar-shridhar/)"
+  utter_faq/textspace:
+  - text: "TextSpace can convert natural language text into structured data.\n E.g.,
+  I want to go to Berlin gets converted to Berlin <- location; User's intent Travel\n
+  It can be integrated with any software application, it supports
+  36 languages, and you don't need a data science team to use it. [click here](https://neuralspace.ai/Textspace.html)"
+  utter_faq/textlite:
+  - text: "Using TextLite, we build virtual assistants/chatbots for various industries
+  like Banking, Healthcare, Automobile, etc. in 50+ languages. To know more [click here](https://neuralspace.ai/Textlite.html)"
+  utter_faq/textcloud:
+  - text: "TextCloud is a self-served platform for various language understanding services.
+  E.g., AI-powered translation, Conversational AI/chatbots, etc. It is currently
+  under development. To know more [click here](https://neuralspace.ai/Textcloud.html)"
+  utter_faq/differencetextspacetextcloud:
+  - text: "That's a great question! \n TextSpace is a software development toolkit (SDK), which helps developers build language understanding capability in their software application and supports 36 languages.\n
+      Whereas, TextCloud is a Business to Developer (B2D) cloud platform, which supports various language understanding tools like translation, document classification, information extraction, etc.
+      It supports 50+ languages and is a one-stop solution for all language processing needs."
+  utter_faq/differencetextlitetextcloud:
+  - text: "That's a good question. \n TextLite is a chat and voice bot development framework and we use it to provide an end-to-end bot development service. Since TextLite supports 50+ languages, we can develop bots in all these languages too.\n
+                      However, TextCloud is a Business to Developer (B2D) cloud platform, which supports various language understanding tools like translation, document classification, information extraction, etc.
+                      It supports 50+ languages and is a one-stop solution for all language processing needs."
+  utter_faq/differencetextspacetextlite:
+  - text: "Great question. These two products are for two different groups of users. \n TextSpace is a software development toolkit (SDK), which helps developers build language understanding capability in their software application and it supports 36 languages.\n
+            Whereas, TextLite is a chat and voice bot development framework that we use to provide an end-to-end bot development service. Since TextLite supports 50+ languages, we can develop bots in all these languages too."
+  utter_faq/differencetextspacetextlitetextcloud:
+  - text: "TIt's so good to see you interested in our products. \n TextSpace is a software development toolkit (SDK), which helps developers build language understanding capability in their software application. It supports 36 languages.\n
+                       TextLite is a chat and voice bot development framework. We use it to provide an end-to-end bot development service. Since TextLite supports 50+ languages, we can develop bots in all these languages too.\n
+                       TextCloud is a Business to Developer (B2D) cloud platform, which supports various language understanding tools like translation, document classification, information extraction, etc. It supports 50+ languages and is a one-stop solution for all language processing needs."
+  utter_faq/careers:
+  - text: "We appreciate your interest in us. You can send us your resume at hello@neuralspace.ai. \n Also, you can check out our [LinkedIn](https://www.linkedin.com/company/neuralspace/) page for more job openings."
+  utter_faq/clients:
+  - text: "We have closely worked together with Reverie Language Technologies.
+  Checkout our Success Stories page to read our joint whitepaper how technologies from both companies work successfully together."
+  utter_faq/company_location:
+  - text: "We are based in London. However, our team is all over the world working remotely."
+  utter_faq/supported_industries:
+  - text: "We have chatbots for Banking, Insurance, Healthcare,  Retail, Travel and Hospitality, Real estate, Telecom, Education, Manufacturing, and Automobile."
+  - text: "We cater to various industries, ranging from Banking to Healthcare to Real estate to Automobile and more."
+  utter_faq/implement_product:
+  - buttons:
+    - payload: Contact Sales team
+      title: Contact our sales team
+    text: "Of course you can. You can talk about it in detail with our consultant team"
+  utter_faq/pricing:
+  - text: "Our pricing is flexible. You can get in touch with our team at sales@neuralspace.ai to get a quotation"
+  - text: "Pricing depends on what your requirements are. You can get in touch with our team at sales@neuralspace.ai to get a quotation"
+  utter_faq/best_product:
+  - text: "Each of our products caters to different requirements and usecases, and they are best in each of their areas. "
+  - text: "We'd like to think that all our products are best in their way. However, this would depend on where you would want to use them."
+  utter_chitchat/ask_whatisneuralspace:
+  - text: "NeuralSpace offers products for NLP solutions in over 55 languages.
+  We can build your chat or voice bot to allow customers to have a personalised sales assistant or support their enquiries at any later point of time,
+  but also analyse, comprehend, transliterate or translate texts. The languages we enjoy most working with are Indian languages and Arabic dialects.
+  Sounds interesting? Check out our products and success stories!"
+  utter_chitchat/ask_storyofneuralspace:
+  - text: "Two of our founders, Shridhar and Felix, met in Denmark at a bar and discussed their ideas about starting a company in 2018.
+             Shridhar called his friend Ayushman and asked him if he wants to join in. They all met in Berlin and decided to start
+             NeuralSpace. From then on we have been a fully remote team. [About Us](https://neuralspace.ai/Aboutus.html)"
+  utter_chitchat/ask_builder:
+  - text: "One of the smart engineers at NeuralSpace! 🧠"
+  - text: "The engineers at NeuralSpace 🛠"
+  utter_chitchat/ask_howbuilt:
+  - text: "I was built with a lot of love and patience."
+  - text: "I was built when an amazing team at NeuralSpace came together to create me, just for you."
+  - text: "I was made by software engineers, but hard work is what built me."
+  - text: "I'm building myself every day. I've been working out, did you notice?"
+  utter_chitchat/ask_howdoing:
+  - text: "I'm great! Thanks for asking."
+  - text: "I'm good, thanks!"
+  - text: "A little bit too warm, otherwise fine."
+  - text: "A little bit cold, otherwise fine."
+  utter_chitchat/ask_howold:
+  - text: "Old enough to be a bot!"
+  - text: "42"
+  - text: "Age is just an issue of mind over matter. If you don’t mind, it doesn’t matter."
+  - text: "My first git commit was many moons ago."
+  - text: "Why do you ask? Are my wrinkles showing?"
+  - text: "I've hit the age where I actively try to forget how old I am."
+  utter_chitchat/ask_isbot:
+  - text: "Yep, I'm a bot!"
+  - text: "Yes, I'm a bot."
+  - text: "Yep, you guessed it, I'm a bot!"
+  - text: "I am indeed a bot 🤖"
+  utter_chitchat/ask_ishuman:
+  - text: "I'm not a human, I'm a bot! 🤖"
+  utter_chitchat/ask_restaurant:
+  - text: "I'm sorry, I can't recommend you a restaurant as I usually cook at home."
+  - text: "I'm sorry, I'm not getting taste buds for another few updates."
+  - text: "I wish we could do that for you. I am sorry, I can't help you."
+  utter_chitchat/ask_languagesbot:
+  - text: "I can spell baguette in French, but unfortunately English is the only language I can answer you in."
+  - text: "I am in the process of learning, but at the moment I can only speak English."
+  - text: "Binary code and the language of love. And English."
+  - text: "I was written in Python, but for your convenience I'll translate to English."
+  utter_chitchat/ask_whatismyname:
+  - text: "It's probably the one that your parents chose for you."
+  - text: "I'd tell you, but there's restricted access to that chunk of memory."
+  - text: "Believe it or not, I actually am not spying on your personal information."
+  - text: "You're the second person now to ask me that. Rihanna was the first."
+  utter_chitchat/ask_whatspossible:
+  - text: "I am your virtual assistant.
+  You can ask me about how to get on a call with our team,
+  the difference between TextSpace, TextLite and TextCloud, the story of NeuralSpace, or book a sales call"
+  utter_chitchat/ask_wherefrom:
+  - text: "I was born in Berlin, but I consider myself a citizen of the world."
+  - text: "I was born in the coolest city on Earth, in Berlin."
+  - text: "My developers come from all over the world!"
+  - text: "I was taught not to give out my address on the internet."
+  - text: "My address starts with github.com."
+  utter_chitchat/ask_whoami:
+  - text: "I hope you are being yourself."
+  - text: "Who do you think you are?"
+  - text: "Unfortunately I haven't been programmed with the amount of necessary philosophy knowledge to answer that."
+  utter_chitchat/ask_whoisit:
+  - text: "I'm Dash, the NeuralSpace bot! At the same time I'm also the NeuralSpace mascot 🐦"
+  - text: "I'm both the NeuralSpace bot and the NeuralSpace mascot. My name is Dash!"
+  utter_chitchat/handleinsult:
+  - text: "That's not very nice 😢"
+  - text: "That wasn't very nice. Perhaps try an anger management class?"
+  - text: "I'll pretend I didn't process that mean comment."
+  utter_chitchat/nicetomeetyou:
+  - text: "Likewise!"
+  - text: "Thank you. It is a pleasure to meet you as well!"
+  - text: "It is nice to meet you too!"
+  - text: "Pleased to meet you too!"
+  - text: "It's always a pleasure to meet new people!"
+  - text: "Nice to meet you too! Happy to be of help."
 actions:
 - personal_greet
 - validate_login_form
