@@ -1262,6 +1262,21 @@ nlu:
     - return and refund policies
     - rules for refund
     - instructions for return
+    - I haven't received refund
+    - what is refund policy
+    - how to return a product?
+    - refund policy
+    - return and refund policies
+    - rules for refund
+    - instructions for return
+    - when can i return my product
+    - are all products eligible for return
+    - can i return a product without price tag
+    - can i return used product
+    - do you have a return policy
+    - will i get refund immediately?
+    - what are the terms & conditions for return?
+    - can i return an item within 1 month of delivery?
 - intent: faq/delivery_charges
   examples: |
     - what are delivery charges
@@ -1270,6 +1285,20 @@ nlu:
     - are there any delivery charges for order above 500?
     - can you tell me charges for delivery
     - charges for delivery
+    - what are delivery charges
+    - delivery charges
+    - will there be any charges for my order
+    - are there any delivery charges for orders above 500?
+    - can you tell me charges for delivery
+    - charges for delivery
+    - is there any shipping charge?
+    - Is there any transportation charges?
+    - what is the minimum order for no shipping charges
+    - is there any shipment cost on my order?
+    - Is there any handling charge ?
+    - is there a shipping charge on my order of Rs.100
+    - Is there a delivery fee for my Order No 1234
+    - are orders subject to any shipping fee?
 - intent: faq/shipping_speed
   examples: |
     - how much time does it take to reach me
@@ -1278,6 +1307,13 @@ nlu:
     - time taken by orders
     - in how much days will my product reach to me
     - I want my product now
+    - How long would it take for my product to arrive?
+    - In how many days will my product be delivered to me?
+    - How long would it take for my order to arrive at my doorstep?
+    - How many days my stuff would reach me?
+    - How much time do I wait for my product
+    - How long do I wait for my item
+    - How long I have my product to wait for
 - intent: faq/refund_timelines
   examples: |
     - when will I get refund
@@ -1287,6 +1323,15 @@ nlu:
     - I want my refund asap
     - hey give me my money
     - I want my money
+    - When will I get my refund?
+    - When do I expect my money back?
+    - When can I get my money back?
+    - When will I receive my refund?
+    - When am I going to get refund
+    - how long it takes to reimburse
+    - How long is the refund going to take
+    - How long would it take to process the refund?
+    - How long would the refund take?
 - intent: faq/payments
   examples: |
     - what are the payment gateways
@@ -1357,6 +1402,9 @@ nlu:
     - how to update my address of shipment
     - can you update my address
     - how can I modify my address
+    - how to change my delivery address
+    - I will not be available at the time of delivery can I change my shipping address
+    - can you change my mailing address
 - intent: faq/gst_charges
   examples: |
     - how much is gst charged on each order
@@ -1371,6 +1419,13 @@ nlu:
     - Why am I being charged GST?
     - Why do I have to pay GST?
     - What is the significance of the GST charge?
+    - what is the gst rate for each order?
+    - How much gst is added to each order?
+    - how much gst is paid on each order
+    - How much GST is applied to each order?
+    - Tell me why you're charging gst
+    - Please clarify why you owe GST.
+    - Why do you owe GST?
 - intent: faq/emi_conversion
   examples: |
     - emi conversion
@@ -1385,6 +1440,11 @@ nlu:
     - What happens if my bank refuses to convert my EMI?
     - What happens if my EMI conversion is denied by my bank?
     - What happens when my EMI conversion is refused by the bank?
+    - What happens if the bank rejects my EMI conversion?
+    - When my bank refuses my emi, what is the policy?
+    - What is the policy when my bank refuses my emi?
+    - What is the protocol if my emi is rejected by the bank?
+    - When my emi is rejected by the bank, what is the policy?
 - intent: faq/promotions
   examples: |
     - i want some promotions
