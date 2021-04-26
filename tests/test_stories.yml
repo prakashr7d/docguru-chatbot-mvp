@@ -811,3 +811,39 @@ stories:
   - action: action_feedback_submit
   - slot_was_set:
     - feedback: null
+
+- story: chitchat
+  steps:
+    - slot_was_set:
+        - session_started_metadata:
+            user_token: dishant@neuralspace.ai
+    - slot_was_set:
+        - session_started_metadata:
+            user_token: dishant@neuralspace.ai
+    - intent: greet
+      user: |-
+        /greet
+    - action: personal_greet
+    - slot_was_set:
+        - user_email: dishant@neuralspace.ai
+    - slot_was_set:
+        - user_first_name: Dishant
+    - slot_was_set:
+        - user_last_name: Gandhi
+    - slot_was_set:
+        - is_logged_in: true
+    - slot_was_set:
+        - user_otp: '1234'
+    - intent: greet
+      user: |-
+        hi
+    - action: personal_greet
+    - intent: chitchat/ask_whoisit
+      user: |-
+        who are you
+    - action: utter_chitchat
+    - intent: chitchat/ask_whoisit
+      user: |-
+        what is your name
+    - action: utter_chitchat
+
