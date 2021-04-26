@@ -18,16 +18,12 @@ nlu:
     - can i see my history
     - previous order
     - hey, can you show me my orders
-    - i want to see my orders
     - i want to see my orders shipped or not
     - i want to verify wheather my orders are got delivered or not
     - is there is any way that i can check my order
     - find my order
     - show me orders
     - i want to check what all orders i have
-- regex: order_id
-  examples: |
-    - \bDASH[0-9]{6}\b
 - intent: order_status
   examples: |
     - track the order [DASH123461](order_id)
@@ -35,14 +31,12 @@ nlu:
     - track the order
     - order status
     - [DASH123461](order_id)
-    - [DASH123461](order_id)
     - i want to track order [DASH123461](order_id)
     - show where is my order [DASH123461](order_id)
     - Check order status of [DASH123461](order_id)
     - order status of [DASH123461](order_id)
     - I want to check status of my order [DASH123461](order_id)
     - Show status of my order [DASH123461](order_id)
-    - [DASH123461](order_id)
     - what is the order status
     - order status of the products
     - i want to know the status of my orders
@@ -51,9 +45,6 @@ nlu:
     - is [DASH123456](order_id) is shipped
     - is my order deleivered
     - where i can check my order statuss
-- regex: number
-  examples: |
-    - \b\d{4}\b
 - intent: otp
   examples: |
     - 2783
@@ -198,7 +189,6 @@ nlu:
     - start
     - what can i do now
     - what can you do for me
-
 - intent: product_inquiry
   examples: |
     - product enquiry
@@ -209,7 +199,7 @@ nlu:
     - I want to buy a product
     - Can you suggest me some products
     - show me [Electronic](category) products
-    - [Lenovo]{"entity": "brand", "value": "Lenovo"} [laptops](sub_category)
+    - [Lenovo](brand) [laptops](sub_category)
     - do you have [white](color) [shoes](sub_category)
     - what about [men's clothing](sub_category)
     - I want [mobiles](sub_category) of brand realme under [40000](max)
@@ -221,45 +211,55 @@ nlu:
     - Show me [women's]{"entity": "gender", "value": "women"} [sports shoes](sub_category)
     - [Jeans](sub_category) for [Men](gender)
     - Show me [laptops](sub_category) of 14inch
-    - can you show me [Hp]{"entity": "brand", "value": "Hp"} [laptops](sub_category) under [30000](min) starting from [10000](max)
-    - [Lenovo]{"entity": "brand", "value": "Lenovo"} [laptops](sub_category)
-    - can you show me [Oneplus]{"entity": "brand", "value": "Oneplus"} [mobiles](sub_category)
-    - I want to buy [nike]{"entity": "brand", "value": "nike"} [shoes](sub_category)
-    - I am looking for [redmi]{"entity": "brand", "value": "redmi"} [mobiles](sub_category)
-    - I want [mobiles](sub_category) of brand [realme]{"entity": "brand", "value": "realme"} under 40000
-    - Show me [Adidas]{"entity": "brand", "value": "Adidas"} [shoes](sub_category)
-    - I want to buy [Silver](color) [Lenovo]{"entity": "brand", "value": "Lenovo"} [Laptops](sub_category)
-    - I want to buy [LG]{"entity": "brand", "value": "LG"} [Washing Machine](sub_category)
-    - [Xiaomi]{"entity": "brand", "value": "Xiaomi"} Phones below [25000](max)
-    - Can you show me [Adidas]{"entity": "brand", "value": "Adidas"} [Tshirts](sub_category) for [Women](gender) ?
-    - I want to [US Polo]{"entity": "brand", "value": "US Polo"} products
-    - Show me [women's]{"entity": "gender", "value": "women"} [sports shoes](sub_category)
-    - I want to check out [Samsung]{"entity": "brand", "value": "Samsung"} LED [TV]{"entity": "sub_category", "value": "Television"}
+    - can you show me [Hp](brand) [laptops](sub_category) under [30000](min) starting from [10000](max)
+    - can you show me [Oneplus](brand) [mobiles](sub_category)
+    - I want to buy [nike](brand) [shoes](sub_category)
+    - I am looking for [redmi](brand) [mobiles](sub_category)
+    - I want [mobiles](sub_category) of brand [realme](brand) under 40000
+    - Show me [Adidas](brand) [shoes](sub_category)
+    - I want to buy [Silver](color) [Lenovo](brand) [Laptops](sub_category)
+    - I want to buy [LG](brand) [Washing Machine](sub_category)
+    - [Xiaomi](brand) Phones below [25000](max)
+    - Can you show me [Adidas](brand) [Tshirts](sub_category) for [Women](gender) ?
+    - I want to [US Polo](brand) products
+    - I want to check out [Samsung](brand) LED [TV]{"entity": "sub_category", "value": "Television"}
+    - show me television
     - i want [Men]{"entity": "gender", "value": "men"}'s clothing
     - i want [t-shirt]{"entity": "sub_category", "value": "T-shirt"}
     - show me [Home decor]{"entity": "sub_category", "value": "Home Decor"}
     - show me some [Home decoration]{"entity": "sub_category", "value": "Home Decor"}
-    - i want [Home Appliances]{"entity": "sub_category", "value": "Home Appliances"}
+    - i want [Home Appliances](sub_category)
     - i want [Laptops]{"entity": "sub_category", "value": "laptops"}
-    - i want [Men's Accessories]{"entity": "sub_category", "value": "Men's Accessories"}
-    - show me [Camera & Camera Accessories]{"entity": "sub_category", "value": "Camera & Camera Accessories"}
-
+    - i want [Men's Accessories](sub_category)
+    - show me [Camera & Camera Accessories](sub_category)
+    - i want [AC](sub_category)
+    - i want [Air Conditioner]{"entity": "sub_category", "value": "AC"}
+    - i want [Men's T-Shirt](sub_category)
+    - i want [home decor]{"entity": "sub_category", "value": "Home Decor"}
+    - want [Toys and Games] {"entity": "sub_category", "value": "Toys and Games"}
+    - want [Board Games](sub_category)
+    - want [Perfumes](sub_category)
+    - show me [ac](sub_category)
+    - show me game [boards](sub_category)
+    - show me [games](sub_category)
+    - show me [boards](sub_category)
+    - i want [Tools & Accessories]{"entity": "sub_category", "value": "Tools & Accessories"}
 - intent: ask_feedback
   examples: |
-    - [It's better than before]{"entity":"feedback","value":"Awesome"}
-    - [Awesome]{"entity":"feedback","value":"Awesome"}
-    - [better]{"entity":"feedback","value":"Awesome"}
-    - [Best]{"entity":"feedback","value":"Awesome"}
-    - [okish]{"entity":"feedback","value":"Meh"}
-    - [not likely]{"entity":"feedback","value":"Meh"}
-    - [not bad]{"entity":"feedback","value":"Meh"}
-    - [Meh]{"entity":"feedback","value":"Meh"}
-    - [worst]{"entity":"feedback","value":"Poor"}
-    - [Poor]{"entity":"feedback","value":"Poor"}
-    - [pretty bad]{"entity":"feedback","value":"Poor"}
-    - [I didn't like]{"entity":"feedback","value":"Poor"}
-    - [Good]{"entity":"feedback","value":"Awesome"}
-    - [great]{"entity":"feedback","value":"Awesome"}
+    - [It's better than before]{"entity": "feedback", "value": "Awesome"}
+    - [Awesome](feedback)
+    - [better]{"entity": "feedback", "value": "Awesome"}
+    - [Best]{"entity": "feedback", "value": "Awesome"}
+    - [okish]{"entity": "feedback", "value": "Meh"}
+    - [not likely]{"entity": "feedback", "value": "Meh"}
+    - [not bad]{"entity": "feedback", "value": "Meh"}
+    - [Meh](feedback)
+    - [worst]{"entity": "feedback", "value": "Poor"}
+    - [Poor](feedback)
+    - [pretty bad]{"entity": "feedback", "value": "Poor"}
+    - [I didn't like]{"entity": "feedback", "value": "Poor"}
+    - [Good]{"entity": "feedback", "value": "Awesome"}
+    - [great]{"entity": "feedback", "value": "Awesome"}
 - intent: feedback
   examples: |
     - I want to give feedback
@@ -269,9 +269,6 @@ nlu:
     - feedback for you!
     - I want to fill feedback form
     - is there any feedback form?
-- regex: es_product_id
-  examples: |
-    - \b([A-Z]{2})[0-9]{5}\b
 - intent: product_details
   examples: |
     - product details
@@ -282,10 +279,8 @@ nlu:
     - what are specs of this id [AB12345](es_product_id)
     - specs for [AB12345](es_product_id)
     - show me [AB12345](es_product_id)
-    - [AB12345](es_product_id)
     - [AB12345](es_product_id) details
     - product details for [AB12345](es_product_id)
-    - more details on [AB12345](es_product_id)
     - describe [AB12345](es_product_id)
     - price of [AB12345](es_product_id)
 - intent: affirm
@@ -1049,219 +1044,13 @@ nlu:
     - sudo reboot
     - asdfgasd
     - asdfgasdas
-- synonym: Don't need the Product
-  examples: |
-    - don't want it
-    - don't need it
-    - Don't need the product
-- synonym: Quality issues
-  examples: |
-    - Quality problem
-- synonym: Incorrect Items
-  examples: |
-    - wrong product
-    - I didn't receive correct
-    - incorrect
-- synonym: Return Product
-  examples: |
-    - refund
-    - Return product
-    - Refund
-    - Return
-- synonym: Replace Product
-  examples: |
-    - replace
-    - Replace product
-    - Replacement
-- synonym: Primary Account
-  examples: |
-    - Default Account
-    - primary Account
-    - primary
-- synonym: Credit Points
-  examples: |
-    - Credit
-
-- lookup: category
-  examples: |
-    - Electronics
-    - Fashion
-    - Books
-    - Home
-    - Sports, Fitness, Bags & Luggage
-    - Toys and Games
-    - Beauty & Health
-
-- lookup: sub_category
-  examples: |
-    - Laptops
-    - Mobiles
-    - Computers
-    - Televisions
-    - Air Conditioners
-    - Refrigerators
-    - Washing Machines
-    - Microwaves
-    - Dishwashers
-    - Heating & Cooling Appliances
-    - Home Entertainment Systems
-    - Speakers & Headphones
-    - Cameras & Camera Accessories
-    - Monitors
-    - Men's Clothing
-    - Sandals
-    - Heels
-    - Sports Shoes
-    - Casual Shoes
-    - Shoes
-    - Slippers
-    - Shirts
-    - T-shirts
-    - Trousers & Bottoms
-    - Jeans
-    - Skirts
-    - Shorts
-    - Kurta & Kurtis
-    - Sarees
-    - Swimwear
-    - Nightwear
-    - Decor
-    - Kitchen & Dining
-    - Bed
-    - Furnishing
-    - Storage & Organisers
-    - Bath
-    - Kids
-    - Action & Toy Figures
-    - Arts & craft
-    - Baby & Toddler Toys
-    - Building & Constructions Toys
-    - Dolls & Accessories
-    - Electronic Toys
-    - Games
-    - Party Supplies
-    - Pretend Play
-    - Soft Toys
-    - Sports & Outdoors
-    - Fiction Books
-    - School Books
-    - Children’s Books
-    - Exam Central
-    - Textbooks
-    - Indian Language Books
-    - Exercise & Fitness
-    - Cycling
-    - Badminton
-    - Cricket
-    - Football
-    - Backpacks
-    - Travel Luggage
-    - Travel Accessories
-    - Bags, Wallets & Luggage
-    - Action & Toy Figures
-    - Arts & craft
-    - Baby & Toddler Toys
-    - Building & Constructions Toys
-    - Dolls & Accessories
-    - Electronic Toys
-    - Games
-    - Party Supplies
-    - Pretend Play
-    - Soft Toys
-    - Beauty & Grooming
-    - Luxury Beauty
-    - Makeup
-    - Professional Beauty
-    - Women’s Styling Devices
-    - Men’s Grooming Devices
-    - Personal Care
-    - Sports Nutrition
-    - Health & Wellness
-- lookup: gender
-  examples: |
-    - men
-    - women
-    - boys
-    - girls
-    - all
-- lookup: color
-  examples: |
-    - blue
-    - pink
-    - orange
-    - rose gold
-    - black
-    - red
-    - light blue
-    - Beige
-    - Black
-    - Blue
-    - Brown
-    - Charcoal
-    - Copper
-    - Coral
-    - Cream
-    - Gold
-    - Green
-    - Grey
-    - Maroon
-    - Peach
-    - Pink
-    - Red
-    - Silver
-    - Tan
-    - Teal
-    - White
-    - Yellow
-
-- lookup: brand
-  examples: |
-    - adidas
-    - spark
-    - nike
-    - Acer
-    - Apple
-    - Asus
-    - Dell
-    - HP
-    - Lenovo
-    - Xiaomi
-    - LG
-    - OnePlus
-    - Xiaomi
-    - Samsung
-    - Vivo
-    - Realme
-    - Oppo
-    - Nokia
-    - Honor
-    - LG
-    - Lava
-    - Apple
-    - Samsung
-    - Whirlpool
-    - LG
-    - Xiaomi
-    - Phillips
-    - Havells
-    - Bajaj
-    - Voltas
-
 - intent: un_supported_buttons
   examples: |
     - invalid buttons
     - invalid
     - use case not available
-
 - intent: faq/refund_policy
   examples: |
-    - I haven't received refund
-    - what is refund policy
-    - how to return a product?
-    - refund policy
-    - return and refund policies
-    - rules for refund
-    - instructions for return
     - I haven't received refund
     - what is refund policy
     - how to return a product?
@@ -1285,12 +1074,7 @@ nlu:
     - are there any delivery charges for order above 500?
     - can you tell me charges for delivery
     - charges for delivery
-    - what are delivery charges
-    - delivery charges
-    - will there be any charges for my order
     - are there any delivery charges for orders above 500?
-    - can you tell me charges for delivery
-    - charges for delivery
     - is there any shipping charge?
     - Is there any transportation charges?
     - what is the minimum order for no shipping charges
@@ -1342,7 +1126,6 @@ nlu:
     - can I pay with debit card?
     - how about a credit card payments
     - do you guys support upi
-    - how do I pay
     - where to pay
     - debit card chalega?
     - is credit card accepted
@@ -1482,7 +1265,6 @@ nlu:
     - DASH123477
     - DASH123456
     - DASH123457
-
 - intent: out_of_scope/non_english
   examples: |
     - Wie fange ich mit Rasa an?
@@ -2376,3 +2158,84 @@ nlu:
     - what's your name
     - what is you name
     - what is you name and where are you from
+- synonym: Don't need the Product
+  examples: |
+    - don't want it
+    - don't need it
+    - Don't need the product
+- synonym: Quality issues
+  examples: |
+    - Quality problem
+- synonym: Incorrect Items
+  examples: |
+    - wrong product
+    - I didn't receive correct
+    - incorrect
+- synonym: Return Product
+  examples: |
+    - refund
+    - Return product
+    - Refund
+    - Return
+- synonym: Replace Product
+  examples: |
+    - replace
+    - Replace product
+    - Replacement
+- synonym: Primary Account
+  examples: |
+    - Default Account
+    - primary Account
+    - primary
+- synonym: Credit Points
+  examples: |
+    - Credit
+- synonym: women
+  examples: |
+    - women's
+- synonym: Television
+  examples: |
+    - TV
+- synonym: men
+  examples: |
+    - Men
+- synonym: T-shirt
+  examples: |
+    - t-shirt
+- synonym: Home Decor
+  examples: |
+    - Home decor
+    - Home decoration
+    - home decor
+- synonym: laptops
+  examples: |
+    - Laptops
+- synonym: AC
+  examples: |
+    - Air Conditioner
+- synonym: Awesome
+  examples: |
+    - It's better than before
+    - better
+    - Best
+    - Good
+    - great
+- synonym: Meh
+  examples: |
+    - okish
+    - not likely
+    - not bad
+- synonym: Poor
+  examples: |
+    - worst
+    - pretty bad
+    - I didn't like
+- regex: es_product_id
+  examples: |
+    - \b([A-Z]{2})[0-9]{5}\b
+- regex: number
+  examples: |
+    - \b\d{4}\b
+- regex: order_id
+  examples: |
+    - \bDASH[0-9]{6}\b
