@@ -1341,6 +1341,13 @@ nlu:
     - is upi accepted?
     - can I pay with debit card?
     - how about a credit card payments
+    - do you guys support upi
+    - how do I pay
+    - where to pay
+    - debit card chalega?
+    - is credit card accepted
+    - what is accepted for paymets
+    - what to pay with
 - intent: buy_now
   examples: |
     - buy product
@@ -1390,6 +1397,11 @@ nlu:
     - how will my order be cancalled
     - how will I have my order cancelled
     - May my order be cancelled?
+    - I want to cancel my order
+    - I am unable to cancel my order
+    - Can I refuse the order at time of delivery?
+    - What's the procedure for cancelling my order?
+    - Is it possible for me to cancel the order at the time of delivery?
 - intent: faq/shipping_address_change
   examples: |
     - how to change my shipping address
@@ -1447,11 +1459,21 @@ nlu:
     - When my emi is rejected by the bank, what is the policy?
 - intent: faq/promotions
   examples: |
-    - i want some promotions
-    - i want discount
-    - can i get discount
-    - is there any discount
-    - is there any promotion available for this products
+    - discount
+    - what kind of deals do you have
+    - are you running anything for black friday
+    - are there any discounts available?
+    - discounts for me?
+    - can you give me some info on discounts?
+    - are any sale running
+    - types of sale in whole year
+    - are there any upcoming sales?
+    - any offers going on?
+    - any attractive offers?
+    - any upcoming deals?
+    - Is there a Diwali sale?
+    - Do you have any deal for Holi?
+    - Do you have Big Billion sales?
 - intent: ask_order_id
   examples: |
     - [DASH123450](order_id)
