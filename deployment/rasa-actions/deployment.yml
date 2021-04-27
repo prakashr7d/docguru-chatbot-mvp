@@ -20,6 +20,9 @@ spec:
         imagePullPolicy: Always
         command: ["poetry", "run", "rasa", "run", "actions"]
         name: dash-ecomm-rasa-actions
+        env:
+        - name: "ELASTICSEARCH_URL"
+          value: "http://elasticsearch:9200"
         ports:
         - containerPort: 5055
         resources:
