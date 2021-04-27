@@ -72,9 +72,9 @@ jobs:
           name: NLU Cross Validation
           command: PYTHONPATH=./src poetry run rasa test nlu
 
-#      - run:
-#          name: Testing
-#           command: PYTHONPATH=./src poetry run rasa test core
+      - run:
+          name: Testing
+           command: PYTHONPATH=./src poetry run rasa test core
 
       - store_artifacts:
           path: ./results

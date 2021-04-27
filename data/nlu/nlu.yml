@@ -1044,6 +1044,47 @@ nlu:
     - sudo reboot
     - asdfgasd
     - asdfgasdas
+    - Wie fange ich mit Rasa an?
+    - hilf mir beim start
+    - tschüssikowski
+    - ¿Qué pasa?
+    - ça va ?
+    - como te llamas
+    - wer bist Du?
+    - como inicio en rasa
+    - come stai?
+    - como estas
+    - de donde eres
+    - de que lugar eres?
+    - epdi iruka
+    - eres humana
+    - kalhmera sara ti kaneis
+    - kannst du auch deutsch?
+    - kannst du dies auch auf deutsch?
+    - oui je besoine de l'aide
+    - que puedes hacer?
+    - tu parles francais?
+    - tudo bom
+    - tu pagal
+    - kannst du mir helfen
+    - tu kaisi he
+    - こにちは
+    - 日本語分かる？
+    - chào
+    - 你好
+    - I'm speaking a non-english language.
+    - 呵呵
+    - 我该如何使用
+    - 你懂中文吗？
+    - 您好
+    - 你叫什么名字
+    - 你是谁
+    - 中文
+    - kya hindi me bat kar sakate ho
+    - Dumme sara
+    - αστεία λές
+    - rasa codigo abierto
+    - 卧槽
 - intent: un_supported_buttons
   examples: |
     - invalid buttons
@@ -1265,49 +1306,6 @@ nlu:
     - DASH123477
     - DASH123456
     - DASH123457
-- intent: out_of_scope/non_english
-  examples: |
-    - Wie fange ich mit Rasa an?
-    - hilf mir beim start
-    - tschüssikowski
-    - ¿Qué pasa?
-    - ça va ?
-    - como te llamas
-    - wer bist Du?
-    - como inicio en rasa
-    - come stai?
-    - como estas
-    - de donde eres
-    - de que lugar eres?
-    - epdi iruka
-    - eres humana
-    - kalhmera sara ti kaneis
-    - kannst du auch deutsch?
-    - kannst du dies auch auf deutsch?
-    - oui je besoine de l'aide
-    - que puedes hacer?
-    - tu parles francais?
-    - tudo bom
-    - tu pagal
-    - kannst du mir helfen
-    - tu kaisi he
-    - こにちは
-    - 日本語分かる？
-    - chào
-    - 你好
-    - I'm speaking a non-english language.
-    - 呵呵
-    - 我该如何使用
-    - 你懂中文吗？
-    - 您好
-    - 你叫什么名字
-    - 你是谁
-    - 中文
-    - kya hindi me bat kar sakate ho
-    - Dumme sara
-    - αστεία λές
-    - rasa codigo abierto
-    - 卧槽
 - intent: chitchat/ask_howbuilt
   examples: |
     - By what means were you made?
