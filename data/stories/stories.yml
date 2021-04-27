@@ -426,7 +426,6 @@ stories:
 - story: Order status - Unregistered user - repair path - anything else deny
   steps:
   - intent: order_status
-  - action: action_order_status
   - slot_was_set:
     - is_logged_in: false
   - slot_was_set:

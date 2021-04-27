@@ -179,11 +179,35 @@ rules:
   - action: action_return_order
   - action: utter_anything_else
 
-- rule: replace order
+- rule: form switch + return order + replace
+  condition:
+  - active_loop: return_order_form
+  - slot_was_set:
+    - is_logged_in: true
+  steps:
+  - intent: replace_order
+  - action: utter_replace_order_inprogress
+  - action: return_order_form
+  - active_loop: return_order_form
+
+- rule: replace order in login true
+  condition:
+  - slot_was_set:
+    - is_logged_in: true
   steps:
   - intent: replace_order
   - action: utter_replace_order_inprogress
   - action: utter_anything_else_options
+
+- rule: replace order in login false
+  condition:
+  - slot_was_set:
+    - is_logged_in: false
+  steps:
+    - intent: replace_order
+    - action: utter_replace_order_inprogress
+    - action: utter_anything_else_options
+
 - rule: switch with check all orders
   condition:
   - active_loop: return_order_form
@@ -262,7 +286,18 @@ rules:
   - active_loop: null
   - action: action_order_status
 
-- rule: product inquiry
+- rule: product inquiry when logged in true
+  condition:
+  - slot_was_set:
+      - is_logged_in: true
+  steps:
+  - intent: product_inquiry
+  - action: action_product_inquiry
+
+- rule: product inquiry when logged in false
+  condition:
+  - slot_was_set:
+      - is_logged_in: false
   steps:
   - intent: product_inquiry
   - action: action_product_inquiry
@@ -285,7 +320,101 @@ rules:
   steps:
   - intent: EXTERNAL_feedback
   - action: action_start_feedback_form
+
 - rule: product details
+  condition:
+  - slot_was_set:
+    - is_logged_in: true
   steps:
   - intent: product_details
   - action: action_product_details
+
+- rule: for blocked buttons
+  condition:
+  - slot_was_set:
+    - is_logged_in: true
+  steps:
+  - intent: un_supported_buttons
+  - action: utter_not_implemented
+
+- rule: for blocked buttons
+  condition:
+  - slot_was_set:
+    - is_logged_in: true
+  steps:
+  - intent: un_supported_buttons
+  - action: utter_not_implemented
+
+- rule: for blocked buttons
+  condition:
+  - slot_was_set:
+    - is_logged_in: false
+  steps:
+  - intent: un_supported_buttons
+  - action: utter_not_implemented
+
+- rule: for utter_BuyAddCancel in login false
+  condition:
+  - slot_was_set:
+    - is_logged_in: false
+  steps:
+  - or:
+    - intent: add_to_cart
+    - intent: buy_items_in_cart
+    - intent: cancel_order
+  - action: utter_BuyAddCancel
+
+- rule: for utter_BuyAddCancel in login true
+  condition:
+  - slot_was_set:
+    - is_logged_in: true
+  steps:
+  - or:
+    - intent: add_to_cart
+    - intent: buy_items_in_cart
+    - intent: cancel_order
+  - action: utter_BuyAddCancel
+
+- rule: for utter_PhotoMood in login true
+  condition:
+  - slot_was_set:
+    - is_logged_in: true
+  steps:
+  - or:
+    - intent: Search_via_photos
+    - intent: mood_based_search
+  - action: utter_PhotoMood
+
+- rule: for utter_PhotoMood in login false
+  condition:
+  - slot_was_set:
+    - is_logged_in: false
+  steps:
+  - or:
+    - intent: Search_via_photos
+    - intent: mood_based_search
+  - action: utter_PhotoMood
+
+- rule: for utter_enquire login false
+  condition:
+  - slot_was_set:
+      - is_logged_in: false
+  steps:
+  - intent: enquire_about_a_service_request
+  - action: utter_enquire
+
+- rule: for utter_enquire login true
+  condition:
+  - slot_was_set:
+      - is_logged_in: true
+  steps:
+  - intent: enquire_about_a_service_request
+  - action: utter_enquire
+
+- rule: for utter_enquire login true
+  condition:
+  - slot_was_set:
+      - is_logged_in: true
+  steps:
+  - intent: faq
+  - action: utter_faq

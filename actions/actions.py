@@ -41,6 +41,7 @@ from dash_ecomm.constants import (
     ORDER_COLUMN_EMAIL,
     ORDER_COLUMN_ID,
     ORDER_COLUMN_IMAGE_URL,
+    ORDER_COLUMN_PRODUCT_ID,
     ORDER_COLUMN_PRODUCT_NAME,
     ORDER_COLUMN_RETURNABLE,
     ORDER_COLUMN_STATUS,
@@ -50,6 +51,7 @@ from dash_ecomm.constants import (
     ORDER_STATUS,
     OTP_TRIES,
     PAYLOAD,
+    PAYLOAD_BUTTON_BLOCKED,
     PICKED,
     PICKUP_ADDRESS_FOR_RETURN,
     POSTBACK,
@@ -94,6 +96,7 @@ from dash_ecomm.database_utils import (
     get_valid_order_return,
     is_valid_otp,
     is_valid_user,
+    validate_return_order,
 )
 from dash_ecomm.es_query_builder import EsQueryBuilder
 from rasa_sdk import Action, FormValidationAction, Tracker, events
@@ -369,19 +372,25 @@ class CheckAllOrders(Action):
         return "action_check_all_orders"
 
     @staticmethod
-    def respective_buttons(order_id, status, is_eligible):
+    def respective_buttons(order_id, status, is_eligible, product_id):
         required_buttons = []
         payload_order_status = "order status of {}".format(order_id)
         payload_return_order = "please place the return for {}".format(order_id)
-        payload_replace_order = "/replace_order"
+
         if status == ORDER_PENDING or status == SHIPPED:
             required_buttons.append(
                 {TITLE: ORDER_STATUS, PAYLOAD: payload_order_status, TYPE: POSTBACK}
             )
             required_buttons.append(
-                {TITLE: PRODUCT_DETAILS, PAYLOAD: "", TYPE: POSTBACK}
+                {
+                    TITLE: PRODUCT_DETAILS,
+                    PAYLOAD: f"{product_id} details",
+                    TYPE: POSTBACK,
+                }
             )
-            required_buttons.append({TITLE: CANCEL_ORDER, PAYLOAD: "", TYPE: POSTBACK})
+            required_buttons.append(
+                {TITLE: CANCEL_ORDER, PAYLOAD: PAYLOAD_BUTTON_BLOCKED, TYPE: POSTBACK}
+            )
         elif status == DELIVERED and is_eligible:
             required_buttons.append(
                 {TITLE: ORDER_STATUS, PAYLOAD: payload_order_status, TYPE: POSTBACK}
@@ -390,14 +399,25 @@ class CheckAllOrders(Action):
                 {TITLE: RETURN_ORDER, PAYLOAD: payload_return_order, TYPE: POSTBACK}
             )
             required_buttons.append(
-                {TITLE: REPLACE_ORDER, PAYLOAD: payload_replace_order, TYPE: POSTBACK}
+                {TITLE: REPLACE_ORDER, PAYLOAD: "replace my order", TYPE: POSTBACK}
+            )
+            required_buttons.append(
+                {
+                    TITLE: PRODUCT_DETAILS,
+                    PAYLOAD: f"{product_id} details",
+                    TYPE: POSTBACK,
+                }
             )
         else:
             required_buttons.append(
                 {TITLE: ORDER_STATUS, PAYLOAD: payload_order_status, TYPE: POSTBACK}
             )
             required_buttons.append(
-                {TITLE: PRODUCT_DETAILS, PAYLOAD: "", TYPE: POSTBACK}
+                {
+                    TITLE: PRODUCT_DETAILS,
+                    PAYLOAD: f"{product_id} details",
+                    TYPE: POSTBACK,
+                }
             )
         return required_buttons
 
@@ -412,6 +432,7 @@ class CheckAllOrders(Action):
                 selected_order[ORDER_COLUMN_ID],
                 selected_order[ORDER_COLUMN_STATUS],
                 selected_order[ORDER_COLUMN_RETURNABLE],
+                selected_order[ORDER_COLUMN_PRODUCT_ID],
             )
             if selected_order[ORDER_COLUMN_STATUS] in [NOT_PICKED, PICKED]:
                 carousel_element = {
@@ -609,43 +630,42 @@ class ActionOrderStatus(Action):
         order_email = tracker.get_slot(USER_EMAIL)
         is_logged_in = tracker.get_slot(IS_LOGGED_IN)
         if is_logged_in:
-            try:
+            if not tracker.latest_message["entities"]:
+                follow_up_action.append(FollowupAction(ACTION_CHECK_ALL_ORDERS))
+                return follow_up_action
+            else:
                 order_id_to_show_order_status = tracker.latest_message["entities"][0][
                     "value"
                 ]
-            except IndexError:
-                dispatcher.utter_message(template="utter_ask_status_order_id")
-                follow_up_action.append(FollowupAction("action_listen"))
-                return follow_up_action
-            follow_up_action.append(FollowupAction("utter_anything_else"))
-            logger.info(order_id_to_show_order_status)
-            order_for_order_id = get_order_by_order_id(
-                order_id_to_show_order_status, order_email
-            )
-            if order_for_order_id:
-                valid_order = order_for_order_id
-                carousel_order = self.__create_order_carousel(valid_order)
-                status_for_order_id = order_for_order_id[ORDER_COLUMN_STATUS]
-                template = self.template_for_order_status(status_for_order_id)
-                if template != "utter_order_status_failed":
-                    dispatcher.utter_message(attachment=carousel_order)
-                utter = {
-                    "template": template,
-                    "order_id": order_id_to_show_order_status,
-                    "small_order_id": order_id_to_show_order_status.lower(),
-                    "shipped_date": "04/04/2021",
-                    "delivery_date": "10/05/2021",
-                    "status": status_for_order_id,
-                }
-                dispatcher.utter_message(**utter)
-            else:
-                utter = {
-                    "template": "utter_order_status_failed",
-                    "order_id": order_id_to_show_order_status,
-                }
-                dispatcher.utter_message(**utter)
+                follow_up_action.append(FollowupAction("utter_anything_else"))
+                logger.info(order_id_to_show_order_status)
+                order_for_order_id = get_order_by_order_id(
+                    order_id_to_show_order_status, order_email
+                )
+                if order_for_order_id:
+                    valid_order = order_for_order_id
+                    carousel_order = self.__create_order_carousel(valid_order)
+                    status_for_order_id = order_for_order_id[ORDER_COLUMN_STATUS]
+                    template = self.template_for_order_status(status_for_order_id)
+                    if template != "utter_order_status_failed":
+                        dispatcher.utter_message(attachment=carousel_order)
+                    utter = {
+                        "template": template,
+                        "order_id": order_id_to_show_order_status,
+                        "small_order_id": order_id_to_show_order_status.lower(),
+                        "shipped_date": "04/04/2021",
+                        "delivery_date": "10/05/2021",
+                        "status": status_for_order_id,
+                    }
+                    dispatcher.utter_message(**utter)
+                else:
+                    utter = {
+                        "template": "utter_order_status_failed",
+                        "order_id": order_id_to_show_order_status,
+                    }
+                    dispatcher.utter_message(**utter)
 
-            return follow_up_action
+                return follow_up_action
         else:
             dispatcher.utter_message(template="utter_try_after_logged_in")
             return []
@@ -675,7 +695,7 @@ class ShowValidReturnOrders(Action):
                     },
                     {
                         TITLE: REPLACE_ORDER,
-                        PAYLOAD: "/replace_order",
+                        PAYLOAD: "replace my order",
                         TYPE: POSTBACK,
                     },
                 ],
@@ -798,7 +818,7 @@ class ValidateReturnOrder(FormValidationAction):
         domain: "DomainDict",  # noqa: F821
     ) -> List[EventType]:
         slot_set = {}
-        if value is not None:
+        if value is not None and value in [RETURN_PRODUCT]:
             slot_set = {ORDER_ID_FOR_RETURN: value}
         else:
             dispatcher.utter_message(template="utter_ineligible_order_id")
@@ -832,7 +852,7 @@ class ValidateReturnOrder(FormValidationAction):
         domain: "DomainDict",  # noqa: F821
     ) -> List[EventType]:
         slot_set = {}
-        if value is not None and value in [RETURN_PRODUCT]:
+        if value is not None:
             slot_set = {TYPE_OF_RETURN: value}
         else:
             slot_set = {REQUESTED_SLOT: TYPE_OF_RETURN}
@@ -864,7 +884,8 @@ class ValidateReturnOrder(FormValidationAction):
         domain: "DomainDict",  # noqa: F821
     ) -> List[EventType]:
         slot_set = {}
-        if value is not None:
+        order_email = tracker.get_slot("user_email")
+        if value is not None and validate_return_order(value, order_email):
             slot_set = {PICKUP_ADDRESS_FOR_RETURN: value}
         else:
             slot_set = {REQUESTED_SLOT: PICKUP_ADDRESS_FOR_RETURN}
@@ -934,7 +955,7 @@ class ActionProductInquiry(Action):
         for entity in range(0, len(entities)):
             if entities[entity] is not None:
                 not_none_entities[ENTITY_NAMES[entity]] = entities[entity]
-                logger.info(not_none_entities)
+        logger.info(not_none_entities)
         return not_none_entities
 
     def __price_queries(
@@ -958,28 +979,65 @@ class ActionProductInquiry(Action):
             )
         return products
 
-    def __not_scroll_id(
+    def __not_scroll_id(  # noqa: C901
         self, not_non_entities: Dict, message: Text, entities_present, query_builder
     ) -> (Dict, int):
         products = None
         if entities_present == ENTITY_NAMES:
+            logger.info("first")
             products = query_builder.product_search_with_all(
                 message,
                 not_non_entities[PRICE_MIN],
                 not_non_entities[PRICE_MAX],
             )
-        elif PRICE_MIN in entities_present or PRICE_MAX in entities_present:
+        elif (
+            PRICE_MIN in entities_present
+            or PRICE_MAX in entities_present
+            and BRAND not in entities_present
+            and SUB_CATEGORY not in entities_present
+            and CATEGORY not in entities_present
+        ):
             products = self.__price_queries(not_non_entities, entities_present, message)
-        elif SUB_CATEGORY in entities_present and BRAND not in entities_present:
-            products = query_builder.product_search_with_category(
+        elif (
+            SUB_CATEGORY in entities_present
+            and PRICE_MAX in entities_present
+            and not BRAND
+            and not PRICE_MIN
+        ):
+            products = query_builder.product_search_with_category_and_max_price(
+                not_non_entities[PRICE_MAX], not_non_entities[SUB_CATEGORY]
+            )
+        elif (
+            SUB_CATEGORY in entities_present
+            and BRAND not in entities_present
+            and CATEGORY not in entities_present
+        ):
+            products = query_builder.product_search_with_sub_category(
                 not_non_entities[SUB_CATEGORY]
             )
-        elif CATEGORY in entities_present and BRAND not in entities_present:
+        elif (
+            SUB_CATEGORY in entities_present
+            and PRICE_MAX in entities_present
+            and CATEGORY not in entities_present
+            and not BRAND
+        ):
+            products = query_builder.product_search_with_sub_category_with_max(
+                not_non_entities[SUB_CATEGORY], not_non_entities[PRICE_MAX]
+            )
+        elif (
+            CATEGORY in entities_present
+            and BRAND not in entities_present
+            and SUB_CATEGORY not in entities_present
+        ):
             products = query_builder.product_search_with_category(
                 not_non_entities[CATEGORY]
             )
         elif GENDER in entities_present and BRAND not in entities_present:
             products = query_builder.product_search_with_gender(message)
+        elif BRAND in entities_present and PRICE_MAX in entities_present:
+            products = query_builder.product_search_with_brand_and_max(
+                not_non_entities[PRICE_MAX], not_non_entities[BRAND]
+            )
         elif BRAND in entities_present:
             products = query_builder.product_search_with_brand(not_non_entities[BRAND])
         elif not entities_present:
@@ -997,7 +1055,6 @@ class ActionProductInquiry(Action):
         for entity_name in not_non_entities.keys():
             if entity_name in ENTITY_NAMES:
                 entities_present.append(entity_name)
-
         if SCROLL_ID in not_non_entities:
             products = query_builder.product_search_with_scroll(
                 not_non_entities[SCROLL_ID]
@@ -1046,12 +1103,12 @@ class ActionProductInquiry(Action):
                     },
                     {
                         TITLE: BUY_NOW,
-                        PAYLOAD: "",
+                        PAYLOAD: PAYLOAD_BUTTON_BLOCKED,
                         TYPE: POSTBACK,
                     },
                     {
                         TITLE: ADD_TO_CART,
-                        PAYLOAD: "",
+                        PAYLOAD: PAYLOAD_BUTTON_BLOCKED,
                         TYPE: POSTBACK,
                     },
                 ],
