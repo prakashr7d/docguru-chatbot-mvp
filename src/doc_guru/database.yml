@@ -1,0 +1,13 @@
+ec2:
+  step1: 'You have 3 steps to complete to set up Ec2 instance, Step1: [Signup](https://aws.amazon.com/console/)
+    for AWS console  press button "complete" when you are finished.'
+  step2: step2 Goto AWS EC2 console By navigating to [here](https://aws.amazon.com/ec2/)
+user:
+  prakashr7d@gmail.com:
+    ec2: '2'
+    email: prakashr7d@gmail.com
+    firstname: prakash
+    id: 1
+    lastname: ramesh
+    mobile_no: 9898989898
+    otp: '1234'

@@ -138,7 +138,7 @@ docker run -p 8000:8000 rasa/duckling
 ### Start Callback server
 In another window, run the callback server for reminders and scheduled requests:
 ```bash
-poetry run python -m dash_ecomm.callback_server
+poetry run python -m doc_guru.callback_server
 ```
 
 ### Start Rasa server

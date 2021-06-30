@@ -9,14 +9,7 @@ services:
       - ./models:/app/models
       - ./data:/app/data
       - ./src:/app/src
-    command: >
-      bash -c "curl --retry 10 --retry-delay 30 --retry-connrefused http://elasticsearch:9200 &&
-               poetry run python -m dash_ecomm.elastic_search_data_upload upload --es-url http://elasticsearch:9200 --index-name e_comm &&
-               poetry run rasa x --no-prompt"
-    depends_on:
-      - "elasticsearch"
-    environment:
-      ELASTICSEARCH_URL: http://elasticsearch:9200
+    command: "poetry run rasa x --no-prompt"
     ports:
       - '5005:5005'
       - '5002:5002'
@@ -32,8 +25,6 @@ services:
       - ./actions:/app/actions
       - ./src:/app/src
     command: [ "poetry","run","rasa","run","actions" ]
-    environment:
-      ELASTICSEARCH_URL: http://elasticsearch:9200
     networks:
       - all
 
@@ -43,7 +34,7 @@ services:
     restart: always
     volumes:
       - ./src:/app/src
-    command: [ "poetry","run","python", "-m", "dash_ecomm.callback_server" ]
+    command: [ "poetry","run","python", "-m", "doc_guru.callback_server" ]
     networks:
       - all
 
@@ -62,30 +53,6 @@ services:
     command: [ "poetry","run", "python", "-m", "http.server", "7000" ]
     ports:
       - '7000:7000'
-    networks:
-      - all
-
-  elasticsearch:
-    image: "docker.elastic.co/elasticsearch/elasticsearch:7.12.0"
-    environment:
-      - "xpack.security.enabled=false"
-      - "discovery.type=single-node"
-    ports:
-      - "9200:9200"
-      - "9300:9300"
-    cap_add:
-      - IPC_LOCK
-    networks:
-      - all
-
-  kib01:
-    image: docker.elastic.co/kibana/kibana:7.12.0
-    container_name: kib01
-    ports:
-      - 5601:5601
-    environment:
-      ELASTICSEARCH_URL: http://elasticsearch:9200
-      ELASTICSEARCH_HOSTS: '["http://elasticsearch:9200"]'
     networks:
       - all
 
